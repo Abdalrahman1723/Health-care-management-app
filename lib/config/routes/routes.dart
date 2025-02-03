@@ -1,24 +1,12 @@
-import 'package:ecomerce_ieee/features/example_on_clean_dontwritethingonit/presentation/pages/home_screen.dart';
-import 'package:ecomerce_ieee/features/login/presentation/widgets/login_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
+import 'package:quotes/features/random_quote/presentation/screens/quote_screen.dart';
 
-class AppRoute {
-  static const String home = "/";
-  static const String login = "/";
-
-
-  static final router = GoRouter(
-
-    routes: [
-      GoRoute(
-        path: login,
-        builder: (context, state) => const LoginPage(), // هنا يتم تعريف صفحة تسجيل الدخول
-      ),
-
-    ],
-  );
-
-
-
+class Routes {
+  static const String initialRoute = '/';
+  static const String favoriteQuoteRoute = '/favoriteQuote';
 }
+
+final routes = {
+  Routes.initialRoute: (context) => const QuoteScreen(),
+  Routes.favoriteQuoteRoute: (context) => Placeholder(), //there should be another screen here
+};

@@ -1,6 +1,7 @@
-# ecomerce_ieee
+# quotes
 
-A new Flutter project.
+A new Flutter project to generate random quotes.
+this app is built also as a demo for clean architecture 
 
 ## Getting Started
 
