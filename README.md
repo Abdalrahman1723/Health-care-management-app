@@ -1,7 +1,6 @@
-# quotes
+# health_care_app
 
-A new Flutter project to generate random quotes.
-this app is built also as a demo for clean architecture 
+A new Flutter project.
 
 ## Getting Started
 

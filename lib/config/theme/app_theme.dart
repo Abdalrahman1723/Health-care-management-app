@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quotes/core/utils/app_colors.dart';
-import 'package:quotes/core/utils/app_strings.dart';
+import 'package:health_care_app/core/utils/app_colors.dart';
+import 'package:health_care_app/core/utils/app_strings.dart';
+import 'package:health_care_app/core/utils/hex_colors.dart';
 
 ThemeData appTheme() {
   return ThemeData(
@@ -8,17 +9,15 @@ ThemeData appTheme() {
     useMaterial3: true,
     hintColor: AppColors.hint,
     //
-    scaffoldBackgroundColor: Colors.black54,
+    scaffoldBackgroundColor: Colors.white,
     //
     fontFamily: AppStrings.fontFamilyCairo,
     //AppBarTheme
-    appBarTheme: AppBarTheme(
-      titleTextStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 22,
+    appBarTheme: const AppBarTheme(
+      titleTextStyle: TextStyle(
+        fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
-      backgroundColor: AppColors.container,
     ),
     //
     textTheme: const TextTheme(
@@ -31,7 +30,8 @@ ThemeData appTheme() {
       ),
       //
       bodyMedium: TextStyle(
-        fontSize: 20,
+        color: Colors.white,
+        fontSize: 18,
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w500,
       ),
@@ -42,5 +42,13 @@ ThemeData appTheme() {
       ),
     ),
     //
+    //IconButtonTheme
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(AppColors.iconBackground),
+        iconSize: WidgetStateProperty.all(18),
+        foregroundColor: WidgetStateProperty.all(Colors.black),
+      ),
+    ),
   );
 }

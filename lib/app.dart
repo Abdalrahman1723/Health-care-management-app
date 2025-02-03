@@ -1,11 +1,12 @@
 //the root of the app
 import 'package:flutter/material.dart';
-import 'package:quotes/config/routes/routes.dart';
-import 'package:quotes/config/theme/app_theme.dart';
-import 'package:quotes/core/utils/app_strings.dart';
+import 'package:health_care_app/config/routes/routes.dart';
+import 'package:health_care_app/config/theme/app_theme.dart';
+import 'package:health_care_app/core/utils/app_strings.dart';
 
-class QuoteApp extends StatelessWidget {
-  const QuoteApp({super.key});
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class QuoteApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: appTheme(),
-      routes: routes, //using routes insted of home
+      routes: routes, //using routes instead of home
     );
   }
 }

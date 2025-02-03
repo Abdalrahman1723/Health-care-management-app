@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:quotes/core/utils/app_colors.dart';
+import 'package:health_care_app/core/utils/app_colors.dart';
 
 class Constants {
   //show error dialog
