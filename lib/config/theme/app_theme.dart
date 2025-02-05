@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_strings.dart';
-import 'package:health_care_app/core/utils/hex_colors.dart';
 
 ThemeData appTheme() {
   return ThemeData(
@@ -30,13 +29,15 @@ ThemeData appTheme() {
       ),
       //
       bodyMedium: TextStyle(
+        //!
         color: Colors.white,
-        fontSize: 18,
+        fontSize: 16,
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w500,
       ),
       //
       titleMedium: TextStyle(
+        color: Colors.white,
         fontSize: 22,
         fontWeight: FontWeight.w700,
       ),
