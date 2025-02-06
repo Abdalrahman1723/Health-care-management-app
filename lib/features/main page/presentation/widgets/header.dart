@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
 
-Widget header({required String title, required String buttonText}) {
+Widget header({
+  required BuildContext context,
+  required String title,
+  required String buttonText,
+  required String route,
+}) {
   return Column(
     children: [
       Padding(
@@ -12,7 +17,9 @@ Widget header({required String title, required String buttonText}) {
             GradientBackground.gradientText(title,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, route);
+              },
               child: GradientBackground.gradientText(
                 buttonText,
                 style: const TextStyle(

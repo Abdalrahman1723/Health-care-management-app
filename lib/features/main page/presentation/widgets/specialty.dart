@@ -22,8 +22,8 @@ Widget specilaty(String icon, String title) {
           SvgPicture.asset(
             icon,
             // color: Colors.white,
-            height: 40,
-            width: 40,
+            height: 60,
+            width: 60,
           ),
           Text(
             title,

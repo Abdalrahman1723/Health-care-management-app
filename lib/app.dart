@@ -4,7 +4,6 @@ import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/config/theme/app_theme.dart';
 import 'package:health_care_app/core/utils/app_strings.dart';
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

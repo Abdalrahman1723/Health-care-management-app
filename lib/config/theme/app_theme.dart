@@ -22,12 +22,13 @@ ThemeData appTheme() {
     textTheme: const TextTheme(
       //
       bodyLarge: TextStyle(fontSize: 18, color: Colors.white),
-      //
+      // headline large
       headlineLarge: TextStyle(
+        color: Colors.white,
         fontSize: 26,
         fontWeight: FontWeight.bold,
       ),
-      //
+      // body medium
       bodyMedium: TextStyle(
         //!
         color: Colors.white,
@@ -35,7 +36,7 @@ ThemeData appTheme() {
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w500,
       ),
-      //
+      // title medium
       titleMedium: TextStyle(
         color: Colors.white,
         fontSize: 22,

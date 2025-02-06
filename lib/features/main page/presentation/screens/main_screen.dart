@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
@@ -93,8 +94,30 @@ class _MainScreenState extends State<MainScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              //------------ Categories and see all button section
-              header(title: "Categories", buttonText: "See all"),
+              //------------ Categories button section
+              Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GradientBackground.gradientText("Categories",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  //------------ divider
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                    indent: 15,
+                    endIndent: 15,
+                  ),
+                ],
+              ),
               //------------ favorite & doctors & specialties section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -266,7 +289,11 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
               ),
-              header(title: "specilaties", buttonText: "See all"),
+              header(
+                  context: context,
+                  title: "specilaties",
+                  buttonText: "See all",
+                  route: Routes.specializationsScreen),
               //------------ specilaties list section
 
               GridView.count(
@@ -276,6 +303,7 @@ class _MainScreenState extends State<MainScreen> {
                 shrinkWrap: true,
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
+                //specilaties list
                 children: [
                   //specilaty 1
                   specilaty(AppIcons.cardiology, "Cardiology"),
