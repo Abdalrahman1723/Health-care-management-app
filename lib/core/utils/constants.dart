@@ -3,6 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 
 class Constants {
+  //containers width and height
+  static const double containerWidthHight = 180;
   //show error dialog
   static void showErrorDialog(
       {required BuildContext context, required String message}) {
