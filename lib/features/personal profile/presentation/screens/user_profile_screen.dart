@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
 import 'package:health_care_app/features/main%20page/presentation/widgets/avatar.dart';
-import 'package:health_care_app/features/specializations/presentation/widgets/icon_container.dart';
+
+import '../widgets/icon_container.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -105,7 +107,9 @@ class UserProfileScreen extends StatelessWidget {
                     GradientBackground.gradientIcon(Icons.arrow_forward_ios),
                 title: const Text("Settings"),
                 subtitle: const Text("manage your settings"),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.settingsScreen);
+                },
               ),
               const SizedBox(height: 10),
               //the user profile logout
