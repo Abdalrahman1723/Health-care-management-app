@@ -17,6 +17,7 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(150),
         child: AppBar(
+          // the back button 
           leading: IconButton(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.transparent),

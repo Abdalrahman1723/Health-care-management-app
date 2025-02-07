@@ -1,16 +1,23 @@
-//displayes the user profile icon 
+//displayes the user profile icon
 //and a small edit icon on the bottom right corner of the profile icon
 import 'package:flutter/material.dart';
 
-Widget avatar() {
+Widget avatar(
+    {required BuildContext context,
+    required double editIconSize,
+    required double avatarSize,
+    String route = ''}) {
   return InkWell(
     onTap: () {
-      // Handle user profile icon press
+      if (route.isNotEmpty) {
+        Navigator.pushNamed(context, route);
+      }
     },
     child: Stack(
       children: [
-        const CircleAvatar(
-          backgroundImage: AssetImage('assets/images/man.png'),
+        CircleAvatar(
+          backgroundImage: const AssetImage('assets/images/man.png'),
+          radius: avatarSize,
         ),
         Positioned(
           bottom: 1,
@@ -36,12 +43,13 @@ Widget avatar() {
                     blurRadius: 3,
                   ),
                 ]),
-            child: const Padding(
-              padding: EdgeInsets.all(2.0),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
               child: Icon(
                 Icons.edit_outlined,
                 color: Colors.black,
-                size: 8,
+                size: editIconSize,
+                // size: 8,
               ),
             ),
           ),

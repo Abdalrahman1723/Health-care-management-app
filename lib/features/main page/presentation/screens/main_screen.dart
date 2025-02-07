@@ -42,7 +42,14 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
           ),
-          leading: Padding(padding: const EdgeInsets.all(8.0), child: avatar()),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: avatar(
+                context: context,
+                editIconSize: 8,
+                avatarSize: 20,
+                route: Routes.userProfileScreen),
+          ),
           // settings and notification icons
           actions: [
             Padding(

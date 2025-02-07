@@ -1,5 +1,5 @@
-const String ImgPath = 'assets/images'; 
+const String imgPath = 'assets/images'; 
 
 class ImageAsset {
-  static String tmp = '$ImgPath/tmp.jpg';
+  static String tmp = '$imgPath/tmp.jpg';
 }
