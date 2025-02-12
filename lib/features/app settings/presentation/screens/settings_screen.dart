@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_care_app/config/routes/routes.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/gradient_text.dart';
@@ -48,7 +49,9 @@ class SettingsScreen extends StatelessWidget {
             leading: iconContainer(Icons.notifications_none),
             trailing: GradientBackground.gradientIcon(Icons.arrow_forward_ios),
             title: const Text("Notification settings"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, Routes.notificationSettingsScreen);
+            },
           ),
           ListTile(
             leading: iconContainer(Icons.key_outlined),
