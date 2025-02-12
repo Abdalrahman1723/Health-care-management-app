@@ -17,7 +17,7 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(150),
         child: AppBar(
-          // the back button 
+          // the back button
           leading: IconButton(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.transparent),
@@ -31,7 +31,7 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             padding: const EdgeInsets.only(top: 12),
-            // for gradiant color background
+            // for gradient color background
             decoration: BoxDecoration(gradient: AppColors.containerBackground),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -55,6 +55,7 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextField(
+                      style: Theme.of(context).textTheme.displayMedium,
                       decoration: InputDecoration(
                         hintText: 'Search...',
                         border: InputBorder.none,
@@ -82,24 +83,24 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 16,
                 children: [
-                  //specilaty 1
-                  specilaty(AppIcons.cardiology, "Cardiology"),
-                  //specilaty 2
-                  specilaty(AppIcons.dermatology, "Dermatology"),
-                  //specilaty 3
-                  specilaty(AppIcons.generalMedicine, "General Medicine"),
-                  //specilaty 4
-                  specilaty(AppIcons.gynecology, "Gynecology"),
-                  //specilaty 5
-                  specilaty(AppIcons.odontology, "Odontology"),
-                  //specilaty 6
-                  specilaty(AppIcons.oncology, "Oncology"),
-                  //specilaty 7
-                  specilaty(AppIcons.orthopedics, "Orthopedics"),
-                  //specilaty 8
-                  specilaty(AppIcons.otolaryngology, "Pediatrics"),
-                  //specilaty 9
-                  specilaty(AppIcons.ophtamology, "ophtamology"),
+                  //specialty 1
+                  specialty(AppIcons.cardiology, "Cardiology"),
+                  //specialty 2
+                  specialty(AppIcons.dermatology, "Dermatology"),
+                  //specialty 3
+                  specialty(AppIcons.generalMedicine, "General Medicine"),
+                  //specialty 4
+                  specialty(AppIcons.gynecology, "Gynecology"),
+                  //specialty 5
+                  specialty(AppIcons.dentistry, "Dentistry"),
+                  //specialty 6
+                  specialty(AppIcons.oncology, "Oncology"),
+                  //specialty 7
+                  specialty(AppIcons.orthopedics, "Orthopedics"),
+                  //specialty 8
+                  specialty(AppIcons.otolaryngology, "Pediatrics"),
+                  //specialty 9
+                  specialty(AppIcons.ophtamology, "ophtamology"),
                 ],
               ),
               const SizedBox(

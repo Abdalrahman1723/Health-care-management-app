@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/constants.dart';
 
-Widget specilaty(String icon, String title) {
+Widget specialty(String icon, String title) {
   return InkWell(
     borderRadius: BorderRadius.circular(16),
     splashColor: Colors.green,

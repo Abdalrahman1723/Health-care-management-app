@@ -29,7 +29,7 @@ class UserProfileScreen extends StatelessWidget {
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             padding: const EdgeInsets.only(top: 12),
-            // for gradiant color background
+            // for gradient color background
             decoration: BoxDecoration(gradient: AppColors.containerBackground),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -58,7 +58,7 @@ class UserProfileScreen extends StatelessWidget {
                         children: [
                           //the user name
                           Text(
-                            "Abdalrhman",
+                            "Abdalrahman",
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           //the user Phone number
@@ -87,7 +87,9 @@ class UserProfileScreen extends StatelessWidget {
                     GradientBackground.gradientIcon(Icons.arrow_forward_ios),
                 title: const Text("Personal Information"),
                 subtitle: const Text("Name, Phone number, Email"),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.editProfileScreen);
+                },
               ),
               const SizedBox(height: 10),
               //the user favorite doctors

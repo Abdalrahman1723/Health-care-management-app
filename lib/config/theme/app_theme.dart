@@ -20,29 +20,33 @@ ThemeData appTheme() {
     ),
     //
     textTheme: const TextTheme(
-      //
-      bodyLarge: TextStyle(fontSize: 18, color: Colors.white),
-      // headline large
-      headlineLarge: TextStyle(
-        color: Colors.white,
-        fontSize: 26,
-        fontWeight: FontWeight.bold,
-      ),
-      // body medium
-      bodyMedium: TextStyle(
-        //!
-        color: Colors.white,
-        fontSize: 16,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w500,
-      ),
-      // title medium
-      titleMedium: TextStyle(
-        color: Colors.white,
-        fontSize: 22,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
+        //
+        bodyLarge: TextStyle(fontSize: 18, color: Colors.white),
+        // headline large
+        headlineLarge: TextStyle(
+          color: Colors.white,
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+        ),
+        // body medium
+        bodyMedium: TextStyle(
+          //!
+          color: Colors.white,
+          fontSize: 16,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w500,
+        ),
+        // title medium
+        titleMedium: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+        ),
+        // for form input
+        displayMedium: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+        )),
     //
     //IconButtonTheme
     iconButtonTheme: IconButtonThemeData(

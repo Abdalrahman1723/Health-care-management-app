@@ -75,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
                     child: IconButton(
                       icon: const Icon(Icons.settings_outlined),
                       onPressed: () {
-                        // Handle settings icon press
+                        Navigator.pushNamed(context, Routes.settingsScreen);
                       },
                     ),
                   ),
@@ -158,7 +158,8 @@ class _MainScreenState extends State<MainScreen> {
                   // specialties icon
                   InkWell(
                     onTap: () {
-                      // Handle specialties icon press
+                      Navigator.pushNamed(
+                          context, Routes.specializationsScreen);
                     },
                     child: Column(
                       children: [
@@ -196,9 +197,9 @@ class _MainScreenState extends State<MainScreen> {
                           SizedBox(
                             width: 20,
                           ),
-                          //monthes button
+                          //months button
                           Text(
-                            "Monthes&Year",
+                            "Months&Year",
                             style: TextStyle(
                                 // decoration: TextDecoration.underline,
                                 color: Colors.white,
@@ -298,10 +299,10 @@ class _MainScreenState extends State<MainScreen> {
               ),
               header(
                   context: context,
-                  title: "specilaties",
+                  title: "specialties",
                   buttonText: "See all",
                   route: Routes.specializationsScreen),
-              //------------ specilaties list section
+              //------------ specialties list section
 
               GridView.count(
                 padding:
@@ -310,20 +311,20 @@ class _MainScreenState extends State<MainScreen> {
                 shrinkWrap: true,
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
-                //specilaties list
+                //specialties list
                 children: [
-                  //specilaty 1
-                  specilaty(AppIcons.cardiology, "Cardiology"),
-                  //specilaty 2
-                  specilaty(AppIcons.dermatology, "Dermatology"),
-                  //specilaty 3
-                  specilaty(AppIcons.generalMedicine, "General Medicine"),
-                  //specilaty 4
-                  specilaty(AppIcons.gynecology, "Gynecology"),
-                  //specilaty 5
-                  specilaty(AppIcons.odontology, "Odontology"),
-                  //specilaty 6
-                  specilaty(AppIcons.oncology, "Oncology"),
+                  //specialty 1
+                  specialty(AppIcons.cardiology, "Cardiology"),
+                  //specialty 2
+                  specialty(AppIcons.dermatology, "Dermatology"),
+                  //specialty 3
+                  specialty(AppIcons.generalMedicine, "General Medicine"),
+                  //specialty 4
+                  specialty(AppIcons.gynecology, "Gynecology"),
+                  //specialty 5
+                  specialty(AppIcons.dentistry, "Dentistry"),
+                  //specialty 6
+                  specialty(AppIcons.oncology, "Oncology"),
                 ],
               ),
             ],

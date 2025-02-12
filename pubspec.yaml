@@ -21,6 +21,7 @@ dependencies:
   calendar_day_slot_navigator: ^0.0.1
   intl: ^0.19.0
   flutter_svg: ^2.0.17
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
