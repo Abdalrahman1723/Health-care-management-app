@@ -34,7 +34,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         suffixIcon: widget.isPassword
             ? IconButton(icon: Icon(
             _obscureText ? Icons.remove_red_eye_outlined : Icons.visibility_off,
-          ),
+          color: Color(0xFF0BDCDC),
+        ),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
@@ -44,6 +45,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         fillColor: Colors.white,
         filled: true,
         hintText: widget.label,
+        hintStyle: TextStyle(color: Color(0xFF0BDCDC)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
         ),
