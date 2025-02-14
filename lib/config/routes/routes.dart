@@ -1,25 +1,107 @@
 import 'package:health_care_app/features/app%20settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/features/app%20settings/presentation/screens/settings_screen.dart';
+import 'package:health_care_app/features/login/presentation/widgets/login_widget.dart';
+import 'package:health_care_app/features/login_and_signup/presentation/views/login_and_signup_view.dart';
 import 'package:health_care_app/features/main%20page/presentation/screens/main_screen.dart';
 import 'package:health_care_app/features/personal%20profile/presentation/screens/edit_profile_screen.dart';
+import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:health_care_app/features/specializations/presentation/screens/specializations_screen.dart';
+import 'package:health_care_app/features/welcome/welcome.dart';
 import '../../features/personal profile/presentation/screens/user_profile_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class Routes {
-  static const String initialRoute = '/';
+  static const String welcome = "/"; //initial route
+  static const String mainScreen = '/MainScreen';
   static const String specializationsScreen = '/SpecializationsScreen';
   static const String userProfileScreen = '/UserProfileScreen';
   static const String settingsScreen = '/SettingsScreen';
   static const String editProfileScreen = '/EditProfileScreen';
-  static const String notificationSettingsScreen = '/NotificationSettingsScreen';
-  
+  static const String notificationSettingsScreen =
+      '/NotificationSettingsScreen';
+  static const String login = "/LoginScreen";
+  static const String loginAndSignup = "/LoginAndSignupScreen";
+
+  static const String signup = "/SignUpScreen";
 }
 
 final routes = {
-  Routes.initialRoute: (context) => const MainScreen(),
+  Routes.welcome: (context) => const WelcomeScreen(),
+  Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),
   Routes.settingsScreen: (context) => const SettingsScreen(),
   Routes.editProfileScreen: (context) => const EditProfileScreen(),
-  Routes.notificationSettingsScreen: (context) => const NotificationSettingsScreen(),
+  Routes.notificationSettingsScreen: (context) =>
+      const NotificationSettingsScreen(),
+  Routes.login: (context) => const LoginScreen(),
+  Routes.loginAndSignup: (context) => const LoginAndSignupScreen(),
+  Routes.signup: (context) => const SignUpScreen(),
+
 };
+
+//---------------------------helana
+class AppRoute {
+  static const String login = "/";
+  static const String loginAndSignup = "/";
+  static const String welcome = "/";
+  static const String signup = "/";
+  static const String mainScreen = '/MainScreen';
+  static const String specializationsScreen = '/SpecializationsScreen';
+  static const String userProfileScreen = '/UserProfileScreen';
+  static const String settingsScreen = '/SettingsScreen';
+  static const String editProfileScreen = '/EditProfileScreen';
+  static const String notificationSettingsScreen =
+      '/NotificationSettingsScreen';
+
+  static final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: welcome,
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: loginAndSignup,
+        builder: (context, state) =>
+            const LoginAndSignupScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+      ),
+
+      GoRoute(
+        path: signup,
+        builder: (context, state) =>
+            const SignUpScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+      ),
+
+      GoRoute(
+        path: login,
+        builder: (context, state) =>
+            const LoginScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+      ),
+      // Main Screens
+      GoRoute(
+        path: mainScreen,
+        builder: (context, state) => const MainScreen(),
+      ),
+      GoRoute(
+        path: Routes.specializationsScreen,
+        builder: (context, state) => const SpecializationsScreen(),
+      ),
+      GoRoute(
+        path: Routes.userProfileScreen,
+        builder: (context, state) => const UserProfileScreen(),
+      ),
+      GoRoute(
+        path: Routes.settingsScreen,
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: Routes.editProfileScreen,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: Routes.notificationSettingsScreen,
+        builder: (context, state) => const NotificationSettingsScreen(),
+      ),
+    ],
+  );
+}

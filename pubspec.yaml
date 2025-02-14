@@ -22,6 +22,16 @@ dependencies:
   intl: ^0.19.0
   flutter_svg: ^2.0.17
   image_picker: ^1.1.2
+  #helana
+  table_calendar: ^3.0.9
+  # Routing
+  go_router: ^14.3.0
+  # Loading indicator
+  flutter_easyloading: ^3.0.5
+  # Device preview
+  device_preview: ^1.2.0
+  # Responsive UI
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +56,7 @@ flutter:
     - assets/images/tmp.jpg
     - assets/images/man.png
     - assets/icons/
+    - lib/core/assets/images/
 
   fonts:
     - family: Cairo
