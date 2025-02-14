@@ -7,22 +7,25 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF0BDCDC),
-        title: const Text(
-          'New Account',
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
+    return Theme(
+      data: ThemeData(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF0BDCDC),
+          title: const Text(
+            'New Account',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          iconTheme: const IconThemeData(
             color: Colors.white,
           ),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        body: const SignupView(),
       ),
-      body: const SignupView(),
     );
   }
 }

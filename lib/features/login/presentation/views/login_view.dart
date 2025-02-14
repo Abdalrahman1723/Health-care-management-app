@@ -21,148 +21,168 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
+    return Theme(
+      data: ThemeData(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
 
-                // Welcome Text
-                const Text(
-                  "Welcome",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0BDCDC),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "Welcome! Please log in to continue. Enter your email or mobile number and password to access your account. If you don’t have an account, sign up now!",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 24),
-
-                // Email Input
-                const Text(
-                  "Email",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  controller: _emailController,
-                  formKey: _formKey,
-                  label: "Email",
-                  isEmail: true,
-                ),
-                const SizedBox(height: 16),
-
-                // Password Input
-                const Text(
-                  "Password",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  controller: _passwordController,
-                  formKey: _formKey,
-                  label: "Password",
-                  isPassword: true,
-                ),
-                const SizedBox(height: 10),
-
-                // Forget Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()));
-                    },
-                    child: const Text(
-                      "Forget Password",
-                      style: TextStyle(color: Color(0xFF0BDCDC)),
+                  // Welcome Text
+                  const Text(
+                    "Welcome",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0BDCDC),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                // Log In Button
-                Center(
-                  child: SizedBox(
-                    width: 200,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0BDCDC),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // تنفيذ عملية تسجيل الدخول
-                          Navigator.pushNamed(context, Routes.mainScreen);
-                          // context.go(AppRoute.mainScreen);
-                        }
-                      },
-                      child: const Text(
-                        "Log In",
-                        style: TextStyle(fontSize: 25, color: Colors.white),
-                      ),
-                    ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Welcome! Please log in to continue. Enter your email or mobile number and password to access your account. If you don’t have an account, sign up now!",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 24),
 
-                // Sign Up
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Don’t have an account?"),
-                    TextButton(
+                  // Email Input
+                  const Text(
+                    "Email",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  CustomTextField(
+                    controller: _emailController,
+                    formKey: _formKey,
+                    label: "Email",
+                    isEmail: true,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Password Input
+                  const Text(
+                    "Password",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  CustomTextField(
+                    controller: _passwordController,
+                    formKey: _formKey,
+                    label: "Password",
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Forget Password
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
                       onPressed: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgetPasswordScreen()));
                       },
                       child: const Text(
-                        "Sign Up",
-                        style: TextStyle(color: Color(0xFF0BDCDC), fontWeight: FontWeight.bold),
+                        "Forget Password",
+                        style: TextStyle(color: Color(0xFF0BDCDC)),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
 
-                // Navigation to Other Screens
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorsScreen()));
-                  },
-                  child: const Text("Doctors"),
-                ),
+                  // Log In Button
+                  Center(
+                    child: SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0BDCDC),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            // تنفيذ عملية تسجيل الدخول
+                            Navigator.pushNamed(context, Routes.mainScreen);
+                            // context.go(AppRoute.mainScreen);
+                          }
+                        },
+                        child: const Text(
+                          "Log In",
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AllAppointmentsScreen()));
-                  },
-                  child: const Text("AllAppointments"),
-                ),
+                  // Sign Up
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Don’t have an account?"),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()),
+                          );
+                        },
+                        child: const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                              color: Color(0xFF0BDCDC),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordManagerScreen()));
-                  },
-                  child: const Text("Password Manager"),
-                ),
+                  // Navigation to Other Screens
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DoctorsScreen()));
+                    },
+                    child: const Text("Doctors"),
+                  ),
 
-              ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AllAppointmentsScreen()));
+                    },
+                    child: const Text("AllAppointments"),
+                  ),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const PasswordManagerScreen()));
+                    },
+                    child: const Text("Password Manager"),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
