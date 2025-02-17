@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../views/all_appointment_view.dart';
+import '../views/all_appointment_complete_view.dart';
 
 class AllAppointments extends StatelessWidget {
   const AllAppointments({super.key});
@@ -12,7 +12,7 @@ class AllAppointments extends StatelessWidget {
         title: const Text('Cardiology', style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: const AllAppointmentsScreen(),
+      body: const CompleteAppointmentsScreen(),
     );
   }
 }

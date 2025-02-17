@@ -3,7 +3,7 @@ import 'package:health_care_app/features/password_manager/presentation/view/pass
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/global/custom_text_filed/custom_text_field.dart';
-import '../../../all_appointments/presentation/views/all_appointment_view.dart';
+import '../../../all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
 import '../../../forget_password/presentation/widgets/forget_password_screen.dart';
 
@@ -166,7 +166,7 @@ class _LoginViewState extends State<LoginView> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const AllAppointmentsScreen()));
+                                  const CompleteAppointmentsScreen()));
                     },
                     child: const Text("AllAppointments"),
                   ),

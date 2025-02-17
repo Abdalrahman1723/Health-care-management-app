@@ -12,7 +12,7 @@ class AllAppointments extends StatelessWidget {
         title: const Text('Cardiology', style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: const AllAppointmentUpcomingView(),
+      body: const UpcomingAppointmentsScreen(),
     );
   }
 }
