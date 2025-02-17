@@ -14,10 +14,22 @@ class _DoctorsViewState extends State<DoctorsView> {
   String _searchQuery = "";
 
   final List<Doctor> _doctors = const [
-    Doctor(name: 'Dr. Daniel Rodriguez', specialty: 'Interventional Cardiologist', imageUrl: 'lib/core/assets/images/download.jpg'),
-    Doctor(name: 'Dr. Jessica Ramirez', specialty: 'Electrophysiologist', imageUrl: 'lib/core/assets/images/download.jpg'),
-    Doctor(name: 'Dr. Michael Chang', specialty: 'Cardiac Imaging Specialist', imageUrl: 'lib/core/assets/images/download.jpg'),
-    Doctor(name: 'Dr. Michael Davidson, M.D.', specialty: 'Cardiologist', imageUrl: 'lib/core/assets/images/download.jpg'),
+    Doctor(
+        name: 'Dr. Daniel Rodriguez',
+        specialty: 'Interventional Cardiologist',
+        imageUrl: 'lib/core/assets/images/download.jpg'),
+    Doctor(
+        name: 'Dr. Jessica Ramirez',
+        specialty: 'Electrophysiologist',
+        imageUrl: 'lib/core/assets/images/download.jpg'),
+    Doctor(
+        name: 'Dr. Michael Chang',
+        specialty: 'Cardiac Imaging Specialist',
+        imageUrl: 'lib/core/assets/images/download.jpg'),
+    Doctor(
+        name: 'Dr. Michael Davidson, M.D.',
+        specialty: 'Cardiologist',
+        imageUrl: 'lib/core/assets/images/download.jpg'),
   ];
 
   List<Doctor> favoriteDoctors = []; // List of favorite doctors
@@ -35,60 +47,68 @@ class _DoctorsViewState extends State<DoctorsView> {
   @override
   Widget build(BuildContext context) {
     List<Doctor> filteredDoctors = _doctors.where((doctor) {
-      return doctor.name.toLowerCase().contains(_searchQuery) || doctor.specialty.toLowerCase().contains(_searchQuery);
+      return doctor.name.toLowerCase().contains(_searchQuery) ||
+          doctor.specialty.toLowerCase().contains(_searchQuery);
     }).toList();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              hintStyle: const TextStyle(color: Color(0xFF0BDCDC), fontSize: 17),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-              filled: true,
-              fillColor: Colors.white,
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF0BDCDC)),
+    return Theme(
+      data: ThemeData(),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                hintStyle:
+                    const TextStyle(color: Color(0xFF0BDCDC), fontSize: 17),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0)),
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF0BDCDC)),
+              ),
+              style: const TextStyle(fontSize: 16.0),
             ),
-            style: const TextStyle(fontSize: 16.0),
-          ),
-          const SizedBox(height: 16.0),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredDoctors.length,
-              itemBuilder: (context, index) {
-                final doctor = filteredDoctors[index];
-                return DoctorCard(
-                  doctor: doctor,
-                  isFavorite: favoriteDoctors.contains(doctor),
-                  onFavorite: () {
-                    setState(() {
-                      if (favoriteDoctors.contains(doctor)) {
-                        favoriteDoctors.remove(doctor); // Remove from favorites
-                      } else {
-                        favoriteDoctors.add(doctor); // Add to favorites
-                      }
-                    });
-                  },
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredDoctors.length,
+                itemBuilder: (context, index) {
+                  final doctor = filteredDoctors[index];
+                  return DoctorCard(
+                    doctor: doctor,
+                    isFavorite: favoriteDoctors.contains(doctor),
+                    onFavorite: () {
+                      setState(() {
+                        if (favoriteDoctors.contains(doctor)) {
+                          favoriteDoctors
+                              .remove(doctor); // Remove from favorites
+                        } else {
+                          favoriteDoctors.add(doctor); // Add to favorites
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the Favorite Doctors screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        FavDoctors(favoriteDoctors: favoriteDoctors),
+                  ),
                 );
               },
+              child: const Text('Go to Favorite Doctors'),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to the Favorite Doctors screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FavDoctors(favoriteDoctors: favoriteDoctors),
-                ),
-              );
-            },
-            child: const Text('Go to Favorite Doctors'),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -99,7 +119,8 @@ class Doctor {
   final String specialty;
   final String imageUrl;
 
-  const Doctor({required this.name, required this.specialty, required this.imageUrl});
+  const Doctor(
+      {required this.name, required this.specialty, required this.imageUrl});
 }
 
 class DoctorCard extends StatefulWidget {
@@ -132,7 +153,8 @@ class _DoctorCardState extends State<DoctorCard> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 50.0, right: 30.0),
+        padding: const EdgeInsets.only(
+            left: 16.0, top: 16.0, bottom: 50.0, right: 30.0),
         child: Row(
           children: [
             CircleAvatar(
@@ -146,7 +168,10 @@ class _DoctorCardState extends State<DoctorCard> {
                 children: [
                   Text(
                     widget.doctor.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0BDCDC), fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0BDCDC),
+                        fontSize: 18),
                   ),
                   Text(
                     widget.doctor.specialty,
@@ -158,37 +183,48 @@ class _DoctorCardState extends State<DoctorCard> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => const DoctorsInfoWidget()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const DoctorsInfoWidget()));
                         },
                         child: const Text(
                           'Info',
-                          style: TextStyle(color: Color(0xFF0BDCDC), fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Color(0xFF0BDCDC),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       IconButton(
                         icon: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border, // Toggle heart icon
-                          color: _isFavorite ? const Color(0xFF0BDCDC) : Colors.grey,
+                          _isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border, // Toggle heart icon
+                          color: _isFavorite
+                              ? const Color(0xFF0BDCDC)
+                              : Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
-                            _isFavorite = !_isFavorite; // Toggle the favorite status
+                            _isFavorite =
+                                !_isFavorite; // Toggle the favorite status
                           });
-                          widget.onFavorite(); // Call the parent callback to update the favorites list
+                          widget
+                              .onFavorite(); // Call the parent callback to update the favorites list
                         },
                       ),
                     ],
                   ),
-
-
-
-
                   ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Make Appointment'
-                        ,style: TextStyle(color: Color(0xFF0BDCDC), fontSize: 15, fontWeight: FontWeight.bold),
-                      )
-                  )
+                      child: const Text(
+                        'Make Appointment',
+                        style: TextStyle(
+                            color: Color(0xFF0BDCDC),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ))
                 ],
               ),
             ),

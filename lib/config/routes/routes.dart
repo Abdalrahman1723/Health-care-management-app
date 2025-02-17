@@ -1,5 +1,7 @@
-import 'package:health_care_app/features/app%20settings/presentation/screens/notification_settings_screen.dart';
+
+import '../../features/app%20settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/features/app%20settings/presentation/screens/settings_screen.dart';
+import 'package:health_care_app/features/doctors/presentation/widgets/doctors_widget.dart';
 import 'package:health_care_app/features/login/presentation/widgets/login_widget.dart';
 import 'package:health_care_app/features/login_and_signup/presentation/views/login_and_signup_view.dart';
 import 'package:health_care_app/features/main%20page/presentation/screens/main_screen.dart';
@@ -7,12 +9,13 @@ import 'package:health_care_app/features/personal%20profile/presentation/screens
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:health_care_app/features/specializations/presentation/screens/specializations_screen.dart';
 import 'package:health_care_app/features/welcome/welcome.dart';
+import '../../features/app settings/presentation/screens/password_manager_view.dart';
 import '../../features/personal profile/presentation/screens/user_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class Routes {
-  static const String welcome = "/"; //initial route
-  static const String mainScreen = '/MainScreen';
+  // static const String welcome = "/"; //initial route
+  static const String mainScreen = '/';
   static const String specializationsScreen = '/SpecializationsScreen';
   static const String userProfileScreen = '/UserProfileScreen';
   static const String settingsScreen = '/SettingsScreen';
@@ -21,12 +24,14 @@ class Routes {
       '/NotificationSettingsScreen';
   static const String login = "/LoginScreen";
   static const String loginAndSignup = "/LoginAndSignupScreen";
-
   static const String signup = "/SignUpScreen";
+  static const String passwordManager = "/PasswordManagerScreen";
+  static const String allDoctors = "/DoctorsScreen";
+  static const String favDoctors = "/FavDoctors";
 }
 
 final routes = {
-  Routes.welcome: (context) => const WelcomeScreen(),
+  // Routes.welcome: (context) => const WelcomeScreen(),
   Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),
@@ -37,7 +42,9 @@ final routes = {
   Routes.login: (context) => const LoginScreen(),
   Routes.loginAndSignup: (context) => const LoginAndSignupScreen(),
   Routes.signup: (context) => const SignUpScreen(),
-
+  Routes.passwordManager: (context) => const PasswordManagerScreen(),
+  Routes.allDoctors: (context) => const DoctorsScreen(),
+  // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors 
 };
 
 //---------------------------helana

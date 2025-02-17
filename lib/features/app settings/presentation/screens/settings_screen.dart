@@ -28,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             padding: const EdgeInsets.only(top: 12),
-            // for gradiant color background
+            // for gradient color background
             decoration: BoxDecoration(gradient: AppColors.containerBackground),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +57,9 @@ class SettingsScreen extends StatelessWidget {
             leading: iconContainer(Icons.key_outlined),
             trailing: GradientBackground.gradientIcon(Icons.arrow_forward_ios),
             title: const Text("Password manager"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, Routes.passwordManager);
+            },
           ),
           ListTile(
             leading: iconContainer(Icons.person_outline),
