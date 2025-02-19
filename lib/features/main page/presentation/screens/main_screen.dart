@@ -62,7 +62,8 @@ class _MainScreenState extends State<MainScreen> {
                     child: IconButton(
                       icon: const Icon(Icons.notifications_none),
                       onPressed: () {
-                        // Handle notification icon press
+                        Navigator.pushNamed(
+                            context, Routes.notificationsScreen);
                       },
                     ),
                   ),

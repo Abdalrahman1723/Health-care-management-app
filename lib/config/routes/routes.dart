@@ -1,4 +1,7 @@
 
+import 'package:health_care_app/features/add_review/presentation/screens/add_review_screen.dart';
+import 'package:health_care_app/features/notifications/presentation/screens/notifications_screen.dart';
+
 import '../../features/app%20settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/features/app%20settings/presentation/screens/settings_screen.dart';
 import 'package:health_care_app/features/doctors/presentation/widgets/doctors_widget.dart';
@@ -28,6 +31,8 @@ class Routes {
   static const String passwordManager = "/PasswordManagerScreen";
   static const String allDoctors = "/DoctorsScreen";
   static const String favDoctors = "/FavDoctors";
+  static const String notificationsScreen= "/NotificationsScreen";
+  static const String addReviewScreen= "/AddReviewScreen";
 }
 
 final routes = {
@@ -45,6 +50,9 @@ final routes = {
   Routes.passwordManager: (context) => const PasswordManagerScreen(),
   Routes.allDoctors: (context) => const DoctorsScreen(),
   // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors 
+  Routes.notificationsScreen: (context) => const NotificationsScreen(),
+  Routes.addReviewScreen: (context) => const AddReviewScreen(),
+
 };
 
 //---------------------------helana
