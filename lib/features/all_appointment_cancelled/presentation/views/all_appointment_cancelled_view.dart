@@ -95,58 +95,7 @@ class CancelledAppointmentsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.calendar_today, size: 16, color: Color(0xFF0BDCDC)),
-                      const SizedBox(width: 4),
-                      Text(
-                        date,
-                        style: const TextStyle(
-                          color: Color(0xFF0BDCDC),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.access_time, size: 16, color: Color(0xFF0BDCDC)),
-                      const SizedBox(width: 4),
-                      Text(
-                        time,
-                        style: const TextStyle(
-                          color: Color(0xFF0BDCDC),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -155,10 +104,11 @@ class CancelledAppointmentsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(25),
             ),
             child: const Text(
-              'Cancelled',
+              'Add Review',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.red,
+                fontSize: 20,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),

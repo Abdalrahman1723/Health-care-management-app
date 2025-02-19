@@ -147,6 +147,30 @@ class UpcomingAppointmentsScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
+                flex: 2, // جعل ال Container الخاص بـ "Details" أكبر
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Color(0xFF0BDCDC), // لون الحواف
+                    ),
+                  ),
+                  child: const Center( // محاذاة النص في المنتصف
+                    child: Text(
+                      "Details",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18, // تكبير حجم الخط
+                        fontWeight: FontWeight.bold, // جعل النص عريضًا
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16), // ترك مسافة بين "Details" والرموز
+              Expanded(
+                flex: 1, // جعل هذا العنصر أصغر
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -156,8 +180,9 @@ class UpcomingAppointmentsScreen extends StatelessWidget {
                   child: const Icon(Icons.check, color: Colors.white),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 8), // تقليل المسافة بين علامتي الصح والخطأ
               Expanded(
+                flex: 1, // جعل هذا العنصر أصغر أيضًا
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -168,7 +193,7 @@ class UpcomingAppointmentsScreen extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          )
         ],
       ),
     );

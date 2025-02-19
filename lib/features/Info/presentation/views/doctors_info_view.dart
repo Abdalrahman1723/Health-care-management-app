@@ -50,7 +50,10 @@ class _DoctorsInfoState extends State<DoctorsInfo> {
   // Method to update selected date and time
   void _saveSelectedDate() {
     setState(() {
-      _selectedDateText = '${_selectedDayString} / 9 AM - 4 PM'; // Update with selected day and time
+      if (_selectedDay != null) {
+        _selectedDateText =
+        '${_selectedDay!.day} / ${_selectedDay!.month} / ${_selectedDay!.year} - 9 AM - 4 PM';
+      }
     });
   }
 
@@ -66,37 +69,7 @@ class _DoctorsInfoState extends State<DoctorsInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 AppBar (شريط التطبيق)
-              Container(
-                padding: EdgeInsets.all(screenWidth * 0.04),
-                color: const Color(0xFF0BDCDC),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05, vertical: screenHeight * 0.015),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.calendar_today, color: Colors.white, size: 17),
-                          SizedBox(width: 4),
-                          Text(
-                            'Schedule',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // 🔹 AppBar
 
               // 🔹 Doctor Info Card
               Container(
@@ -219,39 +192,42 @@ class _DoctorsInfoState extends State<DoctorsInfo> {
                       focusedDay: _focusedDay,
                       calendarFormat: _calendarFormat,
                       selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
+                        return isSameDay(_selectedDay, day); // تأكد من عدم إبقاء اللون على اليوم القديم
                       },
                       onDaySelected: (selectedDay, focusedDay) {
                         setState(() {
-                          if (!focusedDay.isAfter(_lastDay)) {
-                            _selectedDay = selectedDay;
-                            _focusedDay = focusedDay;
-                            _updateDateInfo(selectedDay);  // Update date info
-                          }
-                        });
-                      },
-                      onFormatChanged: (format) {
-                        setState(() {
-                          _calendarFormat = format;
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
                         });
                       },
                       calendarStyle: CalendarStyle(
+                        defaultTextStyle: const TextStyle(color: Colors.black), // لون النص الأساسي
+                        weekendTextStyle: const TextStyle(color: Colors.red), // لون نص عطلة نهاية الأسبوع
+                        selectedTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // لون النص عند التحديد
+                        todayTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // لون اليوم الحالي
                         selectedDecoration: const BoxDecoration(
-                          color: Color(0xFF0BDCDC),
+                          color: Color(0xFF0BDCDC), // لون خلفية اليوم المحدد
                           shape: BoxShape.circle,
                         ),
                         todayDecoration: BoxDecoration(
-                          color: const Color(0xFF0BDCDC).withOpacity(0.5),
+                          color: const Color(0xFF0BDCDC).withOpacity(0.3), // لون اليوم الحالي
                           shape: BoxShape.circle,
                         ),
-                        weekendTextStyle: const TextStyle(color: Colors.red),
-                        outsideDaysVisible: false,
+                        outsideDaysVisible: false, // إخفاء الأيام خارج الشهر
                       ),
                       headerStyle: const HeaderStyle(
                         formatButtonVisible: false,
                         titleCentered: true,
+                        titleTextStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+
+
+
 
                     // 🔹 Display Selected Date Info
                     const SizedBox(height: 20),

@@ -4,6 +4,7 @@ import 'package:health_care_app/features/signup/presentation/widgets/signup_widg
 import 'package:flutter/material.dart';
 import '../../../../core/global/custom_text_filed/custom_text_field.dart';
 import '../../../all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
+import '../../../appointment_details/presentation/widgets/all_appointment_details_widget.dart';
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
 import '../../../forget_password/presentation/widgets/forget_password_screen.dart';
 
@@ -180,6 +181,17 @@ class _LoginViewState extends State<LoginView> {
                                   const PasswordManagerScreen()));
                     },
                     child: const Text("Password Manager"),
+                  ),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const AppointmentDetails()));
+                    },
+                    child: const Text("AppointmentDetails"),
                   ),
                 ],
               ),
