@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_care_app/features/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -111,9 +112,28 @@ class _SignupViewState extends State<SignupView> {
                               borderRadius: BorderRadius.circular(25),
                             ),
                           ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // تنفيذ عملية التسجيل
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate())  {
+                              try  {
+                                final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginScreen()),
+                                );
+
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'weak-password') {
+                                  showErrorDialog(context, 'The password provided is too weak.');
+                                } else if (e.code == 'email-already-in-use') {
+                                  showErrorDialog(context, 'The account already exists for that email.');
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
                             }
                           },
                           child: const Text(
@@ -156,4 +176,23 @@ class _SignupViewState extends State<SignupView> {
       ),
     );
   }
+}
+
+
+void showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Error'),
+      content: Text(message,style:TextStyle(color: Colors.black) ,textAlign: TextAlign.center,),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الـ Dialog
+          },
+          child: Text('OK'),
+        ),
+      ],
+    ),
+  );
 }
