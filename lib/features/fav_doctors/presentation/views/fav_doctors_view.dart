@@ -8,43 +8,47 @@ class FavDoctors extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // App Bar
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: const Color(0xFF0BDCDC),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const Text(
-                    'Favorite Doctors',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return Theme(
+      data: ThemeData(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              // App Bar
+              Container(
+                padding: const EdgeInsets.all(16),
+                color: const Color(0xFF0BDCDC),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                  ),
-                ],
+                    const Text(
+                      'Favorite Doctors',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // Doctors List
-            Expanded(
-              child: ListView.builder(
-                itemCount: favoriteDoctors.length,
-                itemBuilder: (context, index) {
-                  final doctor = favoriteDoctors[index];
-                  return _buildDoctorCard(doctor.name, doctor.specialty, doctor.imageUrl);
-                },
+              // Doctors List
+              Expanded(
+                child: ListView.builder(
+                  itemCount: favoriteDoctors.length,
+                  itemBuilder: (context, index) {
+                    final doctor = favoriteDoctors[index];
+                    return _buildDoctorCard(
+                        doctor.name, doctor.specialty, doctor.imageUrl);
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

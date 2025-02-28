@@ -1,5 +1,5 @@
 import 'package:health_care_app/config/routes/routes.dart';
-import 'package:health_care_app/features/password_manager/presentation/view/password_manager_view.dart';
+import 'package:health_care_app/features/app%20settings/presentation/screens/password_manager_view.dart';
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/global/custom_text_filed/custom_text_field.dart';

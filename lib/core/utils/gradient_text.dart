@@ -20,12 +20,16 @@ class GradientBackground {
   //gradient icon
   static gradientIcon(IconData icon) {
     return ShaderMask(
-        // Gradient title
-        shaderCallback: (bounds) => LinearGradient(
-              colors: [AppColors.gradientColor1, AppColors.gradientColor2],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-        child: Icon(icon, color: Colors.white));
+      // Gradient title
+      shaderCallback: (bounds) => LinearGradient(
+        colors: [AppColors.gradientColor1, AppColors.gradientColor2],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+      child: Icon(
+        icon,
+        color: Colors.white,
+      ),
+    );
   }
 }

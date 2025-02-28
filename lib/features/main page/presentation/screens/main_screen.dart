@@ -1,7 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
@@ -63,7 +62,8 @@ class _MainScreenState extends State<MainScreen> {
                     child: IconButton(
                       icon: const Icon(Icons.notifications_none),
                       onPressed: () {
-                        // Handle notification icon press
+                        Navigator.pushNamed(
+                            context, Routes.notificationsScreen);
                       },
                     ),
                   ),
@@ -132,7 +132,8 @@ class _MainScreenState extends State<MainScreen> {
                   // favorite icon
                   InkWell(
                     onTap: () {
-                      // Handle favorite icon press
+                      Navigator.pushNamed(context, Routes.favDoctors);
+                      // !Handle favorite icon press later with database values
                     },
                     child: Column(
                       children: [
@@ -145,7 +146,7 @@ class _MainScreenState extends State<MainScreen> {
                   // doctors icon
                   InkWell(
                     onTap: () {
-                      // Handle doctors icon press
+                      Navigator.pushNamed(context, Routes.allDoctors);
                     },
                     child: Column(
                       children: [
@@ -192,7 +193,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Upcoming Appointments",
+                          Text("Your Appointments",
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(
                             width: 20,
@@ -248,8 +249,11 @@ class _MainScreenState extends State<MainScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              //---see all appointments button
                               TextButton(
                                 onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.allAppointmentsScreen);
                                   // Handle see all appointments button press
                                 },
                                 child: const Text(
