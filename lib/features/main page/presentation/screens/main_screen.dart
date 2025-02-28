@@ -253,7 +253,7 @@ class _MainScreenState extends State<MainScreen> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.pushNamed(
-                                      context, Routes.allAppointmentsScreen);
+                                      context, Routes.allAppointments);
                                   // Handle see all appointments button press
                                 },
                                 child: const Text(

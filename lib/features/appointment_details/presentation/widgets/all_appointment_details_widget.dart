@@ -6,8 +6,8 @@ class AppointmentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const AppointmentDetailsScreen(),
+    return const Scaffold(
+      body: AppointmentDetailsScreen(),
     );
   }
 }

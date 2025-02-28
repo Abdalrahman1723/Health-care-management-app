@@ -153,7 +153,7 @@ class UpcomingAppointmentsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: Color(0xFF0BDCDC), // لون الحواف
+                      color: const Color(0xFF0BDCDC), // لون الحواف
                     ),
                   ),
                   child: const Center( // محاذاة النص في المنتصف

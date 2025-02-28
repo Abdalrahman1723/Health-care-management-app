@@ -1,8 +1,6 @@
-
 import 'package:health_care_app/features/add_review/presentation/screens/add_review_screen.dart';
-import 'package:health_care_app/features/all_appointments/presentation/views/all_appointment_view.dart';
 import 'package:health_care_app/features/notifications/presentation/screens/notifications_screen.dart';
-
+import '../../features/all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
 import '../../features/app%20settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/features/app%20settings/presentation/screens/settings_screen.dart';
 import 'package:health_care_app/features/doctors/presentation/widgets/doctors_widget.dart';
@@ -18,8 +16,8 @@ import '../../features/personal profile/presentation/screens/user_profile_screen
 import 'package:go_router/go_router.dart';
 
 class Routes {
-  // static const String welcome = "/"; //initial route
-  static const String mainScreen = '/';
+  static const String welcome = "/"; //initial route
+  static const String mainScreen = '/MainScreen';
   static const String specializationsScreen = '/SpecializationsScreen';
   static const String userProfileScreen = '/UserProfileScreen';
   static const String settingsScreen = '/SettingsScreen';
@@ -32,13 +30,13 @@ class Routes {
   static const String passwordManager = "/PasswordManagerScreen";
   static const String allDoctors = "/DoctorsScreen";
   static const String favDoctors = "/FavDoctors";
-  static const String notificationsScreen= "/NotificationsScreen";
-  static const String addReviewScreen= "/AddReviewScreen";
-  static const String allAppointmentsScreen= "/AllAppointmentsScreen";
+  static const String notificationsScreen = "/NotificationsScreen";
+  static const String addReviewScreen = "/AddReviewScreen";
+  static const String allAppointments = "/AllAppointments";
 }
 
 final routes = {
-  // Routes.welcome: (context) => const WelcomeScreen(),
+  Routes.welcome: (context) => const WelcomeScreen(),
   Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),
@@ -51,11 +49,10 @@ final routes = {
   Routes.signup: (context) => const SignUpScreen(),
   Routes.passwordManager: (context) => const PasswordManagerScreen(),
   Routes.allDoctors: (context) => const DoctorsScreen(),
-  // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors 
+  // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
-  Routes.allAppointmentsScreen: (context) => const AllAppointmentsScreen(),
-
+  Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
 };
 
 //---------------------------helana

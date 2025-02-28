@@ -53,34 +53,34 @@ class AppointmentDetailsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
                             // Doctor Image
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 30,
                               backgroundImage: AssetImage("lib/core/assets/images/download.jpg"),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: 16),
                             // Doctor Info
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Dr. Emma Hall, M.D.',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     'Helana Emad',
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 20,
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8),
                                 ],
                               ),
                             ),

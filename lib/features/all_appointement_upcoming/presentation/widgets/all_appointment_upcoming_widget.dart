@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../views/all_appointment_upcoming_view.dart';
-import '../views/all_appointment_upcoming_view.dart';
 
 class AllAppointments extends StatelessWidget {
   const AllAppointments({super.key});
@@ -18,7 +17,6 @@ class AllAppointments extends StatelessWidget {
         ),
         body: const UpcomingAppointmentsScreen(),
       ),
-      body: const UpcomingAppointmentsScreen(),
     );
   }
 }
