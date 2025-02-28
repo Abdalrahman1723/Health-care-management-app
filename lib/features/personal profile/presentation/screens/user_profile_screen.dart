@@ -99,7 +99,10 @@ class UserProfileScreen extends StatelessWidget {
                     GradientBackground.gradientIcon(Icons.arrow_forward_ios),
                 title: const Text("Favorite"),
                 subtitle: const Text("your favorite doctors"),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.favDoctors);
+                  // !Handle favorite icon press later with database values
+                },
               ),
               const SizedBox(height: 10),
               //the user settings

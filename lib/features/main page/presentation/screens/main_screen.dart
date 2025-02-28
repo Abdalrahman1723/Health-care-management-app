@@ -132,7 +132,8 @@ class _MainScreenState extends State<MainScreen> {
                   // favorite icon
                   InkWell(
                     onTap: () {
-                      // Handle favorite icon press
+                      Navigator.pushNamed(context, Routes.favDoctors);
+                      // !Handle favorite icon press later with database values
                     },
                     child: Column(
                       children: [
@@ -248,8 +249,11 @@ class _MainScreenState extends State<MainScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              //---see all appointments button
                               TextButton(
                                 onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.allAppointmentsScreen);
                                   // Handle see all appointments button press
                                 },
                                 child: const Text(

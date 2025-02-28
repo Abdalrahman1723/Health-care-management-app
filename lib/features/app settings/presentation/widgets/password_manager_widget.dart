@@ -7,7 +7,7 @@ class PasswordManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF0BDCDC),
+        backgroundColor: const Color(0xFF0BDCDC),
         title: const Text(
           'Log In',
           style: TextStyle(
@@ -20,7 +20,7 @@ class PasswordManagerScreen extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      body: PasswordManagerScreen(),
+      body: const PasswordManagerScreen(),
     );
   }
 }

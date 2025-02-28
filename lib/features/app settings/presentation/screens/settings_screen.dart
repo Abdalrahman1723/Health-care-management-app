@@ -45,6 +45,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          //----notification settings
           ListTile(
             leading: iconContainer(Icons.notifications_none),
             trailing: GradientBackground.gradientIcon(Icons.arrow_forward_ios),
@@ -53,6 +54,7 @@ class SettingsScreen extends StatelessWidget {
               Navigator.pushNamed(context, Routes.notificationSettingsScreen);
             },
           ),
+          //----password manager
           ListTile(
             leading: iconContainer(Icons.key_outlined),
             trailing: GradientBackground.gradientIcon(Icons.arrow_forward_ios),
@@ -61,6 +63,7 @@ class SettingsScreen extends StatelessWidget {
               Navigator.pushNamed(context, Routes.passwordManager);
             },
           ),
+          //----delete account
           ListTile(
             leading: iconContainer(Icons.person_outline),
             trailing: GradientBackground.gradientIcon(Icons.arrow_forward_ios),
