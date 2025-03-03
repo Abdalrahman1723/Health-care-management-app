@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/features/app%20settings/presentation/screens/password_manager_view.dart';
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
@@ -111,13 +112,26 @@ class _LoginViewState extends State<LoginView> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // تنفيذ عملية تسجيل الدخول
-                            Navigator.pushNamed(context, Routes.mainScreen);
-                            // context.go(AppRoute.mainScreen);
+                            try {
+                              final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+                              Navigator.pushNamed(context, Routes.mainScreen);
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'user-not-found') {
+                                showErrorDialog(context, 'No user found for that email.');
+                              } else if (e.code == 'wrong-password') {
+                                showErrorDialog(context, 'Wrong password provided for that user.');
+                              } else {
+                                showErrorDialog(context, 'Email or password is incorrect.');
+                              }
+                            }
                           }
                         },
+
                         child: const Text(
                           "Log In",
                           style: TextStyle(fontSize: 25, color: Colors.white),
@@ -201,4 +215,23 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+
+void showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(message,style:const TextStyle(color: Colors.black) ,textAlign: TextAlign.center,),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الـ Dialog
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
 }
