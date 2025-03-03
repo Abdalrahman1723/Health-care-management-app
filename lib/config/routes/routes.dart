@@ -12,6 +12,7 @@ import 'package:health_care_app/features/signup/presentation/widgets/signup_widg
 import 'package:health_care_app/features/specializations/presentation/screens/specializations_screen.dart';
 import 'package:health_care_app/features/welcome/welcome.dart';
 import '../../features/app settings/presentation/screens/password_manager_view.dart';
+import '../../features/appointment_details/presentation/views/all_appointment_details_view.dart';
 import '../../features/personal profile/presentation/screens/user_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,6 +34,7 @@ class Routes {
   static const String notificationsScreen = "/NotificationsScreen";
   static const String addReviewScreen = "/AddReviewScreen";
   static const String allAppointments = "/AllAppointments";
+  static const String appointmentDetailsScreen = "/AppointmentDetailsScreen";
 }
 
 final routes = {
@@ -53,6 +55,7 @@ final routes = {
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
+  Routes.appointmentDetailsScreen: (context) => const AppointmentDetailsScreen(),
 };
 
 //---------------------------helana

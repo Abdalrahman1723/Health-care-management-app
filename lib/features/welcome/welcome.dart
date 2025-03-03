@@ -9,7 +9,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
@@ -57,7 +58,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(const Duration(seconds: 5), () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginAndSignupScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const LoginAndSignupScreen()));
         });
       }
     });
@@ -109,11 +113,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                             );
                           },
                         ),
-                        const Icon(
-                          Icons.add,
-                          size: 40,
-                          color: Colors.cyanAccent,
-                        ),
+                        // const Icon(
+                        //   Icons.add,
+                        //   size: 40,
+                        //   color: Colors.cyanAccent,
+                        // ),
                       ],
                     ),
                   ),

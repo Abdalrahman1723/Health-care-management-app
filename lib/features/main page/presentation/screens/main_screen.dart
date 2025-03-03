@@ -275,10 +275,16 @@ class _MainScreenState extends State<MainScreen> {
 
                           //appointment 1
 
-                          appointmentDetails(
-                              doctorName: 'Ahmed Essam',
-                              selectedDate: _selectedDate,
-                              context: context),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, Routes.appointmentDetailsScreen);
+                            },
+                            child: appointmentDetails(
+                                doctorName: 'Ahmed Essam',
+                                selectedDate: _selectedDate,
+                                context: context),
+                          ),
 
                           //appointment 2
                           const Divider(
@@ -287,10 +293,14 @@ class _MainScreenState extends State<MainScreen> {
                             color: Colors.white,
                             thickness: 1,
                           ),
-                          appointmentDetails(
-                              doctorName: 'Helana Emad',
-                              selectedDate: _selectedDate,
-                              context: context),
+                          InkWell(
+                            onTap: () => Navigator.pushNamed(
+                                context, Routes.appointmentDetailsScreen),
+                            child: appointmentDetails(
+                                doctorName: 'Helana Emad',
+                                selectedDate: _selectedDate,
+                                context: context),
+                          ),
                         ],
                       ),
                     ),
