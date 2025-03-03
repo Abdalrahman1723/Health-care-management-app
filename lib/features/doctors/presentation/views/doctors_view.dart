@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../Info/presentation/widgets/doctors_info_widget.dart';
+import '../../../appointment/presentation/widgets/doctors_appointment_widget.dart';
 import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
+import '../../../info/preentation/widget/doctors_profile_widget.dart';
 
 class DoctorsView extends StatefulWidget {
   const DoctorsView({super.key});
@@ -183,10 +184,12 @@ class _DoctorCardState extends State<DoctorCard> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const DoctorsInfoWidget()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                              DoctorsProfileWidget(),
+                            ),
+                          );
                         },
                         child: const Text(
                           'Info',
@@ -217,7 +220,12 @@ class _DoctorCardState extends State<DoctorCard> {
                     ],
                   ),
                   ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const DoctorsAppointmentWidget()));},
                       child: const Text(
                         'Make Appointment',
                         style: TextStyle(

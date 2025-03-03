@@ -3,14 +3,14 @@
 import 'package:flutter/material.dart';
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
 
-class DoctorsInfo extends StatefulWidget {
-  const DoctorsInfo({Key? key}) : super(key: key);
+class DoctorsAppointment extends StatefulWidget {
+  const DoctorsAppointment({Key? key}) : super(key: key);
 
   @override
-  _DoctorsInfoState createState() => _DoctorsInfoState();
+  _DoctorsAppointmentState createState() => _DoctorsAppointmentState();
 }
 
-class _DoctorsInfoState extends State<DoctorsInfo> {
+class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   int _selectedDayIndex = 2; // Default to Wednesday (index 2)
   String? _selectedTimeSlot;
   String _selectedPatientType = 'Yourself';

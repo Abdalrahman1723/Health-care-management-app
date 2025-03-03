@@ -169,7 +169,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () => showCancelDialog(
-                                    context), // استدعاء الدالة عند الضغط
+                                    context),
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0BDCDC),
                                   shape: RoundedRectangleBorder(
@@ -231,7 +231,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
     );
   }
 
-  // دالة عرض النافذة المنبثقة عند الضغط على "Cancel"
+
   void showCancelDialog(BuildContext context) {
     showDialog(
       context: context,
