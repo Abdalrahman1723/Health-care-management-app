@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_care_app/config/routes/routes.dart';
-import 'package:health_care_app/features/app%20settings/presentation/screens/password_manager_view.dart';
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/global/custom_text_filed/custom_text_field.dart';
-import '../../../all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
-import '../../../appointment_details/presentation/widgets/all_appointment_details_widget.dart';
-import '../../../doctors/presentation/widgets/doctors_widget.dart';
 import '../../../forget_password/presentation/widgets/forget_password_screen.dart';
 
 class LoginView extends StatefulWidget {
@@ -115,23 +111,26 @@ class _LoginViewState extends State<LoginView> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             try {
-                              final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                              final credential = await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
                               Navigator.pushNamed(context, Routes.mainScreen);
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'user-not-found') {
-                                showErrorDialog(context, 'No user found for that email.');
+                                showErrorDialog(
+                                    context, 'No user found for that email.');
                               } else if (e.code == 'wrong-password') {
-                                showErrorDialog(context, 'Wrong password provided for that user.');
+                                showErrorDialog(context,
+                                    'Wrong password provided for that user.');
                               } else {
-                                showErrorDialog(context, 'Email or password is incorrect.');
+                                showErrorDialog(
+                                    context, 'Email or password is incorrect.');
                               }
                             }
                           }
                         },
-
                         child: const Text(
                           "Log In",
                           style: TextStyle(fontSize: 25, color: Colors.white),
@@ -165,49 +164,48 @@ class _LoginViewState extends State<LoginView> {
                   ),
 
                   // Navigation to Other Screens
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const DoctorsScreen()));
-                    },
-                    child: const Text("Doctors"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const DoctorsScreen()));
+                  //   },
+                  //   child: const Text("Doctors"),
+                  // ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const CompleteAppointmentsScreen()));
-                    },
-                    child: const Text("AllAppointments"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) =>
+                  //                 const CompleteAppointmentsScreen()));
+                  //   },
+                  //   child: const Text("AllAppointments"),
+                  // ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const PasswordManagerScreen()));
-                    },
-                    child: const Text("Password Manager"),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) =>
+                  //                 const PasswordManagerScreen()));
+                  //   },
+                  //   child: const Text("Password Manager"),
+                  // ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                              const AppointmentDetails()));
-                    },
-                    child: const Text("AppointmentDetails"),
-                  ),
-                
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) =>
+                  //             const AppointmentDetails()));
+                  //   },
+                  //   child: const Text("AppointmentDetails"),
+                  // ),
                 ],
               ),
             ),
@@ -218,13 +216,16 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-
 void showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Error'),
-      content: Text(message,style:const TextStyle(color: Colors.black) ,textAlign: TextAlign.center,),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
       actions: [
         TextButton(
           onPressed: () {

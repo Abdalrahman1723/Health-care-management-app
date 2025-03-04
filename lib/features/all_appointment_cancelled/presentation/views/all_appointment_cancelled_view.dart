@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../config/routes/routes.dart';
+
 class CancelledAppointmentsScreen extends StatelessWidget {
   const CancelledAppointmentsScreen({Key? key}) : super(key: key);
 
@@ -10,28 +12,26 @@ class CancelledAppointmentsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-
-
             // Cancelled Appointments List
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
                   _buildCancelledAppointmentCard(
-                    'Dr. Sarah Johnson, M.D.',
-                    'Neurologist',
-                    'Monday, 10 June',
-                    '11:30 AM - 12:00 PM',
-                    'lib/core/assets/images/download.jpg',
-                  ),
+                      'Dr. Sarah Johnson, M.D.',
+                      'Neurologist',
+                      'Monday, 10 June',
+                      '11:30 AM - 12:00 PM',
+                      'lib/core/assets/images/download.jpg',
+                      context),
                   const SizedBox(height: 16),
                   _buildCancelledAppointmentCard(
-                    'Dr. Michael Brown, Ph.D.',
-                    'Psychiatrist',
-                    'Wednesday, 12 June',
-                    '2:00 PM - 2:30 PM',
-                    'lib/core/assets/images/download.jpg',
-                  ),
+                      'Dr. Michael Brown, Ph.D.',
+                      'Psychiatrist',
+                      'Wednesday, 12 June',
+                      '2:00 PM - 2:30 PM',
+                      'lib/core/assets/images/download.jpg',
+                      context),
                 ],
               ),
             ),
@@ -42,12 +42,14 @@ class CancelledAppointmentsScreen extends StatelessWidget {
   }
 
   Widget _buildCancelledAppointmentCard(
-      String name,
-      String specialty,
-      String date,
-      String time,
-      String imagePath,
-      ) {
+    String name,
+    String specialty,
+    String date,
+    String time,
+    String imagePath,
+    BuildContext
+        context, //added context to enable navigation to add review screen
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -95,7 +97,6 @@ class CancelledAppointmentsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -103,15 +104,19 @@ class CancelledAppointmentsScreen extends StatelessWidget {
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(25),
             ),
-            child: const Text(
-              'Add Review',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, Routes.addReviewScreen);
+                },
+                child: const Text(
+                  'Add Review',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
           ),
         ],
       ),

@@ -60,8 +60,8 @@ class DoctorProfileScreen extends StatelessWidget {
                                     color: Colors.white.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Row(
-                                    children: const [
+                                  child: const Row(
+                                    children: [
                                       Icon(Icons.star, color: Colors.white, size: 16),
                                       SizedBox(width: 4),
                                       Text(
@@ -110,8 +110,8 @@ class DoctorProfileScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.grey.shade200),
                       ),
-                      child: Row(
-                        children: const [
+                      child: const Row(
+                        children: [
                           Icon(Icons.work, color: Color(0xFF0BDCDC)),
                           SizedBox(width: 8),
                           Text(
@@ -138,9 +138,9 @@ class DoctorProfileScreen extends StatelessWidget {
                   color: Colors.blue.shade50.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Focus:',
                       style: TextStyle(
@@ -159,14 +159,14 @@ class DoctorProfileScreen extends StatelessWidget {
             ),
 
             // Content Sections
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Profile Section
-                    const Text(
+                    Text(
                       'Profile',
                       style: TextStyle(
                         fontSize: 16,
@@ -174,15 +174,15 @@ class DoctorProfileScreen extends StatelessWidget {
                         color: Color(0xFF0BDCDC),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
                     // Career Path Section
-                    const Text(
+                    Text(
                       'Career Path',
                       style: TextStyle(
                         fontSize: 16,
@@ -190,15 +190,15 @@ class DoctorProfileScreen extends StatelessWidget {
                         color: Color(0xFF0BDCDC),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
                     // Highlights Section
-                    const Text(
+                    Text(
                       'Highlights',
                       style: TextStyle(
                         fontSize: 16,
@@ -206,8 +206,8 @@ class DoctorProfileScreen extends StatelessWidget {
                         color: Color(0xFF0BDCDC),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),

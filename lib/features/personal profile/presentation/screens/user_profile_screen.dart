@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
@@ -8,6 +9,15 @@ import '../widgets/icon_container.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
+  //variable for firebase auth
+  //logout function
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    if (context.mounted) {
+      // ✅ Check if the widget is still in the tree
+      Navigator.pushNamed(context, Routes.loginAndSignup);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +131,7 @@ class UserProfileScreen extends StatelessWidget {
               ListTile(
                 leading: iconContainer(Icons.logout_outlined),
                 title: const Text("Logout"),
-                onTap: () {},
+                onTap: () => _logout(context),
               ),
               const SizedBox(height: 10),
             ],

@@ -187,7 +187,7 @@ class _DoctorCardState extends State<DoctorCard> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                              DoctorsProfileWidget(),
+                              const DoctorsProfileWidget(),
                             ),
                           );
                         },

@@ -55,7 +55,8 @@ final routes = {
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
-  Routes.appointmentDetailsScreen: (context) => const AppointmentDetailsScreen(),
+  Routes.appointmentDetailsScreen: (context) =>
+      const AppointmentDetailsScreen(),
 };
 
 //---------------------------helana
@@ -80,20 +81,17 @@ class AppRoute {
       ),
       GoRoute(
         path: loginAndSignup,
-        builder: (context, state) =>
-            const LoginAndSignupScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+        builder: (context, state) => const LoginAndSignupScreen(),
       ),
 
       GoRoute(
         path: signup,
-        builder: (context, state) =>
-            const SignUpScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+        builder: (context, state) => const SignUpScreen(),
       ),
 
       GoRoute(
         path: login,
-        builder: (context, state) =>
-            const LoginScreen(), // هنا يتم تعريف صفحة تسجيل الدخول
+        builder: (context, state) => const LoginScreen(),
       ),
       // Main Screens
       GoRoute(
