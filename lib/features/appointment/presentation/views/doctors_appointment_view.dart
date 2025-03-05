@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_brace_in_string_interps, unused_field
 
+import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:flutter/material.dart';
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
 
@@ -11,10 +12,12 @@ class DoctorsAppointment extends StatefulWidget {
 }
 
 class _DoctorsAppointmentState extends State<DoctorsAppointment> {
+
   int _selectedDayIndex = 2; // Default to Wednesday (index 2)
   String? _selectedTimeSlot;
   String _selectedPatientType = 'Yourself';
   String _selectedGender = 'Male';
+  DateTime _selectedDate = DateTime.now();
 
   // Static list to track booked appointments across instances
   static List<String> bookedTimeSlots = [];
@@ -44,8 +47,17 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    void _updateDate(DateTime newDate) {
+      setState(() {
+        _selectedDate = newDate;
+      });
+
+    }
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,6 +81,12 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                         ),
                         child: Row(
                           children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back, color: Colors.white),
+                              onPressed: () {
+                                Navigator.pop(context); // Navigate back to the previous screen
+                              },
+                            ),
                             const CircleAvatar(
                               radius: 40,
                               backgroundImage: AssetImage('lib/core/assets/images/download.jpg'),
@@ -119,12 +137,29 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                                     ),
                                   ],
                                 ),
+
+
                               ],
                             ),
                           ],
                         ),
                       ),
                     ],
+                  ),
+                  Container(
+
+                    child: CalendarDaySlotNavigator(
+                      isGoogleFont: false,
+                      slotLength: 6,
+                      dayBoxHeightAspectRatio: 4,
+                      dayDisplayMode: DayDisplayMode.outsideDateBox,
+                      headerText: "Select Date",
+                      onDateSelect: (selectedDate) {
+                        _updateDate(selectedDate);
+                        // print("Selected date: $selectedDate");  //default
+                        //?here should send the selected date to the backend
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -198,12 +233,12 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                             textColor = Colors.white;
                           } else if (isSelected) {
                             // Selected slot
-                            backgroundColor = const Color(0xFF0BDCDC);
+                            backgroundColor = const Color(0xffb644ae);
                             textColor = Colors.white;
                           } else {
                             // Regular slots
                             backgroundColor = Colors.transparent;
-                            textColor = const Color(0xFF0BDCDC);
+                            textColor = const Color(0xffb644ae);
                           }
 
                           return GestureDetector(

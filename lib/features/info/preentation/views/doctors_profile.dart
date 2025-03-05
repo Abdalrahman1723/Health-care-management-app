@@ -19,7 +19,15 @@ class DoctorProfileScreen extends StatelessWidget {
 
                   // Doctor Info
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+
                     children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () {
+                          Navigator.pop(context); // Navigate back to the previous screen
+                        },
+                      ),
                       // Doctor Image
                       const CircleAvatar(
                         radius: 40,
