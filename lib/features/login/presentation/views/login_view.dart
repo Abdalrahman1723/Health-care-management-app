@@ -3,6 +3,7 @@ import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/features/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/global/custom_text_filed/custom_text_field.dart';
+import '../../../doctor_home/presentation/widgets/doctor_home_widget.dart';
 import '../../../forget_password/presentation/widgets/forget_password_screen.dart';
 
 class LoginView extends StatefulWidget {
@@ -116,7 +117,12 @@ class _LoginViewState extends State<LoginView> {
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
-                              Navigator.pushNamed(context, Routes.mainScreen);
+                              if (_emailController.text == 'doctor@gmail.com' &&
+                                  _passwordController.text == '123456') {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorHomeWidget()));// Replace 'doctor_home' with your actual route name
+                              } else {
+                                Navigator.pushNamed(context, Routes.mainScreen); // Navigate to main screen for other users
+                              }
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'user-not-found') {
                                 showErrorDialog(

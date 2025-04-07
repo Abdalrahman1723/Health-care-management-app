@@ -35,6 +35,7 @@ class Routes {
   static const String addReviewScreen = "/AddReviewScreen";
   static const String allAppointments = "/AllAppointments";
   static const String appointmentDetailsScreen = "/AppointmentDetailsScreen";
+
 }
 
 final routes = {
