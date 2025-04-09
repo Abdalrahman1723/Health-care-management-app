@@ -6,8 +6,8 @@ class DoctorHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const DoctorHomeView(),
+    return const Scaffold(
+      body: DoctorHomeView(),
     );
   }
 }

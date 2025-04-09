@@ -31,9 +31,8 @@ class PatientDetailsInDoctorScreen extends StatelessWidget {
               ),
             ),
 
-
             // Patient Name
-             Padding(
+            const Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
@@ -109,9 +108,10 @@ class PatientDetailsInDoctorScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Row(
-                            children: const [
-                              Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          const Row(
+                            children: [
+                              Icon(Icons.access_time,
+                                  size: 16, color: Colors.grey),
                               SizedBox(width: 4),
                               Text(
                                 'Hourly Rate: \$25.00',
@@ -129,8 +129,6 @@ class PatientDetailsInDoctorScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-
           ],
         ),
       ),

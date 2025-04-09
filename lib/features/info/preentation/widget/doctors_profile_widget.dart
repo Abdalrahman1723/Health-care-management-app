@@ -8,8 +8,8 @@ class DoctorsProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(),
-      child: Scaffold(
-        body: const DoctorProfileScreen(),
+      child: const Scaffold(
+        body: DoctorProfileScreen(),
       ),
     );
   }

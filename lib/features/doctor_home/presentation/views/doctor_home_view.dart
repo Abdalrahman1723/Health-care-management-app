@@ -18,8 +18,8 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
 
   // List of Screens
   final List<Widget> _pages = [
-    DoctorHomeContent(), // Home Screen
-    DoctorDatesWidget(), // Availability Screen
+    const DoctorHomeContent(), // Home Screen
+    const DoctorDatesWidget(), // Availability Screen
   ];
 
   void onTabTapped(int index) {
@@ -80,10 +80,10 @@ class DoctorHomeContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
+              const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Welcome Back',
                       style: TextStyle(
@@ -123,11 +123,11 @@ class DoctorHomeContent extends StatelessWidget {
             child: Column(
               children: [
                 // Upcoming Appointments Section
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
                         'Upcoming appointments',
                         style: TextStyle(
@@ -148,7 +148,7 @@ class DoctorHomeContent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => PatientDetailsInDoctorWidget()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientDetailsInDoctorWidget()));
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -171,7 +171,7 @@ class DoctorHomeContent extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     'Psychologist | Mercy Hospital Patient',
                                     style: TextStyle(
                                       color: Colors.black,

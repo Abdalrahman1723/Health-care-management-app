@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_care_app/app.dart';
 import 'package:health_care_app/firebase_options.dart';
 
-void main() async {
+void main() async { 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform, // This must not be null
