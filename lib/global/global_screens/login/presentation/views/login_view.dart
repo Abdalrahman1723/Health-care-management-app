@@ -3,7 +3,7 @@ import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
-import '../../../../../doctor_module/doctor_home/presentation/widgets/doctor_home_widget.dart';
+import '../../../../../doctor_module/features/doctor_home/presentation/widgets/doctor_home_widget.dart';
 import '../../../../../patient_features/forget_password/presentation/widgets/forget_password_screen.dart';
 
 class LoginView extends StatefulWidget {

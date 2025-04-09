@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../doctors_appointment/presentation/views/doctors_appointement_avaliablity_view.dart';
 import '../views/patient_details_in_doctor_view.dart';
 
 class PatientDetailsInDoctorWidget extends StatelessWidget {

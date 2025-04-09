@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../../../patient_features/appointment/presentation/views/doctors_appointment_view.dart';
+import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_appointment/presentation/widget/doctors_appointement_avaliablity_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
 import '../../../doctors_notification/presentation/widgets/doctors_notification_widget.dart';
-import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 
 class DoctorHomeView extends StatefulWidget {
   const DoctorHomeView({Key? key}) : super(key: key);
@@ -103,15 +101,24 @@ class DoctorHomeContent extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.notifications_none, size: 27, color: Color(0xFF0BDCDC)),
+                icon: const Icon(Icons.notifications_none,
+                    size: 27, color: Color(0xFF0BDCDC)),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorsNotification()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DoctorsNotification()));
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.fact_check, size: 27, color: Color(0xFF0BDCDC)),
+                icon: const Icon(Icons.fact_check,
+                    size: 27, color: Color(0xFF0BDCDC)),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorsAppointmentScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const DoctorsAppointmentScreen()));
                 },
               ),
             ],
@@ -148,10 +155,15 @@ class DoctorHomeContent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientDetailsInDoctorWidget()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const PatientDetailsInDoctorWidget()));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         child: Row(
                           children: [
                             const CircleAvatar(
