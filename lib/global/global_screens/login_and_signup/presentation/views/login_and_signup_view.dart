@@ -55,8 +55,7 @@ class LoginAndSignupScreen extends StatelessWidget {
 
               // Description Text
               Text(
-                "Healthcare is a fundamental necessity for every nation. Access to proper medical services ensures well-being and prevents major health issues."
-                ,
+                "Healthcare is a fundamental necessity for every nation. Access to proper medical services ensures well-being and prevents major health issues.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey[600],
@@ -72,7 +71,10 @@ class LoginAndSignupScreen extends StatelessWidget {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
@@ -99,7 +101,10 @@ class LoginAndSignupScreen extends StatelessWidget {
                 height: 56,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignUpScreen()));
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF0BDCDC),

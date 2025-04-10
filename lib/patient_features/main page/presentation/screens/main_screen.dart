@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               GradientBackground.gradientText("Hi, Welcome back!"),
               const Text(
-                'Abdalrahman', //later will be replaced with the user name
+                'Abdalrahman', //!later will be replaced with the user name
                 style: TextStyle(color: Colors.black),
               ),
             ],

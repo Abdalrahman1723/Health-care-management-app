@@ -1,3 +1,4 @@
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import '../../patient_features/all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
@@ -39,7 +40,8 @@ class Routes {
 }
 
 final routes = {
-  Routes.welcome: (context) => const WelcomeScreen(),
+  // Routes.welcome: (context) => const WelcomeScreen(),
+  Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
   Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),

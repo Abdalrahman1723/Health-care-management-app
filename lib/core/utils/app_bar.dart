@@ -14,7 +14,7 @@ AppBar myAppBar({required BuildContext context, required String title}) {
         color: Colors.white,
       ),
     ),
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading: false, //to remove the default back button
     flexibleSpace: Container(
       padding: const EdgeInsets.only(top: 12),
       // for gradient color background
