@@ -145,6 +145,7 @@ Widget appointmentDetailsSection({required BuildContext context}) {
       ],
     ),
   );
+
 }
 
 //-----------------------------------
