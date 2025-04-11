@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=C:\src\flutter
-FLUTTER_APPLICATION_PATH=F:\sana 4 materials\GP\Health Care\Health-care-management-app
+FLUTTER_ROOT=D:\Flutter\setup\flutter
+FLUTTER_APPLICATION_PATH=D:\FCAI\year four\Graduation project\github\Health-care-management-app
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0

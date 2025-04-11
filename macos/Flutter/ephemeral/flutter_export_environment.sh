@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\src\flutter"
-export "FLUTTER_APPLICATION_PATH=F:\sana 4 materials\GP\Health Care\Health-care-management-app"
+export "FLUTTER_ROOT=D:\Flutter\setup\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\FCAI\year four\Graduation project\github\Health-care-management-app"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
