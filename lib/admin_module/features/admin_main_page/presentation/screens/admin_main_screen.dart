@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/appointments_details_section.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctors_details_section.dart';
 
 class AdminMainScreen extends StatefulWidget {
   const AdminMainScreen({super.key});
@@ -22,7 +23,11 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               //----------appointment details section
-              appointmentDetailsSection(context: context)
+              appointmentDetailsSection(context: context),
+              const SizedBox(
+                height: 4,
+              ),
+              doctorDetailsSection(context: context),
             ],
           ),
         ),
