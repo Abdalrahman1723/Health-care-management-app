@@ -81,7 +81,7 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
                   width: 2,
                 ),
               ),
-              child: Column(
+              child: Column( 
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Row(

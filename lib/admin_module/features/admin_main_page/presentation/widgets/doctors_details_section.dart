@@ -132,6 +132,7 @@ Widget doctorDetailsSection({required BuildContext context}) {
       ],
     ),
   );
+
 }
 
 //-----------------------------------

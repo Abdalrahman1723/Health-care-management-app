@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_appointments_screen.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_doctors_screen.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 
 class AdminMainScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   // List of pages corresponding to each tab
   static final List<Widget> _pages = <Widget>[
     const AdminAppointmentsScreen(),
+    const AdminDoctorsScreen(),
   ];
 
   // Function to handle tab change
@@ -45,8 +47,9 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           //----------doctors tab
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
+              color: Colors.black87,
               AppIcons.generalMedicine,
-              color: Colors.black,
+              // color: Colors.black,
               height: 40,
               width: 40,
             ),
@@ -54,22 +57,6 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           ),
         ],
       ),
-      // SafeArea(
-      //   child: SingleChildScrollView(
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.start,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         //----------appointment details section
-      //         appointmentDetailsSection(context: context),
-      //         const SizedBox(
-      //           height: 4,
-      //         ),
-      //         doctorDetailsSection(context: context),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
