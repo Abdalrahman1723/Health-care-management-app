@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctor_avatar.dart';
 import 'package:health_care_app/core/utils/assets_manager.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
+import '../../../../../global/entities/time_slot.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 
 class AdminDoctorsScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class AdminDoctorsScreen extends StatefulWidget {
 }
 
 class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
+  DoctorSpecialty? selectedSpecialty; //for dropdown menu
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,6 +26,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
       width: double.infinity,
       height: double.infinity,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           //---------Header section
           children: [
@@ -33,9 +37,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                 children: [
                   Text("All Doctors",
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: 20),
                 ],
               ),
             ),
@@ -46,7 +48,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
               indent: 15,
               endIndent: 15,
             ),
-            //------------ date picker section
+            //------------ doctors info section
             const SizedBox(height: 15),
             Container(
               width: 350,
@@ -59,227 +61,139 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                 ),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  const Text("Add filters"),
+                  const SizedBox(height: 10),
+                  //----------------search bar
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      //---see all appointments button
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange),
-                        onPressed: () {
-                          //todo navigate to all appointments screen
-                          // Navigator.pushNamed(
-                          //     context, Routes.allAppointments);
-                          // Handle see all appointments button press
-                        },
-                        child: const Text(
-                          "See all",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              decoration: TextDecoration.underline),
+                      SizedBox(
+                        width: 300,
+                        child: SearchAnchor.bar(
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              //if search value is null -> show all doctors
+                              setState(() {
+                                selectedDoctor = null;
+                              });
+                            }
+                          },
+                          barHintText: "name / ID",
+                          suggestionsBuilder: searchBuilder,
                         ),
-                      ),
+                      )
                     ],
                   ),
+                  DropdownButton(
+                    dropdownColor: Colors.amber,
+                    iconEnabledColor: Colors.green,
+                    value: selectedSpecialty,
+                    items: DoctorSpecialty.values.map((specialty) {
+                      return DropdownMenuItem<DoctorSpecialty>(
+                        value: specialty,
+                        child: Text(camelCaseToNormal(specialty.name)
+                            .toString()
+                            .split('.')
+                            .last),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedSpecialty = value!;
+                        selectedDoctor = null;
+                      });
+                    },
+                  ),
                   const Divider(
                     indent: 15,
                     endIndent: 15,
                     color: Colors.white,
                     thickness: 1,
                   ),
-                  //------------ doctor information
-
-                  //doctor 1 example
-
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(
-                      //     context, Routes.appointmentDetailsScreen);
-                    },
-                    child: doctorDetails(
+                  //------------ doctors information cards
+                  //doctors list example
+                  if (selectedDoctor == null &&
+                      selectedSpecialty ==
+                          null) //no doctor selected -> show all
+                    for (var dr in doctors)
+                      InkWell(
+                        onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, Routes.appointmentDetailsScreen);
+                        },
+                        child: doctorDetails(
+                          context: context,
+                          doctor: dr,
+                        ),
+                      )
+                  else if (selectedSpecialty != null)
+                    for (var dr in doctors.where(
+                      (dr) => dr.specialty == selectedSpecialty,
+                    ))
+                      InkWell(
+                        onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, Routes.appointmentDetailsScreen);
+                        },
+                        child: doctorDetails(
+                          context: context,
+                          doctor: dr,
+                        ),
+                      )
+                  else //search result
+                    doctorDetails(
                       context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. John Doe",
-                          specialty: DoctorSpecialty.orthopedic,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageMale,
-                          availableSlots: []),
+                      doctor: selectedDoctor!,
                     ),
-                  ),
-
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
-                  //doctor 2 example
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: doctorDetails(
-                      context: context,
-                      doctor: DoctorEntity(
-                          id: '1234',
-                          name: "Dr. Sarah Smith",
-                          specialty: DoctorSpecialty.generalPractitioner,
-                          rating: 4.5,
-                          imageUrl: ImageAsset.doctorImageFemale,
-                          availableSlots: []),
-                    ),
-                  ),
                 ],
               ),
             ),
             //the end of the information section
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
           ],
         ),
       ),
     );
   }
+
+//--------------------------search builder
+  DoctorEntity? selectedDoctor;
+
+  FutureOr<Iterable<Widget>> searchBuilder(context, controller) {
+    final query = controller.text.toLowerCase().trim();
+
+    final results = doctors.where((doc) {
+      return doc.name.toLowerCase().contains(query) ||
+          doc.id.toLowerCase().contains(query);
+    }).toList();
+
+    return List<Widget>.generate(results.length, (index) {
+      final doc = results[index];
+      final isAvailable = doc.isAvailableAt(DateTime.now());
+      return ListTile(
+        leading: const Icon(Icons.person),
+        title: Text(doc.name),
+        subtitle:
+            Text('${camelCaseToNormal(doc.specialty.name)} • ⭐ ${doc.rating}'),
+        trailing: Icon(
+          isAvailable ? Icons.check_circle : Icons.cancel,
+          color: isAvailable ? Colors.green : Colors.red,
+        ),
+        onTap: () {
+          controller.closeView(doc.name);
+          setState(() {
+            selectedDoctor = doc;
+          });
+        },
+      );
+    });
+  }
 }
 
-//-----------------------------------
+//-------------------------- show doctor's card
 Widget doctorDetails({
   required BuildContext context,
   required DoctorEntity doctor,
@@ -345,3 +259,102 @@ Widget doctorDetails({
     ),
   );
 }
+
+//-----------dummy data for doctor user
+final List<DoctorEntity> doctors = [
+  DoctorEntity(
+    id: 'D1',
+    name: 'Dr. Alice Smith',
+    specialty: DoctorSpecialty.cardiologist,
+    rating: 4.8,
+    imageUrl: ImageAsset.doctorImageFemale,
+    availableSlots: [
+      TimeSlot(start: DateTime(2025, 4, 12, 9), end: DateTime(2025, 4, 12, 12)),
+      TimeSlot(
+          start: DateTime(2025, 4, 13, 14), end: DateTime(2025, 4, 13, 17)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D2',
+    name: 'Dr. Bob Johnson',
+    specialty: DoctorSpecialty.neurologist,
+    rating: 4.6,
+    imageUrl: ImageAsset.doctorImageMale,
+    availableSlots: [
+      TimeSlot(
+          start: DateTime(2025, 4, 12, 10), end: DateTime(2025, 4, 12, 13)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D3',
+    name: 'Dr. Clara Davis',
+    specialty: DoctorSpecialty.pediatrician,
+    rating: 4.9,
+    imageUrl: ImageAsset.doctorImageFemale,
+    availableSlots: [
+      TimeSlot(
+          start: DateTime(2025, 4, 15, 13), end: DateTime(2025, 4, 15, 16)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D4',
+    name: 'Dr. Michael Chen',
+    specialty: DoctorSpecialty.dermatologist,
+    rating: 4.7,
+    imageUrl: ImageAsset.doctorImageMale,
+    availableSlots: [
+      TimeSlot(start: DateTime(2025, 4, 14, 9), end: DateTime(2025, 4, 14, 12)),
+      TimeSlot(
+          start: DateTime(2025, 4, 16, 14), end: DateTime(2025, 4, 16, 17)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D5',
+    name: 'Dr. Sarah Wilson',
+    specialty: DoctorSpecialty.orthopedic,
+    rating: 4.5,
+    imageUrl: ImageAsset.doctorImageFemale,
+    availableSlots: [
+      TimeSlot(start: DateTime(2025, 4, 13, 8), end: DateTime(2025, 4, 13, 11)),
+      TimeSlot(
+          start: DateTime(2025, 4, 17, 13), end: DateTime(2025, 4, 17, 16)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D6',
+    name: 'Dr. James Brown',
+    specialty: DoctorSpecialty.ophthalmologist,
+    rating: 4.9,
+    imageUrl: ImageAsset.doctorImageMale,
+    availableSlots: [
+      TimeSlot(
+          start: DateTime(2025, 4, 15, 10), end: DateTime(2025, 4, 15, 13)),
+      TimeSlot(start: DateTime(2025, 4, 18, 9), end: DateTime(2025, 4, 18, 12)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D7',
+    name: 'Dr. Emily Taylor',
+    specialty: DoctorSpecialty.psychiatrist,
+    rating: 4.8,
+    imageUrl: ImageAsset.doctorImageFemale,
+    availableSlots: [
+      TimeSlot(
+          start: DateTime(2025, 4, 14, 14), end: DateTime(2025, 4, 14, 17)),
+      TimeSlot(
+          start: DateTime(2025, 4, 19, 10), end: DateTime(2025, 4, 19, 13)),
+    ],
+  ),
+  DoctorEntity(
+    id: 'D8',
+    name: 'Dr. Robert Garcia',
+    specialty: DoctorSpecialty.generalPractitioner,
+    rating: 4.6,
+    imageUrl: ImageAsset.doctorImageMale,
+    availableSlots: [
+      TimeSlot(start: DateTime(2025, 4, 16, 8), end: DateTime(2025, 4, 16, 12)),
+      TimeSlot(
+          start: DateTime(2025, 4, 18, 14), end: DateTime(2025, 4, 18, 17)),
+    ],
+  ),
+];
