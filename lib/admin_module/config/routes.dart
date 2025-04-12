@@ -2,10 +2,8 @@ import 'package:health_care_app/admin_module/features/admin_main_page/presentati
 
 class Routes {
   static const String mainScreen = '/MainScreen';
-
 }
 
 final routes = {
   Routes.mainScreen: (context) => const AdminMainScreen(),
-  
 };

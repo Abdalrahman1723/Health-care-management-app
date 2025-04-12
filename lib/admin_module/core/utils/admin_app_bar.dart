@@ -35,28 +35,14 @@ AppBar adminAppBar({required BuildContext context, required String title}) {
           padding: const EdgeInsets.only(right: 16),
           child: Row(
             children: [
-              // notification icon
+              // logout icon
               SizedBox(
                 width: 35,
                 height: 35,
                 child: IconButton(
-                  icon: const Icon(Icons.notifications_none),
+                  icon: const Icon(Icons.logout),
                   onPressed: () {
-                    //todo add notification screen
-                    // Navigator.pushNamed(
-                    //     context, Routes.notificationsScreen);
-                  },
-                ),
-              ),
-              const SizedBox(width: 4),
-              // settings icon
-              SizedBox(
-                width: 35,
-                height: 35,
-                child: IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () {
-                    //todo add settings screen
+                    //todo logout for admin account
                     // Navigator.pushNamed(context, Routes.settingsScreen);
                   },
                 ),

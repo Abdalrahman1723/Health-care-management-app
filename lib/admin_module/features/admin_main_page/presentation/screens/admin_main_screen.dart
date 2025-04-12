@@ -4,6 +4,7 @@ import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_appointments_screen.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_doctors_screen.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
+import 'package:health_care_app/config/routes/routes.dart';
 
 class AdminMainScreen extends StatefulWidget {
   const AdminMainScreen({super.key});
@@ -56,6 +57,13 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             label: 'doctors',
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, Routes.adminAddDoctorScreen);
+        },
+        tooltip: "add new doctor",
+        child: const Icon(Icons.add),
       ),
     );
   }

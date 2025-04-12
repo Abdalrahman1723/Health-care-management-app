@@ -1,6 +1,7 @@
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
+import '../../admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
 import '../../patient_features/all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
 import '../../patient_features/app settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/patient_features/app%20settings/presentation/screens/settings_screen.dart';
@@ -36,7 +37,7 @@ class Routes {
   static const String addReviewScreen = "/AddReviewScreen";
   static const String allAppointments = "/AllAppointments";
   static const String appointmentDetailsScreen = "/AppointmentDetailsScreen";
-
+  static const String adminAddDoctorScreen = '/AdminAddDoctorScreen';
 }
 
 final routes = {
@@ -60,6 +61,7 @@ final routes = {
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
   Routes.appointmentDetailsScreen: (context) =>
       const AppointmentDetailsScreen(),
+  Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
 };
 
 //---------------------------helana

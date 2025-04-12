@@ -1,0 +1,287 @@
+import 'package:flutter/material.dart';
+import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
+import 'package:health_care_app/core/utils/doctor_specialties.dart';
+
+class AdminAddDoctorScreen extends StatefulWidget {
+  const AdminAddDoctorScreen({super.key});
+
+  @override
+  State<AdminAddDoctorScreen> createState() => _AdminAddDoctorScreenState();
+}
+
+class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
+  // Controllers for other fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _clinicAddressController =
+      TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+
+  // Selected specialization
+  DoctorSpecialty? _selectedSpecialty;
+
+  // Form key
+  final _formKey = GlobalKey<FormState>();
+
+  // Password visibility toggles
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
+  @override
+  void dispose() {
+    // Dispose controllers to free up resources
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _clinicAddressController.dispose();
+    _bioController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textTheme: const TextTheme(
+          titleMedium: TextStyle(color: Colors.black, fontSize: 18),
+        ),
+      ),
+      child: Scaffold(
+        appBar: adminAppBar(context: context, title: "Add New Doctor"),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name Field
+                      TextFormField(
+                        maxLength: 25,
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Doctor Name',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the doctor\'s name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Specialization Dropdown
+                      DropdownButtonFormField<DoctorSpecialty>(
+                        dropdownColor: Colors.blue,
+                        value: _selectedSpecialty,
+                        decoration: const InputDecoration(
+                          labelText: 'Specialization',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: DoctorSpecialty.values.map((specialty) {
+                          return DropdownMenuItem<DoctorSpecialty>(
+                            value: specialty,
+                            child:
+                                Text(specialty.name), // Display the enum name
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSpecialty = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select a specialization';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Phone Number Field
+                      TextFormField(
+                        maxLength: 15,
+                        controller: _phoneController,
+                        decoration: const InputDecoration(
+                          labelText: 'Phone Number',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the phone number';
+                          }
+                          if (!RegExp(r'^\d{10,15}$').hasMatch(value)) {
+                            return 'Please enter a valid phone number';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Email Address Field
+                      TextFormField(
+                        maxLength: 30,
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email Address',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the email address';
+                          }
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Password Field
+                      TextFormField(
+                        maxLength: 30,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        obscureText: !_isPasswordVisible,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters long';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Confirm Password Field
+                      TextFormField(
+                        maxLength: 30,
+                        controller: _confirmPasswordController,
+                        decoration: InputDecoration(
+                          labelText: 'Confirm Password',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isConfirmPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isConfirmPasswordVisible =
+                                    !_isConfirmPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        obscureText: !_isConfirmPasswordVisible,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm the password';
+                          }
+                          if (value != _passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Clinic Address Field
+                      TextFormField(
+                        maxLength: 50,
+                        controller: _clinicAddressController,
+                        decoration: const InputDecoration(
+                          labelText: 'Clinic Address',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the clinic address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Bio Field
+                      TextFormField(
+                        maxLength: 250,
+                        controller: _bioController,
+                        decoration: const InputDecoration(
+                          labelText: 'Bio',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 3,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a bio';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Submit Button
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            // Add logic to handle form submission
+                            print('Name: ${_nameController.text}');
+                            print(
+                                'Specialization: ${_selectedSpecialty?.name}');
+                            print('Phone: ${_phoneController.text}');
+                            print('Email: ${_emailController.text}');
+                            print('Password: ${_passwordController.text}');
+                            print(
+                                'Confirm Password: ${_confirmPasswordController.text}');
+                            print(
+                                'Clinic Address: ${_clinicAddressController.text}');
+                            print('Bio: ${_bioController.text}');
+                          }
+                        },
+                        child: const Text('Add Doctor'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
