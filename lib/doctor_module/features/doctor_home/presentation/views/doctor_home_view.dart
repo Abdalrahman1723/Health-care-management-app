@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../doctor_details_screen/presentation/widget/DoctorDetailsWidget.dart';
 import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_appointment/presentation/widget/doctors_appointement_avaliablity_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
@@ -25,6 +26,7 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
       _currentIndex = index;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +72,30 @@ class DoctorHomeContent extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.blue[100],
-                backgroundImage: const AssetImage(
-                  'lib/core/assets/images/img.png', // Replace with actual image
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Doctordetailswidget(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(), // This ensures the button has a circular shape
+                  padding: EdgeInsets.zero, // Remove the padding around the button
+                  backgroundColor: Colors.transparent, // Transparent background to show only the image
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'lib/core/assets/images/img.png', // Replace with actual image
+                    fit: BoxFit.cover,
+                     height: 70,
+                    width: 70,// Ensures the image covers the circular area
+                  ),
                 ),
               ),
+
               const SizedBox(width: 12),
               const Expanded(
                 child: Column(
@@ -86,13 +105,13 @@ class DoctorHomeContent extends StatelessWidget {
                       'Welcome Back',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 20,
+                        fontSize: 15,
                       ),
                     ),
                     Text(
                       'Dr. Andrew Smith',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: Colors.grey,
                         fontWeight: FontWeight.bold,
                       ),
@@ -119,6 +138,17 @@ class DoctorHomeContent extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) =>
                               const DoctorsAppointmentScreen()));
+                },
+              ),
+
+
+
+
+              IconButton(
+                icon: const Icon(Icons.logout, size: 27, color: Colors.red),
+                onPressed: () {
+                  Navigator.pop(context);
+
                 },
               ),
             ],

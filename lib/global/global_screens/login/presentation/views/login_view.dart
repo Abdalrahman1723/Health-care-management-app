@@ -123,6 +123,10 @@ class _LoginViewState extends State<LoginView> {
                               } else {
                                 Navigator.pushNamed(context, Routes.mainScreen); // Navigate to main screen for other users
                               }
+
+                              _emailController.clear();
+                              _passwordController.clear();
+
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'user-not-found') {
                                 showErrorDialog(
@@ -169,49 +173,6 @@ class _LoginViewState extends State<LoginView> {
                     ],
                   ),
 
-                  // Navigation to Other Screens
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => const DoctorsScreen()));
-                  //   },
-                  //   child: const Text("Doctors"),
-                  // ),
-
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) =>
-                  //                 const CompleteAppointmentsScreen()));
-                  //   },
-                  //   child: const Text("AllAppointments"),
-                  // ),
-
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) =>
-                  //                 const PasswordManagerScreen()));
-                  //   },
-                  //   child: const Text("Password Manager"),
-                  // ),
-
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) =>
-                  //             const AppointmentDetails()));
-                  //   },
-                  //   child: const Text("AppointmentDetails"),
-                  // ),
                 ],
               ),
             ),

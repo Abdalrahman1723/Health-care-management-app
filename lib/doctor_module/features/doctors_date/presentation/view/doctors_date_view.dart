@@ -10,7 +10,7 @@ class DoctorsDates extends StatefulWidget {
 
 class _DoctorsDatesState extends State<DoctorsDates> {
   DateTime _selectedDate = DateTime.now();
-  String? selectedTimeSlot;
+  List<String> selectedTimeSlots = [];
 
   final List<String> timeSlots = [
     '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
@@ -41,6 +41,13 @@ class _DoctorsDatesState extends State<DoctorsDates> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // إغلاق الـ Dialog بعد التأكيد
+
+                // مسح المواعيد المحددة
+                setState(() {
+                  selectedTimeSlots.clear();  // تفريغ القائمة لإزالة التحديد
+                });
+
+                // إظهار رسالة الـ SnackBar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text("$title confirmed"),
@@ -109,7 +116,7 @@ class _DoctorsDatesState extends State<DoctorsDates> {
                   ),
                   itemCount: timeSlots.length,
                   itemBuilder: (context, index) {
-                    final isSelected = timeSlots[index] == selectedTimeSlot;
+                    final isSelected = selectedTimeSlots.contains(timeSlots[index]);
                     return _buildTimeSlot(timeSlots[index], isSelected);
                   },
                 ),
@@ -168,7 +175,11 @@ class _DoctorsDatesState extends State<DoctorsDates> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedTimeSlot = time;
+          if (selectedTimeSlots.contains(time)) {
+            selectedTimeSlots.remove(time);
+          } else {
+            selectedTimeSlots.add(time);
+          }
         });
       },
       child: Container(
