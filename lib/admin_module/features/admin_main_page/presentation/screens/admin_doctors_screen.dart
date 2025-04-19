@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctor_avatar.dart';
+import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/assets_manager.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
@@ -17,6 +18,24 @@ class AdminDoctorsScreen extends StatefulWidget {
 
 class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
   DoctorSpecialty? selectedSpecialty; //for dropdown menu
+  final SearchController _searchController = SearchController();
+
+  //clear filters
+  void clearFilters() {
+    setState(() {
+      selectedSpecialty = null;
+      selectedDoctor = null;
+      _searchController.clear();
+    });
+  }
+
+  //dispose
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,7 +83,14 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("Add filters"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Add filters"),
+                      ElevatedButton(
+                          onPressed: clearFilters, child: const Text("Clear")),
+                    ],
+                  ),
                   const SizedBox(height: 10),
                   //----------------search bar
                   Row(
@@ -73,6 +99,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                       SizedBox(
                         width: 300,
                         child: SearchAnchor.bar(
+                          searchController: _searchController,
                           onChanged: (value) {
                             if (value.isEmpty) {
                               //if search value is null -> show all doctors
@@ -87,6 +114,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                       )
                     ],
                   ),
+                  //specialty dropdown menu
                   DropdownButton(
                     dropdownColor: Colors.amber,
                     iconEnabledColor: Colors.green,
@@ -104,6 +132,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                       setState(() {
                         selectedSpecialty = value!;
                         selectedDoctor = null;
+                        _searchController.clear();
                       });
                     },
                   ),
@@ -121,8 +150,8 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                     for (var dr in doctors)
                       InkWell(
                         onTap: () {
-                          // Navigator.pushNamed(
-                          //     context, Routes.appointmentDetailsScreen);
+                          Navigator.pushNamed(
+                              context, Routes.doctorProfileScreen);
                         },
                         child: doctorDetails(
                           context: context,
@@ -269,8 +298,9 @@ final List<DoctorEntity> doctors = [
     rating: 4.8,
     imageUrl: ImageAsset.doctorImageFemale,
     availableSlots: [
-      TimeSlot(start: DateTime(2025, 4, 12, 9), end: DateTime(2025, 4, 12, 12)),
-      TimeSlot(
+      TimeSlotEntity(
+          start: DateTime(2025, 4, 12, 9), end: DateTime(2025, 4, 12, 12)),
+      TimeSlotEntity(
           start: DateTime(2025, 4, 13, 14), end: DateTime(2025, 4, 13, 17)),
     ],
   ),
@@ -281,7 +311,7 @@ final List<DoctorEntity> doctors = [
     rating: 4.6,
     imageUrl: ImageAsset.doctorImageMale,
     availableSlots: [
-      TimeSlot(
+      TimeSlotEntity(
           start: DateTime(2025, 4, 12, 10), end: DateTime(2025, 4, 12, 13)),
     ],
   ),
@@ -292,7 +322,7 @@ final List<DoctorEntity> doctors = [
     rating: 4.9,
     imageUrl: ImageAsset.doctorImageFemale,
     availableSlots: [
-      TimeSlot(
+      TimeSlotEntity(
           start: DateTime(2025, 4, 15, 13), end: DateTime(2025, 4, 15, 16)),
     ],
   ),
@@ -303,8 +333,9 @@ final List<DoctorEntity> doctors = [
     rating: 4.7,
     imageUrl: ImageAsset.doctorImageMale,
     availableSlots: [
-      TimeSlot(start: DateTime(2025, 4, 14, 9), end: DateTime(2025, 4, 14, 12)),
-      TimeSlot(
+      TimeSlotEntity(
+          start: DateTime(2025, 4, 14, 9), end: DateTime(2025, 4, 14, 12)),
+      TimeSlotEntity(
           start: DateTime(2025, 4, 16, 14), end: DateTime(2025, 4, 16, 17)),
     ],
   ),
@@ -315,8 +346,9 @@ final List<DoctorEntity> doctors = [
     rating: 4.5,
     imageUrl: ImageAsset.doctorImageFemale,
     availableSlots: [
-      TimeSlot(start: DateTime(2025, 4, 13, 8), end: DateTime(2025, 4, 13, 11)),
-      TimeSlot(
+      TimeSlotEntity(
+          start: DateTime(2025, 4, 13, 8), end: DateTime(2025, 4, 13, 11)),
+      TimeSlotEntity(
           start: DateTime(2025, 4, 17, 13), end: DateTime(2025, 4, 17, 16)),
     ],
   ),
@@ -327,9 +359,10 @@ final List<DoctorEntity> doctors = [
     rating: 4.9,
     imageUrl: ImageAsset.doctorImageMale,
     availableSlots: [
-      TimeSlot(
+      TimeSlotEntity(
           start: DateTime(2025, 4, 15, 10), end: DateTime(2025, 4, 15, 13)),
-      TimeSlot(start: DateTime(2025, 4, 18, 9), end: DateTime(2025, 4, 18, 12)),
+      TimeSlotEntity(
+          start: DateTime(2025, 4, 18, 9), end: DateTime(2025, 4, 18, 12)),
     ],
   ),
   DoctorEntity(
@@ -339,9 +372,9 @@ final List<DoctorEntity> doctors = [
     rating: 4.8,
     imageUrl: ImageAsset.doctorImageFemale,
     availableSlots: [
-      TimeSlot(
+      TimeSlotEntity(
           start: DateTime(2025, 4, 14, 14), end: DateTime(2025, 4, 14, 17)),
-      TimeSlot(
+      TimeSlotEntity(
           start: DateTime(2025, 4, 19, 10), end: DateTime(2025, 4, 19, 13)),
     ],
   ),
@@ -352,8 +385,9 @@ final List<DoctorEntity> doctors = [
     rating: 4.6,
     imageUrl: ImageAsset.doctorImageMale,
     availableSlots: [
-      TimeSlot(start: DateTime(2025, 4, 16, 8), end: DateTime(2025, 4, 16, 12)),
-      TimeSlot(
+      TimeSlotEntity(
+          start: DateTime(2025, 4, 16, 8), end: DateTime(2025, 4, 16, 12)),
+      TimeSlotEntity(
           start: DateTime(2025, 4, 18, 14), end: DateTime(2025, 4, 18, 17)),
     ],
   ),

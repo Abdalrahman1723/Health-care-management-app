@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
@@ -259,17 +261,14 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             // Add logic to handle form submission
-                            print('Name: ${_nameController.text}');
-                            print(
-                                'Specialization: ${_selectedSpecialty?.name}');
-                            print('Phone: ${_phoneController.text}');
-                            print('Email: ${_emailController.text}');
-                            print('Password: ${_passwordController.text}');
-                            print(
-                                'Confirm Password: ${_confirmPasswordController.text}');
-                            print(
-                                'Clinic Address: ${_clinicAddressController.text}');
-                            print('Bio: ${_bioController.text}');
+                            log('Name: ${_nameController.text}');
+                            log('Specialization: ${_selectedSpecialty?.name}');
+                            log('Phone: ${_phoneController.text}');
+                            log('Email: ${_emailController.text}');
+                            log('Password: ${_passwordController.text}');
+                            log('Confirm Password: ${_confirmPasswordController.text}');
+                            log('Clinic Address: ${_clinicAddressController.text}');
+                            log('Bio: ${_bioController.text}');
                           }
                         },
                         child: const Text('Add Doctor'),

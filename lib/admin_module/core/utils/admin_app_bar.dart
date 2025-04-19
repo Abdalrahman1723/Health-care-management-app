@@ -3,18 +3,6 @@ import 'package:health_care_app/admin_module/core/utils/admin_app_colors.dart';
 
 AppBar adminAppBar({required BuildContext context, required String title}) {
   return AppBar(
-      // the back button
-      // leading: IconButton(
-      //   style: ButtonStyle(
-      //     backgroundColor: WidgetStateProperty.all(Colors.transparent),
-      //   ),
-      //   onPressed: () => Navigator.pop(context),
-      //   icon: const Icon(
-      //     size: 25,
-      //     Icons.arrow_back_ios_new_rounded,
-      //     color: Colors.white,
-      //   ),
-      // ),
       automaticallyImplyLeading: false, //to remove the default back button
       flexibleSpace: Container(
         padding: const EdgeInsets.only(top: 8),
@@ -43,7 +31,6 @@ AppBar adminAppBar({required BuildContext context, required String title}) {
                   icon: const Icon(Icons.logout),
                   onPressed: () {
                     //todo logout for admin account
-                    // Navigator.pushNamed(context, Routes.settingsScreen);
                   },
                 ),
               ),
