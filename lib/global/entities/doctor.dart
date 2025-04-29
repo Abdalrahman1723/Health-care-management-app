@@ -10,7 +10,7 @@ class DoctorEntity {
   final String? imageUrl;
   final DoctorSpecialty specialty;
   final double rating;
-  final int reviewCount;
+  final int reviewCount; // the number of reviews for the doctor
   final List<TimeSlotEntity> availableSlots;
   // ---------- professional info about the doctor's career
   final String bio; // a short bio about the doctor

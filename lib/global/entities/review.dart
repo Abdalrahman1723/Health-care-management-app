@@ -1,8 +1,11 @@
+//feedback on the appointment
+
 class AppointmentReviewEntity {
-  final String id;
+  final String id; 
   final String appointmentId;
-  final String reviewerId;
-  final String reviewText;
+  final String reviewerId; // ID of the user who wrote the review
+  final String doctorId; // ID of the doctor being reviewed
+  final String comment;
   final double rating;
   final DateTime createdAt;
 
@@ -10,7 +13,8 @@ class AppointmentReviewEntity {
     required this.id,
     required this.appointmentId,
     required this.reviewerId,
-    required this.reviewText,
+    required this.doctorId,
+    required this.comment,
     required this.rating,
     required this.createdAt,
   });
@@ -21,7 +25,8 @@ class AppointmentReviewEntity {
       id: json['id'],
       appointmentId: json['appointmentId'],
       reviewerId: json['reviewerId'],
-      reviewText: json['reviewText'],
+      doctorId: json['doctorId'],
+      comment: json['comment'],
       rating: json['rating'].toDouble(),
       createdAt: DateTime.parse(json['createdAt']),
     );
@@ -33,7 +38,8 @@ class AppointmentReviewEntity {
       'id': id,
       'appointmentId': appointmentId,
       'reviewerId': reviewerId,
-      'reviewText': reviewText,
+      'doctorId': doctorId,
+      'comment': comment,
       'rating': rating,
       'createdAt': createdAt.toIso8601String(),
     };
