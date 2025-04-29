@@ -12,7 +12,7 @@ class AdminAddDoctorScreen extends StatefulWidget {
 }
 
 class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
-  // Controllers for other fields
+  // Controllers for fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -22,6 +22,11 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
   final TextEditingController _clinicAddressController =
       TextEditingController();
   final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _focusController = TextEditingController();
+  final TextEditingController _careerPathController = TextEditingController();
+  final TextEditingController _highlightsController = TextEditingController();
+  final TextEditingController _experienceYearsController =
+      TextEditingController();
 
   // Selected specialization
   DoctorSpecialty? _selectedSpecialty;
@@ -43,6 +48,10 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
     _confirmPasswordController.dispose();
     _clinicAddressController.dispose();
     _bioController.dispose();
+    _focusController.dispose();
+    _careerPathController.dispose();
+    _highlightsController.dispose();
+    _experienceYearsController.dispose();
     super.dispose();
   }
 
@@ -154,6 +163,113 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                       ),
                       const SizedBox(height: 16),
 
+                      // Clinic Address Field
+                      TextFormField(
+                        maxLength: 50,
+                        controller: _clinicAddressController,
+                        decoration: const InputDecoration(
+                          labelText: 'Clinic Address',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the clinic address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Bio Field
+                      TextFormField(
+                        maxLength: 250,
+                        controller: _bioController,
+                        decoration: const InputDecoration(
+                          labelText: 'Bio',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 3,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a bio';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Focus Field
+                      TextFormField(
+                        maxLength: 100,
+                        controller: _focusController,
+                        decoration: const InputDecoration(
+                          labelText: 'Focus',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the doctor\'s focus';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Career Path Field
+                      TextFormField(
+                        maxLength: 100,
+                        controller: _careerPathController,
+                        decoration: const InputDecoration(
+                          labelText: 'Career Path',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the career path';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Highlights Field
+                      TextFormField(
+                        maxLength: 100,
+                        controller: _highlightsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Highlights',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the highlights';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Experience Years Field
+                      TextFormField(
+                        maxLength: 2,
+                        controller: _experienceYearsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Experience Years',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the years of experience';
+                          }
+                          if (int.tryParse(value) == null ||
+                              int.parse(value) < 0) {
+                            return 'Please enter a valid number of years';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 32),
                       // Password Field
                       TextFormField(
                         maxLength: 30,
@@ -220,42 +336,6 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Clinic Address Field
-                      TextFormField(
-                        maxLength: 50,
-                        controller: _clinicAddressController,
-                        decoration: const InputDecoration(
-                          labelText: 'Clinic Address',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the clinic address';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Bio Field
-                      TextFormField(
-                        maxLength: 250,
-                        controller: _bioController,
-                        decoration: const InputDecoration(
-                          labelText: 'Bio',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 3,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a bio';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 32),
-
                       // Submit Button
                       ElevatedButton(
                         onPressed: () {
@@ -269,6 +349,10 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                             log('Confirm Password: ${_confirmPasswordController.text}');
                             log('Clinic Address: ${_clinicAddressController.text}');
                             log('Bio: ${_bioController.text}');
+                            log('Focus: ${_focusController.text}');
+                            log('Career Path: ${_careerPathController.text}');
+                            log('Highlights: ${_highlightsController.text}');
+                            log('Experience Years: ${_experienceYearsController.text}');
                           }
                         },
                         child: const Text('Add Doctor'),

@@ -6,7 +6,6 @@ class PatientEntity {
   final int age;
   final String gender;
   final String phoneNumber;
-  final String address;
   //the patient's own medical history
   final String? medicalHistory;
   final String? bloodType;
@@ -21,7 +20,6 @@ class PatientEntity {
     required this.dateOfBirth,
     required this.gender,
     required this.phoneNumber,
-    required this.address,
     this.medicalHistory,
     this.bloodType,
     this.allergies,
@@ -37,7 +35,6 @@ class PatientEntity {
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
       gender: json['gender'],
       phoneNumber: json['phoneNumber'],
-      address: json['address'],
       medicalHistory: json['medicalHistory'],
       bloodType: json['bloodType'],
       allergies: (json['allergies'] as List<dynamic>?)
@@ -59,7 +56,6 @@ class PatientEntity {
       'dateOfBirth': dateOfBirth.toIso8601String(),
       'gender': gender,
       'phoneNumber': phoneNumber,
-      'address': address,
       'medicalHistory': medicalHistory,
       'bloodType': bloodType,
       'allergies': allergies,
