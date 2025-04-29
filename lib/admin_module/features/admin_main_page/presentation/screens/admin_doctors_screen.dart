@@ -131,8 +131,8 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                     onChanged: (value) {
                       setState(() {
                         selectedSpecialty = value!;
-                        selectedDoctor = null;
-                        _searchController.clear();
+                        // selectedDoctor = null;
+                        // _searchController.clear();
                       });
                     },
                   ),
@@ -158,9 +158,28 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                           doctor: dr,
                         ),
                       )
-                  else if (selectedSpecialty != null)
+                  else if (selectedSpecialty != null &&
+                      selectedDoctor == null) //specialty selected -> show all
                     for (var dr in doctors.where(
                       (dr) => dr.specialty == selectedSpecialty,
+                    ))
+                      InkWell(
+                        onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, Routes.appointmentDetailsScreen);
+                        },
+                        child: doctorDetails(
+                          context: context,
+                          doctor: dr,
+                        ),
+                      )
+                  else if (selectedDoctor != null &&
+                      selectedSpecialty !=
+                          null) //specialty and doctor selected -> show selected doctor with specialty
+                    for (var dr in doctors.where(
+                      (dr) =>
+                          dr.specialty == selectedSpecialty &&
+                          dr == selectedDoctor,
                     ))
                       InkWell(
                         onTap: () {
