@@ -43,8 +43,8 @@ class Routes {
 }
 
 final routes = {
-  // Routes.welcome: (context) => const WelcomeScreen(),
-  Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
+  Routes.welcome: (context) => const WelcomeScreen(),
+  // Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
   Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),
