@@ -37,6 +37,7 @@ dependencies:
   cloud_firestore: ^5.6.4
   firebase_storage: ^12.4.3
   timeago: ^3.7.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +59,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/tmp.jpg
     - assets/images/man.png
     - assets/icons/
     - lib/core/assets/images/

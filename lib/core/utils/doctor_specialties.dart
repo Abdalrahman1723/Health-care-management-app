@@ -1,0 +1,17 @@
+enum DoctorSpecialty {
+  cardiologist,
+  dermatologist,
+  neurologist,
+  pediatrician,
+  orthopedic,
+  psychiatrist,
+  gynecologist,
+  dentist,
+  ophthalmologist,
+  generalPractitioner,
+  endocrinologist,
+  rheumatologist,
+  urologist,
+  gastroenterologist,
+  pulmonologist,
+}
