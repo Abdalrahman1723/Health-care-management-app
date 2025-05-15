@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 class DoctorProfileScreen extends StatelessWidget {
-  const DoctorProfileScreen({Key? key}) : super(key: key);
+  final String fullName;
+  final String specialization;
+  final String photoUrl;
+
+  const DoctorProfileScreen({
+    Key? key,
+    required this.fullName,
+    required this.specialization,
+    required this.photoUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,94 +19,77 @@ class DoctorProfileScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // App Bar
+            // Header with doctor info
             Container(
               padding: const EdgeInsets.all(16),
               color: const Color(0xFF0BDCDC),
-              child: Column(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  // Doctor Info
-                  Row(
-                    children: [
-                      // Doctor Image
-                      const CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage(
-                          'lib/core/assets/images/download.jpg', // Replace with actual image URL
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(photoUrl),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          fullName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Doctor Details
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Text(
+                          specialization,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
                           children: [
-                            const Text(
-                              'Dr. Jacob Lopez, M.D.',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.star, color: Colors.white, size: 16),
+                                  SizedBox(width: 4),
+                                  Text('5.0', style: TextStyle(color: Colors.white)),
+                                ],
                               ),
                             ),
-                            const Text(
-                              'Surgical Dermatology',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Row(
-                                    children: [
-                                      Icon(Icons.star, color: Colors.white, size: 16),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        '5',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Text(
-                                    '349',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
+                              child: const Text('349 reviews', style: TextStyle(color: Colors.white)),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
 
-            // Experience and Schedule
+            // Experience section
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -112,15 +104,7 @@ class DoctorProfileScreen extends StatelessWidget {
                       ),
                       child: const Row(
                         children: [
-                          Icon(Icons.work, color: Color(0xFF0BDCDC)),
-                          SizedBox(width: 8),
-                          Text(
-                            '15 years\nexperience',
-                            style: TextStyle(
-                              fontSize: 15,
-                              height: 1.2,
-                            ),
-                          ),
+
                         ],
                       ),
                     ),
@@ -129,7 +113,7 @@ class DoctorProfileScreen extends StatelessWidget {
               ),
             ),
 
-            // Focus Section
+            // Focus section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -141,16 +125,9 @@ class DoctorProfileScreen extends StatelessWidget {
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Focus:',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     SizedBox(height: 8),
                     Text(
-                      'The impact of hormonal imbalances on skin conditions, specializing in acne, hirsutism, and other skin disorders.',
+                      'Specializes in skin diseases, acne, hormonal imbalances, and cosmetic dermatology procedures.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
                   ],
@@ -158,14 +135,14 @@ class DoctorProfileScreen extends StatelessWidget {
               ),
             ),
 
-            // Content Sections
+            // Scrollable content
             const Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile Section
+                    // Profile
                     Text(
                       'Profile',
                       style: TextStyle(
@@ -176,12 +153,12 @@ class DoctorProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      'Dr. Lopez is known for his innovative treatment approaches and deep understanding of patient needs. His experience spans across both surgical and cosmetic dermatology.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
                     SizedBox(height: 24),
 
-                    // Career Path Section
+                    // Career Path
                     Text(
                       'Career Path',
                       style: TextStyle(
@@ -192,12 +169,12 @@ class DoctorProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      'Graduated from Harvard Medical School, followed by a 5-year dermatology residency. Currently practicing at SkinCare Clinic, Cairo.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
                     SizedBox(height: 24),
 
-                    // Highlights Section
+                    // Highlights
                     Text(
                       'Highlights',
                       style: TextStyle(
@@ -208,16 +185,13 @@ class DoctorProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      'Over 10,000 successful cases. Frequent speaker at global dermatology conferences. Awarded "Top Doctor" in 2022.',
                       style: TextStyle(color: Colors.grey, height: 1.5),
                     ),
                   ],
                 ),
               ),
             ),
-
-            // Bottom Navigation Bar
-
           ],
         ),
       ),

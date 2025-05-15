@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../doctors/presentation/views/doctors_view.dart';
+import '../../../doctors/domain/entity.dart';
 
 class FavDoctors extends StatelessWidget {
-  final List<Doctor> favoriteDoctors; // تمرير قائمة الأطباء المفضلين
+  final List<Entity> favoriteDoctors;
 
   const FavDoctors({Key? key, required this.favoriteDoctors}) : super(key: key);
 
@@ -43,7 +43,10 @@ class FavDoctors extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final doctor = favoriteDoctors[index];
                     return _buildDoctorCard(
-                        doctor.name, doctor.specialty, doctor.imageUrl);
+                      doctor.fullName,
+                      doctor.specialization,
+                      doctor.photo,
+                    );
                   },
                 ),
               ),
@@ -56,6 +59,7 @@ class FavDoctors extends StatelessWidget {
 
   Widget _buildDoctorCard(String name, String specialty, String imageUrl) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -72,7 +76,7 @@ class FavDoctors extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundImage: AssetImage(imageUrl),
+            backgroundImage: NetworkImage(imageUrl),
           ),
           const SizedBox(width: 16),
           Expanded(
