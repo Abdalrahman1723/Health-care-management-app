@@ -1,4 +1,5 @@
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
+import 'package:health_care_app/app.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import '../../admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
@@ -20,7 +21,9 @@ import '../../patient_features/personal profile/presentation/screens/user_profil
 import 'package:go_router/go_router.dart';
 
 class Routes {
-  static const String welcome = "/"; //initial route
+  
+  static const String routeWrapper = "/"; //initial route
+  static const String welcome = "/welcome"; //?initial route
   static const String mainScreen = '/MainScreen';
   static const String specializationsScreen = '/SpecializationsScreen';
   static const String userProfileScreen = '/UserProfileScreen';
@@ -43,8 +46,9 @@ class Routes {
 }
 
 final routes = {
-  // Routes.welcome: (context) => const WelcomeScreen(),
-  Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
+  Routes.routeWrapper:(context)=> const RouteWrapper(), //testing
+  Routes.welcome: (context) => const WelcomeScreen(),
+  // Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
   Routes.mainScreen: (context) => const MainScreen(),
   Routes.specializationsScreen: (context) => const SpecializationsScreen(),
   Routes.userProfileScreen: (context) => const UserProfileScreen(),
