@@ -1,5 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../login/presentation/views/login_view.dart';
+import '../../data/datasources/register_remote_data_source.dart';
+import '../../data/repositories/register_repository_impl.dart';
+import '../../domain/usecases/register_usecase.dart';
+import '../cubit/register_cubit.dart';
 import '../views/signup_view.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -24,7 +30,17 @@ class SignUpScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        body: const SignupView(),
+
+          body: BlocProvider(
+          create: (context) => RegisterCubit(
+            RegisterUseCase(
+              RegisterRepositoryImpl(
+                RegisterRemoteDataSource(Dio()),
+              ),
+            ),
+          ),
+          child: SignupView(),
+        )
       ),
     );
   }

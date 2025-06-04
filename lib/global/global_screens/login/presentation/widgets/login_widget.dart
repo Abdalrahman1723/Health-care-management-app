@@ -1,5 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/global/global_screens/login/domain/usecases/login_usecase.dart';
+import 'package:health_care_app/global/global_screens/login/presentation/cubit/login_cubit.dart';
 
+import '../../data/datasources/register_remote_data_source.dart';
+import '../../data/repositories/login_repository_impl.dart';
 import '../views/login_view.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -22,7 +28,16 @@ class LoginScreen extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      body: const LoginView(),
+      body: BlocProvider(
+        create: (context) => LoginCubit(
+          LoginUseCase(
+           LoginRepositoryImpl(
+              LoginRemoteDataSource(Dio()),
+            ),
+          ),
+        ),
+        child: LoginView(),
+      )
     );
   }
 }
