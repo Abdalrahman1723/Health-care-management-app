@@ -2,13 +2,29 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
+import 'package:flutter/foundation.dart'; // For kDebugMode
+
+http.Client createHttpClient() {
+  if (kDebugMode) {
+    final ioClient = HttpClient()
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+
+    return IOClient(ioClient);
+  } else {
+    return http.Client(); // Default secure client for production
+  }
+}
 
 class ApiClient {
   final String baseUrl;
   final http.Client client;
 
-  ApiClient({required this.baseUrl, required this.client});
+  ApiClient({required this.baseUrl}) : client = createHttpClient();
+
   //========the get method=========//
   Future<dynamic> get(String endpoint, {Map<String, String>? headers}) async {
     try {

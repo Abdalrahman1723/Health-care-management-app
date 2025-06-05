@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_care_app/app.dart';
 import 'package:health_care_app/firebase_options.dart';
-import 'package:http/http.dart' as http;
 import 'core/api/api_client.dart';
 import 'core/api/endpoints.dart';
 
 void main() async {
   final apiClient = ApiClient(
     baseUrl: ApiConstants.baseUrl,
-    client: http.Client(),
+
   );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

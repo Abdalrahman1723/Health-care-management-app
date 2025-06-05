@@ -8,7 +8,8 @@ import '../../../../core/api/endpoints.dart';
 part 'patient_state.dart';
 
 class PatientCubit extends Cubit<PatientState> {
-  final ApiClient apiClient;
+  
+  final ApiClient apiClient; 
   final String authToken;
 
   PatientCubit({required this.apiClient, required this.authToken})
