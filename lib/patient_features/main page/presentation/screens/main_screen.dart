@@ -114,9 +114,19 @@ class _MainScreenState extends State<MainScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is PatientError) {
             return Center(
-                child: Text(
-              state.message,
-              style: const TextStyle(color: Colors.black),
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.black),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      context.read<PatientCubit>().fetchDoctorById('1');
+                    },
+                    child: const Text("restart connection"))
+              ],
             ));
           } else if (state is PatientDoctorLoaded) {
             // Log the doctor data

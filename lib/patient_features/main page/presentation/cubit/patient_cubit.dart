@@ -8,8 +8,7 @@ import '../../../../core/api/endpoints.dart';
 part 'patient_state.dart';
 
 class PatientCubit extends Cubit<PatientState> {
-  
-  final ApiClient apiClient; 
+  final ApiClient apiClient;
   final String authToken;
 
   PatientCubit({required this.apiClient, required this.authToken})
@@ -30,7 +29,8 @@ class PatientCubit extends Cubit<PatientState> {
           'Content-Type': 'application/json',
         },
       );
-      final doctor = DoctorEntity.fromJson(response);
+      log('=====================get success======================');
+      final doctor = DoctorEntity.fromJson(response, id: doctorId);
       emit(PatientDoctorLoaded(doctor));
     } catch (e) {
       emit(PatientError('Failed to fetch doctor: ${e.toString()}'));

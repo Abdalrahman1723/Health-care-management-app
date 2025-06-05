@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          //delete it
           create: (context) {
             final cubit = AuthCubit(apiClient: apiClient);
             // Temporary hardcoded token for testing
@@ -57,14 +58,14 @@ class RouteWrapper extends StatelessWidget {
       builder: (context, state) {
         if (state is AuthAuthenticated) {
           // Redirect to dashboard if authenticated
-          log("===============test================");
+          log("===============starting the app================");
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacementNamed(context, '/welcome');
           });
           return const Center(child: CircularProgressIndicator());
         } else {
           // Show login screen if not authenticated
-          log("===============test================");
+          log("===============login failed================");
           return const LoginScreen();
         }
       },

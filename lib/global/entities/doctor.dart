@@ -42,25 +42,35 @@ class DoctorEntity {
     return availableSlots.any((slot) => slot.contains(time));
   }
 
-  factory DoctorEntity.fromJson(Map<String, dynamic> json) {
+  factory DoctorEntity.fromJson(Map<String, dynamic> json, {String? id}) {
     return DoctorEntity(
-      id: json['id'] as String,
-      name: json['name'] as String,
+      id: id ?? json['id'] ?? '', // Priority: passed ID > json['id'] > empty
+      name: json['fullName'] as String,
       specialty: DoctorSpecialty.values.firstWhere(
-        (e) => e.toString() == 'DoctorSpecialty.${json['specialty']}',
+        (e) => e.toString() == 'DoctorSpecialty.${json['specialization']}',
+        orElse: () => DoctorSpecialty
+            .generalPractitioner, // Default to generalPractitioner if not found
       ),
       rating: (json['rating'] as num).toDouble(),
-      imageUrl: json['imageUrl'] as String?,
-      availableSlots: (json['availableSlots'] as List<dynamic>)
-          .map((slot) => TimeSlotEntity.fromJson(slot as Map<String, dynamic>))
-          .toList(),
-      bio: json['bio'] as String? ?? '',
+      imageUrl: json['photo'] as String?,
+      availableSlots: [], // TODO: Parse workingHours string into TimeSlotEntity list
+      bio: json['profile'] as String? ?? '',
       focus: json['focus'] as String? ?? '',
       careerPath: json['careerPath'] as String? ?? '',
       highlights: json['highlights'] as String? ?? '',
-      reviewCount: (json['reviewCount'] as num?)?.toInt() ?? 0,
+      reviewCount: (json['reviewsCount'] as num?)?.toInt() ?? 0,
       experienceYears: (json['experienceYears'] as num?)?.toInt() ?? 0,
-      clinic: ClinicEntity.fromJson(json['clinic'] as Map<String, dynamic>),
+      clinic: json['clinicName'] != null
+          ? ClinicEntity(
+              id: '', // Required but not provided in JSON
+              name: json['clinicName'] as String,
+              address: '', // Required but not provided in JSON
+              phoneNumber: '', // Required but not provided in JSON
+              doctorId: id ??
+                  json['id'] ??
+                  '', // Use doctor's ID as clinic's doctorId
+            )
+          : null,
     );
   }
 
