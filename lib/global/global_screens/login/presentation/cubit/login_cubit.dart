@@ -1,30 +1,35 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_care_app/global/global_screens/login/domain/usecases/login_usecase.dart';
-import 'package:health_care_app/global/global_screens/login/presentation/cubit/login_state.dart';
-import 'package:health_care_app/global/global_screens/signup/presentation/cubit/register_state.dart';
-
-
-
-
+import '../../domain/entities/login_entity.dart';
+import '../../domain/usecases/login_usecase.dart';
+import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase loginUseCase;
 
   LoginCubit(this.loginUseCase) : super(LoginInitial());
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  // Future<void> login({required String email, required String password}) async {
+  //   emit(LoginLoading());
+  //
+  //   try {
+  //     final loginEntity = await loginUseCase.call(email: email, password: password);
+  //     emit(LoginSuccess( loginEntity));
+  //   } catch (e) {
+  //     emit(LoginFailure( e.toString()));
+  //   }
+  // }
+
+  Future<String?> login({required String email, required String password}) async {
     emit(LoginLoading());
+
     try {
-      final result = await loginUseCase(
-        email: email,
-        password: password,
-      );
-      emit(LoginSuccess(result));
+      final loginEntity = await loginUseCase.call(email: email, password: password);
+      emit(LoginSuccess(loginEntity));
+      return loginEntity.token;  // رجع التوكن هنا
     } catch (e) {
       emit(LoginFailure(e.toString()));
+      return null;  // رجع null لو فشل
     }
   }
+
 }

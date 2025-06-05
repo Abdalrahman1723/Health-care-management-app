@@ -9,6 +9,7 @@ import '../../../../../doctor_module/features/doctor_home/presentation/widgets/d
 import '../../../../../patient_features/forget_password/presentation/widgets/forget_password_screen.dart';
 import '../../../../../patient_features/main page/presentation/screens/main_screen.dart';
 import '../cubit/login_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -27,17 +28,22 @@ class _LoginViewState extends State<LoginView> {
     return Theme(
       data: ThemeData(),
       child: BlocListener<LoginCubit, LoginState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is LoginLoading) {
             showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
           } else if (state is LoginSuccess) {
             Navigator.pop(context);
-            //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل: ${state.loginEntity.id}')));
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('token', state.loginEntity.token);
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
             print("user Id: ${state.loginEntity.id}");
-          } else if (state is LoginFailure) {
+            print("token: ${state.loginEntity.token}");
+
+          }else if (state is LoginFailure) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("خطأ: ${state.error}")),
+            );
           }
         },
         child: Scaffold(
@@ -121,13 +127,25 @@ class _LoginViewState extends State<LoginView> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            context.read<LoginCubit>().login(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            );
-                          },
-                          child: Text("Login"),
+                            onPressed: () async {
+                              final token = await context.read<LoginCubit>().login(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+
+                              if (token != null) {
+                                // خزني التوكن في SharedPreferences
+                                final prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('token', token);
+
+                                // بعدها اعملي التنقل للشاشة الرئيسية
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+                              } else {
+                                // لو فشل اللوجن، ممكن تخلي الـ BlocListener يعرض رسالة الخطأ
+                              }
+                            },
+
+                            child: Text("Login"),
                         ),
 
                       ),

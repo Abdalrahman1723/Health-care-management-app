@@ -133,7 +133,11 @@ class _SignupViewState extends State<SignupView> {
                               ),
                             ),
                             onPressed: () {
+                              print("Register Button Pressed");
+
                               final cubit = context.read<RegisterCubit>();
+
+                              print("Attempting Register with Email: ${_emailController.text}");
                               cubit.register(
                                 username: _fullNameController.text,
                                 personName: _personNameController.text,
@@ -155,6 +159,7 @@ class _SignupViewState extends State<SignupView> {
                         children: [
                           const Text("Already have an account?"),
                           TextButton(
+
                             onPressed: () {
                               Navigator.push(
                                 context,
