@@ -11,7 +11,6 @@ import 'core/api/endpoints.dart';
 void main() async {
   final apiClient = ApiClient(
     baseUrl: ApiConstants.baseUrl,
-
   );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
