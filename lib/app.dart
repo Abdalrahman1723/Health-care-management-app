@@ -10,6 +10,7 @@ import 'package:health_care_app/core/utils/app_strings.dart';
 
 import 'global/global_screens/auth/presentation/cubit/auth_cubit.dart';
 import 'global/global_screens/login/presentation/widgets/login_widget.dart';
+import 'package:health_care_app/patient_features/main page/presentation/cubit/patient_cubit.dart';
 
 class MyApp extends StatelessWidget {
   final ApiClient apiClient;
@@ -24,9 +25,16 @@ class MyApp extends StatelessWidget {
             final cubit = AuthCubit(apiClient: apiClient);
             // Temporary hardcoded token for testing
             cubit.setTokenDirectly(
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4ZTZhODViZS03YzVkLTRlYTctYjMxMC05ZjgxNDUxMDY1YjEiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0ODkxNDczNywiZXhwIjoxNzQ5MDAxMTM3LCJpYXQiOjE3NDg5MTQ3MzcsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.cCcoisX5TdWcQqonQdT3g46-prgvocxlJo2U5rM44CQ');
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4');
             return cubit;
           },
+        ),
+        BlocProvider(
+          create: (context) => PatientCubit(
+            apiClient: apiClient,
+            authToken:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4',
+          ),
         ),
       ],
       child: MaterialApp(
@@ -51,7 +59,7 @@ class RouteWrapper extends StatelessWidget {
           // Redirect to dashboard if authenticated
           log("===============test================");
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, '/MainScreen');
+            Navigator.pushReplacementNamed(context, '/welcome');
           });
           return const Center(child: CircularProgressIndicator());
         } else {

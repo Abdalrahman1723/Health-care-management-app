@@ -24,6 +24,14 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch doctor with ID 1 when screen loads
+    context.read<PatientCubit>().fetchDoctorById('1');
+  }
+
   @override
   Widget build(BuildContext context) {
     void _updateDate(DateTime newDate) {
@@ -105,8 +113,14 @@ class _MainScreenState extends State<MainScreen> {
           if (state is PatientLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is PatientError) {
-            return Center(child: Text(state.message));
+            return Center(
+                child: Text(
+              state.message,
+              style: const TextStyle(color: Colors.black),
+            ));
           } else if (state is PatientDoctorLoaded) {
+            // Log the doctor data
+            log('Doctor Data: ${state.doctor.toString()}');
             return SafeArea(
               child: SingleChildScrollView(
                 child: Column(
