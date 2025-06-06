@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/cubit/login_state.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
-import '../../../../../doctor_module/features/doctor_home/presentation/widgets/doctor_home_widget.dart';
 import '../../../../../patient_features/forget_password/presentation/widgets/forget_password_screen.dart';
 import '../../../../../patient_features/main page/presentation/screens/main_screen.dart';
 import '../cubit/login_cubit.dart';
@@ -30,16 +27,19 @@ class _LoginViewState extends State<LoginView> {
       child: BlocListener<LoginCubit, LoginState>(
         listener: (context, state) async {
           if (state is LoginLoading) {
-            showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
+            showDialog(
+                context: context,
+                builder: (_) =>
+                    const Center(child: CircularProgressIndicator()));
           } else if (state is LoginSuccess) {
             Navigator.pop(context);
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('token', state.loginEntity.token);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const MainScreen()));
             print("user Id: ${state.loginEntity.id}");
             print("token: ${state.loginEntity.token}");
-
-          }else if (state is LoginFailure) {
+          } else if (state is LoginFailure) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("خطأ: ${state.error}")),
@@ -111,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const ForgetPasswordScreen()));
+                                      const ForgetPasswordScreen()));
                         },
                         child: const Text(
                           "Forget Password",
@@ -127,27 +127,31 @@ class _LoginViewState extends State<LoginView> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                            onPressed: () async {
-                              final token = await context.read<LoginCubit>().login(
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                              );
+                          onPressed: () async {
+                            final token =
+                                await context.read<LoginCubit>().login(
+                                      email: _emailController.text.trim(), //remove spaces
+                                      password: _passwordController.text,
+                                    );
 
-                              if (token != null) {
-                                // خزني التوكن في SharedPreferences
-                                final prefs = await SharedPreferences.getInstance();
-                                await prefs.setString('token', token);
+                            if (token != null) {
+                              // خزني التوكن في SharedPreferences
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setString('token', token);
 
-                                // بعدها اعملي التنقل للشاشة الرئيسية
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
-                              } else {
-                                // لو فشل اللوجن، ممكن تخلي الـ BlocListener يعرض رسالة الخطأ
-                              }
-                            },
-
-                            child: Text("Login"),
+                              // بعدها اعملي التنقل للشاشة الرئيسية
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MainScreen()));
+                            } else {
+                              // لو فشل اللوجن، ممكن تخلي الـ BlocListener يعرض رسالة الخطأ
+                            }
+                          },
+                          child: const Text("Login"),
                         ),
-
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -174,7 +178,6 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ],
                     ),
-
                   ],
                 ),
               ),
@@ -182,8 +185,6 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
       ),
-
-
     );
   }
 }
@@ -191,22 +192,21 @@ class _LoginViewState extends State<LoginView> {
 void showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(
-          title: const Text('Error'),
-          content: Text(
-            message,
-            style: const TextStyle(color: Colors.black),
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الـ Dialog
+          },
+          child: const Text('OK'),
         ),
+      ],
+    ),
   );
 }
