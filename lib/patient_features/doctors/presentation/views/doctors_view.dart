@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../appointment/presentation/widgets/doctors_appointment_widget.dart';
 import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
 import '../../domain/entity.dart';
 import '../cubit/cubit_doctors_cubit.dart';

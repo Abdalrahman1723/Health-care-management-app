@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:health_care_app/patient_features/doctors/data/services/service_api.dart';
 import 'package:health_care_app/patient_features/doctors/domain/entity.dart';
 import 'package:health_care_app/core/error/failure.dart';
-import '../model/doctor_model.dart';
 import '../../domain/repo.dart'; // <-- تأكد إن دا هو ملف الواجهة الأساسية Repo
 
 class RepoImpl extends Repo {

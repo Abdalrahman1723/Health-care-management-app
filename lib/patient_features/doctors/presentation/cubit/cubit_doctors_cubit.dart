@@ -8,11 +8,11 @@ import '../../domain/repo.dart';
 part 'cubit_doctor_state.dart';
 
 class DoctorsCubit extends Cubit<DoctorsState> {
-  DoctorsCubit(this.repo) : super(DoctorsInitial());
+  DoctorsCubit(this.repo) : super(const DoctorsInitial());
   final Repo repo;
 
   void fetchDoctorsData() async {
-    emit(DoctorsLoading());
+    emit(const DoctorsLoading());
     final response = await repo.fetchDoctorsData();
     response.fold(
           (failure) => emit(DoctorsFailure(errMessage: failure.errMessage)),

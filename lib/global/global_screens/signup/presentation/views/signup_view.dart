@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
-import '../../../login/presentation/views/login_view.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
 
@@ -33,7 +30,7 @@ class _SignupViewState extends State<SignupView> {
       child: BlocListener<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterLoading) {
-            showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
+            showDialog(context: context, builder: (_) => const Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل: ${state.registerEntity.message}')));
@@ -146,7 +143,7 @@ class _SignupViewState extends State<SignupView> {
                                 password: _passwordController.text,
                               );
                             },
-                            child: Text("تسجيل",style: TextStyle(color: Colors.white,fontSize: 25)),
+                            child: const Text("تسجيل",style: TextStyle(color: Colors.white,fontSize: 25)),
                           ),
 
                         ),

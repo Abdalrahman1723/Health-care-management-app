@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import '../../../appointment/presentation/widgets/doctors_appointment_widget.dart';
 import '../../../info/preentation/views/doctors_profile.dart';
-import '../../../info/preentation/widget/doctors_profile_widget.dart';
 import '../../domain/entity.dart';
 
 class DoctorCard extends StatefulWidget {
