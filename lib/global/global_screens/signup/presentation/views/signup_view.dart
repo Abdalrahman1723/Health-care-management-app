@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,6 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
 
-
   // bool _obscurePassword = true;
 
   @override
@@ -30,14 +31,20 @@ class _SignupViewState extends State<SignupView> {
       child: BlocListener<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterLoading) {
-            showDialog(context: context, builder: (_) => const Center(child: CircularProgressIndicator()));
+            showDialog(
+                context: context,
+                builder: (_) =>
+                    const Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل: ${state.registerEntity.message}')));
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('تم التسجيل: ${state.registerEntity.message}')));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()));
           } else if (state is RegisterFailure) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
           }
         },
         child: Scaffold(
@@ -63,9 +70,7 @@ class _SignupViewState extends State<SignupView> {
                         label: "Full Name",
                       ),
 
-
                       const SizedBox(height: 16),
-
 
                       const Text("Personal Name *",
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -75,8 +80,6 @@ class _SignupViewState extends State<SignupView> {
                         formKey: _formKey,
                         label: "Personal Name",
                       ),
-
-
 
                       // Email
                       const Text("Email *",
@@ -114,7 +117,6 @@ class _SignupViewState extends State<SignupView> {
                         label: "Mobile Number",
                       ),
 
-
                       const SizedBox(height: 25),
 
                       // Sign Up Button
@@ -130,11 +132,11 @@ class _SignupViewState extends State<SignupView> {
                               ),
                             ),
                             onPressed: () {
-                              print("Register Button Pressed");
+                              log("Register Button Pressed");
 
                               final cubit = context.read<RegisterCubit>();
 
-                              print("Attempting Register with Email: ${_emailController.text}");
+                              log("Attempting Register with Email: ${_emailController.text.trim()}");
                               cubit.register(
                                 username: _fullNameController.text,
                                 personName: _personNameController.text,
@@ -143,9 +145,10 @@ class _SignupViewState extends State<SignupView> {
                                 password: _passwordController.text,
                               );
                             },
-                            child: const Text("تسجيل",style: TextStyle(color: Colors.white,fontSize: 25)),
+                            child: const Text("تسجيل",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 25)),
                           ),
-
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -156,7 +159,6 @@ class _SignupViewState extends State<SignupView> {
                         children: [
                           const Text("Already have an account?"),
                           TextButton(
-
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -181,28 +183,28 @@ class _SignupViewState extends State<SignupView> {
           ),
         ),
       ),
-
     );
   }
 }
 
-
 void showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(
-          title: const Text('Error'),
-          content: Text(message, style: const TextStyle(color: Colors.black),
-            textAlign: TextAlign.center,),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الـ Dialog
+          },
+          child: const Text('OK'),
         ),
+      ],
+    ),
   );
 }

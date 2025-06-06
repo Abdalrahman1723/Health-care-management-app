@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 class RegisterRemoteDataSource {
@@ -22,7 +24,7 @@ class RegisterRemoteDataSource {
         "password": password,
       },
     );
-
+    log(name: "Register", "the register response data : ${response.data}");
     return response.data;
   }
 }

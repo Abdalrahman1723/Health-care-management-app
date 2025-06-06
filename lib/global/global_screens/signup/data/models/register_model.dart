@@ -1,6 +1,3 @@
-
-
-
 import '../../domain/entities/register_entity.dart';
 
 class RegisterModel extends RegisterEntity {

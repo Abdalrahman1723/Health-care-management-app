@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/cubit/login_state.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
@@ -37,8 +38,8 @@ class _LoginViewState extends State<LoginView> {
             await prefs.setString('token', state.loginEntity.token);
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const MainScreen()));
-            print("user Id: ${state.loginEntity.id}");
-            print("token: ${state.loginEntity.token}");
+            log("user Id: ${state.loginEntity.id}");
+            log("token: ${state.loginEntity.token}");
           } else if (state is LoginFailure) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +131,8 @@ class _LoginViewState extends State<LoginView> {
                           onPressed: () async {
                             final token =
                                 await context.read<LoginCubit>().login(
-                                      email: _emailController.text.trim(), //remove spaces
+                                      email: _emailController.text
+                                          .trim(), //remove spaces
                                       password: _passwordController.text,
                                     );
 
