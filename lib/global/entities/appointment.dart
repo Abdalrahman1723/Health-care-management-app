@@ -7,7 +7,7 @@ class AppointmentEntity {
   final String doctorId;
   final TimeSlotEntity dateTime;
   final String status; // e.g., "Scheduled", "Completed", "Cancelled"
-  final String notes;
+  final String? notes;
   final AppointmentReviewEntity? review;
 
   AppointmentEntity({
@@ -34,13 +34,18 @@ class AppointmentEntity {
     );
   }
 
+  // Static method to create a list of appointments from JSON
+  static List<AppointmentEntity> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => AppointmentEntity.fromJson(json)).toList();
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'patientId': patientId,
       'doctorId': doctorId,
-      'dateTime':
-          TimeSlotEntity(start: dateTime.start, end: dateTime.end).toJson(), //!not sure
+      'dateTime': TimeSlotEntity(start: dateTime.start, end: dateTime.end)
+          .toJson(), //!not sure
       'status': status,
       'notes': notes,
       'review': review?.toJson(),

@@ -12,4 +12,9 @@ class ApiConstants {
   //patient profile endpoints
   static const String getPatientById =
       "api/PatientProfile/"; // api/PatientProfile/{id}
+
+  //appointments endpoint
+  static String getPatientAppointments(String patientId) {
+    return "https://localhost:7042/api/Patient/patient/$patientId/appointments";
+  }
 }

@@ -25,13 +25,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
   String patientID =
-      "3"; //! this is a temp (later should be actorId) with shared pref
+      "12"; //! this is a temp (later should be actorId) with shared pref
 
   @override
   void initState() {
     super.initState();
     // Fetch patient with ID 3 when screen loads
-    context.read<PatientCubit>().fetchPatientById(patientID!);
+    context.read<PatientCubit>().fetchPatientById(patientID);
   }
 
   @override
@@ -51,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
+
           // ==========error state =============//
         } else if (state is PatientError) {
           return Scaffold(
@@ -67,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
                       onPressed: () {
                         context
                             .read<PatientCubit>()
-                            .fetchPatientById(patientID!);
+                            .fetchPatientById(patientID);
                       },
                       child: const Text("restart connection"))
                 ],
@@ -76,6 +77,7 @@ class _MainScreenState extends State<MainScreen> {
           );
           // ==========success state =============//
         } else if (state is PatientLoaded) {
+          //good to go
           // Log the patient data
           log('patient Data: ${state.patient.toString()}');
           return Scaffold(
@@ -229,7 +231,7 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(
                       height: 12,
                     ),
-                    //------------ information section
+                    //--------------- information section----------------//
                     Container(
                       decoration: BoxDecoration(
                         gradient: AppColors.containerBackground,
@@ -302,7 +304,7 @@ class _MainScreenState extends State<MainScreen> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     //---see all appointments button
-                                    TextButton(
+                                    ElevatedButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, Routes.allAppointments);
@@ -311,9 +313,10 @@ class _MainScreenState extends State<MainScreen> {
                                       child: const Text(
                                         "See all",
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.blueGrey,
                                             decoration:
-                                                TextDecoration.underline),
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ],
@@ -324,7 +327,7 @@ class _MainScreenState extends State<MainScreen> {
                                   color: Colors.white,
                                   thickness: 1,
                                 ),
-                                //------------ appointment information
+                                //---------------appointment information---------------//
 
                                 //appointment 1
 

@@ -28,3 +28,24 @@ class PatientError extends PatientState {
   @override
   List<Object> get props => [message];
 }
+
+// Appointment States
+class AppointmentsLoading extends PatientState {}
+
+class AppointmentsLoaded extends PatientState {
+  final List<AppointmentEntity> appointments;
+
+  const AppointmentsLoaded(this.appointments);
+
+  @override
+  List<Object> get props => [appointments];
+}
+
+class AppointmentsError extends PatientState {
+  final String message;
+
+  const AppointmentsError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

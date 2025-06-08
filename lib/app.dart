@@ -7,6 +7,7 @@ import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/config/theme/app_theme.dart';
 import 'package:health_care_app/core/api/api_client.dart';
 import 'package:health_care_app/core/utils/app_strings.dart';
+import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 
 import 'global/global_screens/auth/presentation/cubit/auth_cubit.dart';
 import 'global/global_screens/login/presentation/widgets/login_widget.dart';
@@ -32,6 +33,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PatientCubit(
+            apiClient: apiClient,
+            authToken:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4',
+          ),
+        ),
+        BlocProvider(
+          create: (context) => UserProfileCubit(
             apiClient: apiClient,
             authToken:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4',
