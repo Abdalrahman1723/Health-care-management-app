@@ -11,13 +11,13 @@ class PatientInitial extends PatientState {}
 
 class PatientLoading extends PatientState {}
 
-class PatientDoctorLoaded extends PatientState {
-  final DoctorEntity doctor;
+class PatientLoaded extends PatientState {
+  final PatientEntity patient;
 
-  const PatientDoctorLoaded(this.doctor);
+  const PatientLoaded(this.patient);
 
   @override
-  List<Object> get props => [doctor];
+  List<Object> get props => [patient];
 }
 
 class PatientError extends PatientState {

@@ -1,9 +1,10 @@
-//displayes the user profile icon
+//displays the user profile icon
 //and a small edit icon on the bottom right corner of the profile icon
 import 'package:flutter/material.dart';
 
 Widget avatar(
     {required BuildContext context,
+    String? imageUrl,
     required double editIconSize,
     required double avatarSize,
     String route = ''}) {
@@ -16,7 +17,7 @@ Widget avatar(
     child: Stack(
       children: [
         CircleAvatar(
-          backgroundImage: const AssetImage('assets/images/man.png'),
+          backgroundImage: AssetImage(imageUrl ?? 'assets/images/man.png'),
           radius: avatarSize,
         ),
         Positioned(

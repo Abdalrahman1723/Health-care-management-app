@@ -114,14 +114,21 @@ class _LoginViewState extends State<LoginView> {
                             try {
                               final credential = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
-                                email: _emailController.text,
+                                email: _emailController.text.trim(),
                                 password: _passwordController.text,
                               );
                               if (_emailController.text == 'doctor@gmail.com' &&
                                   _passwordController.text == '123456') {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorHomeWidget()));// Replace 'doctor_home' with your actual route name
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DoctorHomeWidget())); // Replace 'doctor_home' with your actual route name
                               } else {
-                                Navigator.pushNamed(context, Routes.mainScreen); // Navigate to main screen for other users
+                                Navigator.pushNamed(
+                                    context,
+                                    Routes
+                                        .mainScreen); // Navigate to main screen for other users
                               }
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'user-not-found') {

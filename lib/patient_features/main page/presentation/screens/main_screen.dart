@@ -24,16 +24,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
+  String patientID =
+      "3"; //! this is a temp (later should be actorId) with shared pref
 
   @override
   void initState() {
     super.initState();
-    // Fetch doctor with ID 1 when screen loads
-    context.read<PatientCubit>().fetchDoctorById('1');
+    // Fetch patient with ID 3 when screen loads
+    context.read<PatientCubit>().fetchPatientById(patientID!);
   }
 
   @override
   Widget build(BuildContext context) {
+    //update the date to selected date
     void _updateDate(DateTime newDate) {
       setState(() {
         _selectedDate = newDate;
@@ -41,97 +44,111 @@ class _MainScreenState extends State<MainScreen> {
       log("Selected date: $_selectedDate");
     }
 
-    return Scaffold(
-      appBar: AppBar(
-          title: Column(
-            children: [
-              GradientBackground.gradientText("Hi, Welcome back!"),
-              const Text(
-                'Abdalrahman', //!later will be replaced with the user name
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: avatar(
-                context: context,
-                editIconSize: 8,
-                avatarSize: 20,
-                route: Routes.userProfileScreen),
-          ),
-          // settings and notification icons
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Row(
+    return BlocBuilder<PatientCubit, PatientState>(
+      builder: (context, state) {
+        // ==========loading state =============//
+        if (state is PatientLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+          // ==========error state =============//
+        } else if (state is PatientError) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // notification icon
-                  SizedBox(
-                    width: 35,
-                    height: 35,
-                    child: IconButton(
-                      icon: const Icon(Icons.notifications_none),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, Routes.notificationsScreen);
-                      },
-                    ),
+                  Text(
+                    state.message,
+                    style: const TextStyle(color: Colors.black),
                   ),
-                  const SizedBox(width: 3),
-                  // settings icon
-                  SizedBox(
-                    width: 35,
-                    height: 35,
-                    child: IconButton(
-                      icon: const Icon(Icons.settings_outlined),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, Routes.settingsScreen);
+                        context
+                            .read<PatientCubit>()
+                            .fetchPatientById(patientID!);
                       },
-                    ),
-                  ),
-                  const SizedBox(width: 3),
-                  // search icon
-                  SizedBox(
-                    width: 35,
-                    height: 35,
-                    child: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        // Handle search icon press
-                      },
-                    ),
-                  ),
+                      child: const Text("restart connection"))
                 ],
               ),
-            )
-          ]),
-
-      //------------------------ body section --------------------------------
-      body: BlocBuilder<PatientCubit, PatientState>(
-        builder: (context, state) {
-          if (state is PatientLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is PatientError) {
-            return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  state.message,
-                  style: const TextStyle(color: Colors.black),
+            ),
+          );
+          // ==========success state =============//
+        } else if (state is PatientLoaded) {
+          // Log the patient data
+          log('patient Data: ${state.patient.toString()}');
+          return Scaffold(
+            appBar: AppBar(
+                title: Column(
+                  children: [
+                    GradientBackground.gradientText("Hi, Welcome back!"),
+                    Text(
+                      state.patient.name,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      context.read<PatientCubit>().fetchDoctorById('1');
-                    },
-                    child: const Text("restart connection"))
-              ],
-            ));
-          } else if (state is PatientDoctorLoaded) {
-            // Log the doctor data
-            log('Doctor Data: ${state.doctor.toString()}');
-            return SafeArea(
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  //--------the avatar
+                  child: avatar(
+                      context: context,
+                      // imageUrl: state.patient.imageUrl, //?empty for now
+                      editIconSize: 8,
+                      avatarSize: 20,
+                      route: Routes.userProfileScreen),
+                ),
+                // settings and notification icons
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Row(
+                      children: [
+                        // notification icon
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.notifications_none),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, Routes.notificationsScreen);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        // settings icon
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, Routes.settingsScreen);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        // search icon
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              // Handle search icon press
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ]),
+
+            //------------------------ body section --------------------------------
+            body: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -380,12 +397,12 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
               ),
-            );
-          } else {
-            return const Center();
-          }
-        },
-      ),
+            ),
+          );
+        } else {
+          return const Center();
+        }
+      },
     );
   }
 }
