@@ -22,7 +22,7 @@ Widget specialty(String icon, String title) {
           SvgPicture.asset(
             icon,
             // color: Colors.white,
-            height: 60,
+            height: 55,
             width: 60,
           ),
           Text(

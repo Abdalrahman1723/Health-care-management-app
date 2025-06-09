@@ -347,7 +347,6 @@ class _MainScreenState extends State<MainScreen> {
                                             thickness: 1,
                                           ),
                                           InkWell(
-                                            
                                             onTap: () {
                                               Navigator.pushNamed(
                                                   context,
@@ -399,7 +398,7 @@ class _MainScreenState extends State<MainScreen> {
 
                     GridView.count(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
+                          vertical: 12, horizontal: 20),
                       crossAxisCount: 3,
                       shrinkWrap: true,
                       crossAxisSpacing: 5,

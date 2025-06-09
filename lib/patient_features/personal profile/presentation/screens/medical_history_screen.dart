@@ -150,7 +150,7 @@ class MedicalHistoryScreen extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
-                .copyWith(color: Colors.black),
+                .copyWith(color: Colors.black, fontSize: 20),
           ),
         ],
       ),
