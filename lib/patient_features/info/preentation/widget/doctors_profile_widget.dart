@@ -2,17 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../views/doctors_profile.dart';
+import '../../../doctors/domain/entities/doctor_entity.dart';
 
 class DoctorsProfileWidget extends StatelessWidget {
-  final String fullName;
-  final String specialization;
-  final String photoUrl;
+  final DoctorEntity doctor;
 
   const DoctorsProfileWidget({
     Key? key,
-    required this.fullName,
-    required this.specialization,
-    required this.photoUrl,
+    required this.doctor,
   }) : super(key: key);
 
   @override
@@ -21,9 +18,7 @@ class DoctorsProfileWidget extends StatelessWidget {
       data: ThemeData(),
       child: Scaffold(
         body: DoctorProfileScreen(
-          fullName: fullName,
-          specialization: specialization,
-          photoUrl: photoUrl,
+          doctorId: doctor.id,
         ),
       ),
     );

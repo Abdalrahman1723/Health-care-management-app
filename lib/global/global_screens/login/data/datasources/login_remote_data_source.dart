@@ -17,28 +17,43 @@ class LoginRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        // هنا بنشوف إذا الرسالة فيها Error من السيرفر
-        if (response.data is Map && response.data['Message'] == "Email is not exist.") {
-          throw Exception("البريد الإلكتروني غير مسجل.");
+        // التحقق من وجود البيانات المطلوبة
+        if (response.data is! Map) {
+          throw Exception("استجابة غير صالحة من الخادم");
         }
 
-        // تحقق من وجود التوكن في الاستجابة
-        if (response.data['token'] != null) {
-          return LoginModel.fromJson(response.data);
-        } else {
-          throw Exception("فشل تسجيل الدخول. تأكد من البيانات.");
+        // تحويل البيانات إلى Map<String, dynamic>
+        final Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+        
+        // التحقق من وجود رسالة خطأ
+        if (data['Message'] != null) {
+          throw Exception(data['Message']);
         }
+
+        // التحقق من وجود البيانات المطلوبة
+        if (data['token'] == null || data['actorId'] == null || data['role'] == null) {
+          throw Exception("بيانات تسجيل الدخول غير مكتملة");
+        }
+
+        // تحويل البيانات إلى النموذج المطلوب
+        return LoginModel.fromJson(data);
       } else {
-        throw Exception("حدث خطأ في السيرفر. حاول لاحقاً.");
+        throw Exception("حدث خطأ في السيرفر. الرمز: ${response.statusCode}");
       }
     } on DioException catch (e) {
       if (e.response != null && e.response?.data != null) {
-        // دي الرسالة اللي بيرجعها السيرفر لما الايميل مش مسجل
-        final errorMessage = e.response?.data["message"] ?? "فشل في تسجيل الدخول";
-        throw Exception(errorMessage);
-      } else {
-        throw Exception("فشل في الاتصال بالسيرفر");
+        final errorData = e.response?.data;
+        if (errorData is Map) {
+          final Map<String, dynamic> errorMap = Map<String, dynamic>.from(errorData);
+          if (errorMap['message'] != null) {
+            throw Exception(errorMap['message']);
+          }
+        }
+        throw Exception("فشل في تسجيل الدخول: ${e.message}");
       }
+      throw Exception("فشل في الاتصال بالسيرفر: ${e.message}");
+    } catch (e) {
+      throw Exception("حدث خطأ غير متوقع: $e");
     }
   }
 }

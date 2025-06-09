@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../all_appointement_upcoming/presentation/views/all_appointment_upcoming_view.dart';
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
+import 'dart:convert';
+
 
 class DoctorsAppointment extends StatefulWidget {
   final String doctorName;
   final String specialty;
   final String doctorImage;
+  final int doctorId;
 
   const DoctorsAppointment({
     Key? key,
     required this.doctorName,
     required this.specialty,
     required this.doctorImage,
+    required this.doctorId,
   }) : super(key: key);
 
   @override
@@ -28,15 +35,69 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _problemController = TextEditingController();
 
-  final List<String> _timeSlots = [
-    '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
-    '11:30 AM', '12:00 M', '12:30 M', '1:00 PM', '1:30 PM',
-    '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM',
-  ];
+  List<Map<String, dynamic>> _availableSlots = [];
+  List<String> _availableTimeSlots = [];
+  int? _selectedAvailabilityId;
+  bool _isLoading = true;
 
-  final List<String> _highlightedTimeSlots = [
-    '10:00 AM', '11:30 AM', '1:00 PM', '1:30 PM', '2:30 PM', '3:00 PM'
-  ];
+  @override
+  void initState() {
+    super.initState();
+    loadBookedSlots();
+    fetchDoctorAppointments();
+  }
+
+  Future<void> loadBookedSlots() async {
+    final prefs = await SharedPreferences.getInstance();
+    final booked = prefs.getStringList('booked_slots') ?? [];
+    setState(() {
+      bookedTimeSlots = booked;
+    });
+  }
+
+  Future<void> fetchDoctorAppointments() async {
+    setState(() => _isLoading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Patient/doctor/${widget.doctorId}/appointments',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+      final List<dynamic> data = response.data;
+      final List<Map<String, dynamic>> slots = data
+          .where((item) => item['status'] != null && item['status'].toString().toLowerCase() == 'available')
+          .map<Map<String, dynamic>>((item) {
+        double start = (item['startTimeInHours'] ?? 0).toDouble();
+        double end = (item['endTimeInHours'] ?? 0).toDouble();
+        String day = item['day'] ?? '';
+        String formatTime(double hour) {
+          int h = hour.floor();
+          int m = ((hour - h) * 60).round();
+          String period = h >= 12 ? 'PM' : 'AM';
+          int displayHour = h > 12 ? h - 12 : (h == 0 ? 12 : h);
+          return '${displayHour.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')} $period';
+        }
+        String slotText = '$day: ${formatTime(start)} - ${formatTime(end)}';
+        return {
+          'id': item['id'] ?? item['availabilityId'],
+          'text': slotText,
+          'raw': item,
+        };
+      }).toList();
+      setState(() {
+        _availableSlots = slots;
+        _availableTimeSlots = slots.map((e) => e['text'] as String).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _availableSlots = [];
+        _availableTimeSlots = [];
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -162,17 +223,34 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               ),
               child: Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_selectedTimeSlot != null) {
-                      _showConfirmationDialog(context);
-                    } else {
+                  onPressed: () async {
+                    if (_selectedAvailabilityId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please select an available time slot', style: TextStyle(fontSize: 16)),
-                          backgroundColor: Colors.red,
-                        ),
+                        const SnackBar(content: Text('Please select an available time slot'), backgroundColor: Colors.red),
                       );
+                      return;
                     }
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Confirm Appointment'),
+                        content: Text('Do you want to confirm this appointment?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              Navigator.pop(context); // Close dialog
+                              await bookAppointment();
+                            },
+                            child: Text('Confirm'),
+                          ),
+                        ],
+                      ),
+                    );
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
@@ -218,26 +296,38 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   }
 
   Widget _buildTimeSlotGrid() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_availableTimeSlots.isEmpty) {
+      return const Center(
+        child: Text(
+          'No Available Appointments',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      );
+    }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _timeSlots.length,
+      itemCount: _availableTimeSlots.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
-        childAspectRatio: 2.5,
+        crossAxisCount: 2,
+        childAspectRatio: 4,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
       itemBuilder: (context, index) {
-        final slot = _timeSlots[index];
-        final isSelected = slot == _selectedTimeSlot;
-        final isBooked = bookedTimeSlots.contains(slot);
+        final slot = _availableSlots[index];
+        final isSelected = slot['id'] == _selectedAvailabilityId;
+        final isBooked = bookedTimeSlots.contains(slot['text']);
 
         return GestureDetector(
           onTap: () {
             if (!isBooked) {
               setState(() {
-                _selectedTimeSlot = slot;
+                _selectedTimeSlot = slot['text'];
+                _selectedAvailabilityId = slot['id'];
               });
             }
           },
@@ -253,7 +343,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              slot,
+              slot['text'],
               style: TextStyle(
                 color: isBooked || isSelected ? Colors.white : const Color(0xFF0BDCDC),
                 fontWeight: FontWeight.w500,
@@ -321,51 +411,49 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     );
   }
 
-  void _showConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 60),
-            const SizedBox(height: 16),
-            const Text("Appointment Confirmed!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            Text("Your appointment has been booked for $_selectedTimeSlot."),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(backgroundColor: Colors.red.shade400),
-                    child: const Text("Cancel", style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      if (_selectedTimeSlot != null) {
-                        bookedTimeSlots.add(_selectedTimeSlot!);
-                      }
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const DoctorsScreen()),
-                      );
-                    },
-                    style: TextButton.styleFrom(backgroundColor: Colors.green),
-                    child: const Text("OK", style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> bookAppointment() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      if (token == null) throw Exception('User token not found');
+
+      final bookResponse = await Dio().post(
+        'https://healthcaresystem.runasp.net/api/Patient/book',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        }),
+        data: {
+          'doctorId': widget.doctorId,
+          'availabilityId': _selectedAvailabilityId,
+        },
+      );
+
+      if (bookResponse.statusCode == 200 || bookResponse.statusCode == 201) {
+        // ✅ Store the booked time slot locally
+        final bookedSlot = _selectedTimeSlot;
+        if (bookedSlot != null) {
+          List<String> booked = prefs.getStringList('booked_slots') ?? [];
+          if (!booked.contains(bookedSlot)) {
+            booked.add(bookedSlot);
+            await prefs.setStringList('booked_slots', booked);
+          }
+          setState(() {
+            bookedTimeSlots = booked;
+          });
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully Booked'), backgroundColor: Colors.green),
+        );
+        // لا ترجع للصفحة السابقة تلقائياً
+      } else {
+        throw Exception('Booking failed: ${bookResponse.statusCode}');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Booking error: $e'), backgroundColor: Colors.red),
+      );
+    }
   }
 }

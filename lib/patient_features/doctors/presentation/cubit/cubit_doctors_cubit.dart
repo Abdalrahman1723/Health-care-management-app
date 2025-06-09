@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/doctor_entity.dart';
 import '../../domain/entity.dart';
 import '../../domain/repo.dart';
 

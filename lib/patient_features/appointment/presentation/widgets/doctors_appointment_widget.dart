@@ -7,12 +7,14 @@ class DoctorsAppointmentWidget extends StatelessWidget {
   final String fullName;
   final String specialization;
   final String photoUrl;
+  final int doctorId;
 
   const DoctorsAppointmentWidget({
     Key? key,
     required this.fullName,
     required this.specialization,
     required this.photoUrl,
+    required this.doctorId,
   }) : super(key: key);
 
   @override
@@ -21,9 +23,11 @@ class DoctorsAppointmentWidget extends StatelessWidget {
       data: ThemeData(),
       child: Scaffold(
         body: DoctorsAppointment(
-            doctorName: fullName,
-            specialty: specialization,
-            doctorImage: photoUrl)
+          doctorName: fullName,
+          specialty: specialization,
+          doctorImage: photoUrl,
+          doctorId: doctorId,
+        ),
       ),
     );
   }

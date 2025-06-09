@@ -2,28 +2,33 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../appointment/presentation/widgets/doctors_appointment_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../appointment/presentation/views/doctors_appointment_view.dart';
 import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
-import '../../domain/entity.dart';
-import '../cubit/cubit_doctors_cubit.dart';
-import 'doctor_card.dart';
+import '../../../info/preentation/views/doctors_profile.dart';
+import '../../domain/entities/doctor_entity.dart';
+import '../cubit/doctors_cubit.dart';
+import '../cubit/doctors_state.dart';
+import '../widgets/doctor_card.dart';
+import '../../../info/preentation/widget/doctors_profile_widget.dart';
+
 
 class DoctorsView extends StatefulWidget {
-  const DoctorsView({super.key});
+  const DoctorsView({Key? key}) : super(key: key);
 
   @override
-  _DoctorsViewState createState() => _DoctorsViewState();
+  State<DoctorsView> createState() => _DoctorsViewState();
 }
 
 class _DoctorsViewState extends State<DoctorsView> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = "";
-
-  List<Entity> favoriteDoctors = [];
+  List<DoctorEntity> favDoctors = [];
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _loadDoctors();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text.toLowerCase();
@@ -32,76 +37,147 @@ class _DoctorsViewState extends State<DoctorsView> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadDoctors() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null) {
+      context.read<DoctorsCubit>().getAllDoctors(token);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Doctors',style: TextStyle(fontSize: 25)),
+        backgroundColor: const Color(0xFF0BDCDC),
+      ),
+      body: Column(
         children: [
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              hintStyle: const TextStyle(color: Color(0xFF0BDCDC), fontSize: 17),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-              filled: true,
-              fillColor: Colors.white,
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF0BDCDC)),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: Colors.black), // 👈 ده السطر اللي يغير لون النص
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF0BDCDC)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
-            style: const TextStyle(fontSize: 16.0),
+
           ),
-          const SizedBox(height: 16.0),
           Expanded(
             child: BlocBuilder<DoctorsCubit, DoctorsState>(
               builder: (context, state) {
                 if (state is DoctorsLoading) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (state is DoctorsFailure) {
-                  return Center(child: Text(state.errMessage));
                 } else if (state is DoctorsSuccess) {
-                  List<Entity> filteredDoctors = state.entities.where((doctor) {
-                    return doctor.fullName.toLowerCase().contains(_searchQuery) ||
-                        doctor.specialization.toLowerCase().contains(_searchQuery);
+                  final filteredDoctors = state.doctors.where((doctor) {
+                    final name = doctor.fullName.toLowerCase();
+                    final spec = doctor.specialization.toLowerCase();
+                    return name.contains(_searchQuery) || spec.contains(_searchQuery);
                   }).toList();
-
+                  if (filteredDoctors.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No doctors found',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: filteredDoctors.length,
                     itemBuilder: (context, index) {
                       final doctor = filteredDoctors[index];
-                      final isFav = favoriteDoctors.contains(doctor);
-
+                      final isFav = favDoctors.any((d) => d.fullName == doctor.fullName);
                       return DoctorCard(
                         doctor: doctor,
                         isFavorite: isFav,
                         onFavorite: () {
                           setState(() {
                             if (isFav) {
-                              favoriteDoctors.remove(doctor);
+                              favDoctors.removeWhere((d) => d.fullName == doctor.fullName);
                             } else {
-                              favoriteDoctors.add(doctor);
+                              favDoctors.add(doctor);
                             }
                           });
+                        },
+                        onInfo: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DoctorProfileScreen(doctorId: doctor.id,),
+                            ),
+                          );
                         },
                       );
                     },
                   );
-                } else {
-                  return const SizedBox.shrink(); // DoctorsInitial
+                } else if (state is DoctorsFailure) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Error: ${state.error}',
+                          style: const TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadDoctors,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  );
                 }
+                return const SizedBox();
               },
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FavDoctors(
-                    favoriteDoctors: favoriteDoctors,
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FavDoctors(
+                        favoriteDoctors: favDoctors,
+                        onFavChanged: (updatedFavs) {
+                          setState(() {
+                            favDoctors = updatedFavs;
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                },
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0BDCDC),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-              );
-            },
-            child: const Text('Go to Favorite Doctors'),
+                child: const Text(
+                  'Go to Fav Doctors',
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ),
         ],
       ),

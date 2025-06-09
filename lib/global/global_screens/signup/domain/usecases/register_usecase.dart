@@ -12,6 +12,16 @@ class RegisterUseCase {
     required String phoneNumber,
     required String email,
     required String password,
+    required String profilePicture,
+    required String dateOfBirth,
+    required String gender,
+    required int age,
+    required String nationalID,
+    required String bloodType,
+    required String chronicDiseases,
+    required String allergies,
+    required String currentMedications,
+    required String insuranceProvider,
   }) {
     return repository.registerUser(
       username: username,
@@ -19,6 +29,16 @@ class RegisterUseCase {
       phoneNumber: phoneNumber,
       email: email,
       password: password,
+      profilePicture: profilePicture,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+      age: age,
+      nationalID: nationalID,
+      bloodType: bloodType,
+      chronicDiseases: chronicDiseases,
+      allergies: allergies,
+      currentMedications: currentMedications,
+      insuranceProvider: insuranceProvider,
     );
   }
 }

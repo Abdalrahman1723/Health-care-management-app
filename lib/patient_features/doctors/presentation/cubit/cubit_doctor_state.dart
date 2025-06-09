@@ -18,7 +18,7 @@ class DoctorsLoading extends DoctorsState {
 }
 
 class DoctorsSuccess extends DoctorsState {
-  final List<Entity> entities;
+  final List<DoctorEntity> entities;
 
   const DoctorsSuccess({required this.entities});
 

@@ -30,17 +30,52 @@ class _LoginViewState extends State<LoginView> {
       child: BlocListener<LoginCubit, LoginState>(
         listener: (context, state) async {
           if (state is LoginLoading) {
-            showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
+            // عرض loading dialog
+            showDialog(
+                context: context,
+                barrierDismissible: false, // منع الإغلاق بالضغط خارج النافذة
+                builder: (_) => const Center(
+                    child: CircularProgressIndicator()
+                )
+            );
           } else if (state is LoginSuccess) {
+            // إغلاق loading dialog
             Navigator.pop(context);
+
+            // حفظ البيانات في SharedPreferences
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('token', state.loginEntity.token);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+            await prefs.setString('role', state.loginEntity.role);
+            await prefs.setString('actorId', state.loginEntity.id.toString());
+            await prefs.setInt('patientId', state.loginEntity.id); // حفظ patientId لاستخدامه في جلب المواعيد
+
+            // التنقل حسب نوع المستخدم
+            final role = state.loginEntity.role.trim().toLowerCase();
+            if (role == 'patient') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainScreen())
+              );
+            } else if (role == 'doctor') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DoctorHomeWidget())
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("نوع مستخدم غير معروف: ${state.loginEntity.role}"))
+              );
+            }
+
             print("user Id: ${state.loginEntity.id}");
             print("token: ${state.loginEntity.token}");
+            print("role: ${state.loginEntity.role}");
 
-          }else if (state is LoginFailure) {
+          } else if (state is LoginFailure) {
+            // إغلاق loading dialog
             Navigator.pop(context);
+
+            // عرض رسالة الخطأ
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("خطأ: ${state.error}")),
             );
@@ -69,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      "Welcome! Please log in to continue. Enter your email or mobile number and password to access your account. If you don’t have an account, sign up now!",
+                      "Welcome! Please log in to continue. Enter your email or mobile number and password to access your account. If you don't have an account, sign up now!",
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     const SizedBox(height: 24),
@@ -121,33 +156,24 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Log In Button
+                    // Log In Button - الكود الصحيح
                     Center(
                       child: SizedBox(
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                            onPressed: () async {
-                              final token = await context.read<LoginCubit>().login(
-                                email: _emailController.text,
-                                password: _passwordController.text,
+                          onPressed: () {
+                            // التحقق من صحة النموذج
+                            if (_formKey.currentState!.validate()) {
+                              // استدعاء login واحد بس - BlocListener هيتعامل مع الباقي
+                              context.read<LoginCubit>().login(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text.trim(),
                               );
-
-                              if (token != null) {
-                                // خزني التوكن في SharedPreferences
-                                final prefs = await SharedPreferences.getInstance();
-                                await prefs.setString('token', token);
-
-                                // بعدها اعملي التنقل للشاشة الرئيسية
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
-                              } else {
-                                // لو فشل اللوجن، ممكن تخلي الـ BlocListener يعرض رسالة الخطأ
-                              }
-                            },
-
-                            child: Text("Login"),
+                            }
+                          },
+                          child: const Text("Login"),
                         ),
-
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -156,7 +182,7 @@ class _LoginViewState extends State<LoginView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Don’t have an account?"),
+                        const Text("Don't have an account?"),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -174,7 +200,6 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ],
                     ),
-
                   ],
                 ),
               ),
@@ -182,8 +207,6 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
       ),
-
-
     );
   }
 }
@@ -202,7 +225,7 @@ void showErrorDialog(BuildContext context, String message) {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog
+                Navigator.of(context).pop();
               },
               child: const Text('OK'),
             ),

@@ -1,20 +1,22 @@
-// lib/widgets/doctor_card.dart
 
 import 'package:flutter/material.dart';
-import '../../../appointment/presentation/widgets/doctors_appointment_widget.dart';
-import '../../../info/preentation/views/doctors_profile.dart';
-import '../../../info/preentation/widget/doctors_profile_widget.dart';
-import '../../domain/entity.dart';
+
+import '../../../appointment/presentation/views/doctors_appointment_view.dart';
+import '../../domain/entities/doctor_entity.dart';
 
 class DoctorCard extends StatefulWidget {
-  final Entity doctor;
+  final DoctorEntity doctor;
   final bool isFavorite;
   final VoidCallback onFavorite;
+  final VoidCallback onInfo;
+  final bool hideFavoriteIcon; // جديد: لو true نخفي القلب
 
   const DoctorCard({
     required this.doctor,
     required this.isFavorite,
     required this.onFavorite,
+    required this.onInfo,
+    this.hideFavoriteIcon = false, // افتراضي false
   });
 
   @override
@@ -31,6 +33,14 @@ class _DoctorCardState extends State<DoctorCard> {
   }
 
   @override
+  void didUpdateWidget(covariant DoctorCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isFavorite != widget.isFavorite) {
+      _isFavorite = widget.isFavorite;  // مزامنة الحالة مع القيمة الجديدة
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -39,7 +49,7 @@ class _DoctorCardState extends State<DoctorCard> {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(widget.doctor.photo),
+              backgroundImage: NetworkImage(widget.doctor.photoUrl),
               radius: 50,
             ),
             const SizedBox(width: 16.0),
@@ -52,64 +62,56 @@ class _DoctorCardState extends State<DoctorCard> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF0BDCDC),
-                        fontSize: 18),
+                        fontSize: 20),
                   ),
                   Text(
                     widget.doctor.specialization,
-                    style: const TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey,fontSize: 18),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DoctorProfileScreen(
-                                fullName: widget.doctor.fullName,
-                                specialization: widget.doctor.specialization,
-                                photoUrl: widget.doctor.photo,
-                              ),
-                            ),
-                          );
-                        },
+                        onPressed: widget.onInfo,
                         child: const Text(
                           'Info',
                           style: TextStyle(
                             color: Color(0xFF0BDCDC),
-                            fontSize: 15,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
 
-                      IconButton(
-                        icon: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: _isFavorite ? const Color(0xFF0BDCDC) : Colors.grey,
+                      if (!widget.hideFavoriteIcon)  // لو مش مخفي، اعرض الايقونة
+                        IconButton(
+                          icon: Icon(
+                            _isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: _isFavorite ? const Color(0xFF0BDCDC) : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isFavorite = !_isFavorite;
+                            });
+                            widget.onFavorite();
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _isFavorite = !_isFavorite;
-                          });
-                          widget.onFavorite();
-                        },
-                      ),
                     ],
                   ),
+
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DoctorsAppointmentWidget(
-                            fullName: widget.doctor.fullName,
-                            specialization: widget.doctor.specialization,
-                            photoUrl: widget.doctor.photo,
+                          builder: (context) => DoctorsAppointment(
+                            doctorName: widget.doctor.fullName,
+                            specialty: widget.doctor.specialization,
+                            doctorImage: widget.doctor.photoUrl, doctorId: widget.doctor.id,
                           ),
                         ),
                       );
+
                     },
                     child: const Text(
                       'Make Appointment',

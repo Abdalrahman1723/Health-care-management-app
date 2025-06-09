@@ -7,6 +7,8 @@ class CustomTextField extends StatefulWidget {
   final String label;
   final bool isEmail;
   final bool isPassword;
+  final TextInputType? keyboardType;
+  final VoidCallback? onTap;
 
   const CustomTextField({
     Key? key,
@@ -16,6 +18,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
     this.isEmail = false,
     this.isPassword = false,
+    this.keyboardType, this.onTap,
   }) : super(key: key);
 
   @override

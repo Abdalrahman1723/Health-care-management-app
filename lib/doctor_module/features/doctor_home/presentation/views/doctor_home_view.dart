@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../doctor_details_screen/presentation/widget/DoctorDetailsWidget.dart';
-import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_appointment/presentation/widget/doctors_appointement_avaliablity_widget.dart';
+import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
 import '../../../doctors_notification/presentation/widgets/doctors_notification_widget.dart';
 

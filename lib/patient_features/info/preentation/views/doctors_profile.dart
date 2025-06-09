@@ -1,195 +1,236 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
-class DoctorProfileScreen extends StatelessWidget {
-  final String fullName;
-  final String specialization;
-  final String photoUrl;
+class DoctorProfileScreen extends StatefulWidget {
+  final int doctorId;
+  const DoctorProfileScreen({Key? key, required this.doctorId}) : super(key: key);
 
-  const DoctorProfileScreen({
-    Key? key,
-    required this.fullName,
-    required this.specialization,
-    required this.photoUrl,
-  }) : super(key: key);
+  @override
+  State<DoctorProfileScreen> createState() => _DoctorProfileScreenState();
+}
+
+class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
+  Map<String, dynamic>? doctorData;
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDoctorData();
+  }
+
+  Future<void> fetchDoctorData() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+    try {
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Patient/${widget.doctorId}',
+      );
+      setState(() {
+        doctorData = response.data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = 'Failed to load doctor data';
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header with doctor info
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: const Color(0xFF0BDCDC),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : error != null
+            ? Center(child: Text(error!))
+            : doctorData == null
+            ? const Center(child: Text('No data found'))
+            : SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF0BDCDC), Color(0xFF00B4D8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(photoUrl),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                child: Column(
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          fullName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
                         ),
+                        const Spacer(),
+                      ],
+                    ),
+                    CircleAvatar(
+                      radius: 45,
+                      backgroundImage: NetworkImage(doctorData!['photo'] ?? ''),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      doctorData!['fullName'] ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      doctorData!['specialization'] ?? '',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.star, color: Colors.yellow, size: 20),
+                        const SizedBox(width: 4),
                         Text(
-                          specialization,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                          '${doctorData!['rating'] ?? ''}',
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.star, color: Colors.white, size: 16),
-                                  SizedBox(width: 4),
-                                  Text('5.0', style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Text('349 reviews', style: TextStyle(color: Colors.white)),
-                            ),
-                          ],
+                        const SizedBox(width: 16),
+                        Icon(Icons.people, color: Colors.white, size: 20),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${doctorData!['reviewsCount'] ?? ''}',
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _infoChip(
+                          icon: Icons.work,
+                          label: '${doctorData!['experienceYears'] ?? ''} years experience',
+                        ),
+                        const SizedBox(width: 8),
+                        _infoChip(
+                          icon: Icons.access_time,
+                          label: doctorData!['workingHours'] ?? '',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-
-            // Experience section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade200),
-                      ),
-                      child: const Row(
+              // Focus
+              if ((doctorData!['focus'] ?? '').isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: RichText(
+                      text: TextSpan(
                         children: [
-
+                          const TextSpan(
+                            text: 'Focus: ',
+                            style: TextStyle(
+                              color: Color(0xFF0BDCDC),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          TextSpan(
+                            text: doctorData!['focus'] ?? '',
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 15,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ],
+                ),
+              // Profile, Career Path, Highlights
+              _section('Profile', doctorData!['profile']),
+              _section('Career Path', doctorData!['careerPath']),
+              _section('Highlights', doctorData!['highlights']),
+              // Clinic Name
+              if ((doctorData!['clinicName'] ?? '').isNotEmpty)
+                _section('Clinic Name', doctorData!['clinicName']),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoChip({required IconData icon, required String label}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF0BDCDC)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF0BDCDC), size: 18),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFF0BDCDC),
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _section(String title, String? value) {
+    if (value == null || value.isEmpty) return const SizedBox();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Align(
+        alignment: Alignment.centerLeft, // هذا السطر هو المهم
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0BDCDC),
               ),
             ),
-
-            // Focus section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8),
-                    Text(
-                      'Specializes in skin diseases, acne, hormonal imbalances, and cosmetic dermatology procedures.',
-                      style: TextStyle(color: Colors.grey, height: 1.5),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Scrollable content
-            const Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Profile
-                    Text(
-                      'Profile',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0BDCDC),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Dr. Lopez is known for his innovative treatment approaches and deep understanding of patient needs. His experience spans across both surgical and cosmetic dermatology.',
-                      style: TextStyle(color: Colors.grey, height: 1.5),
-                    ),
-                    SizedBox(height: 24),
-
-                    // Career Path
-                    Text(
-                      'Career Path',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0BDCDC),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Graduated from Harvard Medical School, followed by a 5-year dermatology residency. Currently practicing at SkinCare Clinic, Cairo.',
-                      style: TextStyle(color: Colors.grey, height: 1.5),
-                    ),
-                    SizedBox(height: 24),
-
-                    // Highlights
-                    Text(
-                      'Highlights',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0BDCDC),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Over 10,000 successful cases. Frequent speaker at global dermatology conferences. Awarded "Top Doctor" in 2022.',
-                      style: TextStyle(color: Colors.grey, height: 1.5),
-                    ),
-                  ],
-                ),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 15,
               ),
             ),
           ],

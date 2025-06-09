@@ -101,116 +101,26 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
   }
 
   Widget _buildCompletedAppointments() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _buildCompletedAppointmentCard(
-          'Dr. Emma Hall, M.D.',
-          'General Doctor',
-          'lib/core/assets/images/download.jpg',
-        ),
-        const SizedBox(height: 16),
-        _buildCompletedAppointmentCard(
-          'Dr. Jacob Lopez, M.D.',
-          'Surgical Dermatology',
-          'lib/core/assets/images/download.jpg',
-        ),
-        const SizedBox(height: 16),
-        _buildCompletedAppointmentCard(
-          'Dr. Quinn Cooper, M.D.',
-          'Menopausal and Geriatric Gynecology',
-          'lib/core/assets/images/download.jpg',
-        ),
-        const SizedBox(height: 16),
-        _buildCompletedAppointmentCard(
-          'Dr. Lucy Perez, Ph.D.',
-          'Clinical Dermatology',
-          'lib/core/assets/images/download.jpg',
-        ),
-      ],
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.event_busy,
+            color: Colors.grey,
+            size: 60,
+          ),
+          SizedBox(height: 10),
+          Text(
+                "No Completed Appointments",
+                style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildCompletedAppointmentCard(String name, String specialty, String imagePath) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade100,
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage(imagePath),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0BDCDC),
-                      ),
-                    ),
-                    Text(
-                      specialty,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0BDCDC),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: const Text("Re-Book", style: TextStyle(color: Colors.white,fontSize: 16)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: const Text("Add Review", style: TextStyle(color: Colors.black,fontSize: 16)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

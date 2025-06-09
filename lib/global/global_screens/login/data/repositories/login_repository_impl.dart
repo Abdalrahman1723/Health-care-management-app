@@ -10,7 +10,7 @@ class LoginRepositoryImpl implements LoginRepository {
   @override
   Future<LoginEntity> loginUser({required String email, required String password}) async {
     final model = await remoteDataSource.login(email: email, password: password);
-    return LoginEntity(token: model.token, id: model.id);
+    return LoginEntity(token: model.token, id: model.id, role: model.role);
   }
   
 }

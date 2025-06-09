@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorsDates extends StatefulWidget {
   const DoctorsDates({Key? key}) : super(key: key);
@@ -9,189 +10,375 @@ class DoctorsDates extends StatefulWidget {
 }
 
 class _DoctorsDatesState extends State<DoctorsDates> {
-  DateTime _selectedDate = DateTime.now();
-  List<String> selectedTimeSlots = [];
-
-  final List<String> timeSlots = [
-    '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
-    '12:00 PM', '12:30 PM', '01:30 PM', '02:00 PM',
-    '03:00 PM', '04:30 PM', '05:00 PM', '05:30 PM',
+  final List<String> days = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+    'Friday', 'Saturday', 'Sunday'
   ];
 
-  void _updateDate(DateTime newDate) {
-    setState(() {
-      _selectedDate = newDate;
-    });
+  final List<double> hours = [
+    6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+  ];
+
+  String? selectedDay;
+  double? selectedStartHour;
+  double? selectedEndHour;
+  bool isLoading = false;
+  List<Map<String, dynamic>> currentAvailabilities = [];
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentAvailabilities();
   }
 
-  void _showConfirmationDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog
-              },
-              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog بعد التأكيد
+  Future<void> _loadCurrentAvailabilities() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final doctorId = prefs.getString('actorId') ?? prefs.getString('doctorId');
 
-                // مسح المواعيد المحددة
-                setState(() {
-                  selectedTimeSlots.clear();  // تفريغ القائمة لإزالة التحديد
-                });
+      if (token == null || doctorId == null) {
+        throw Exception('Doctor information not found');
+      }
 
-                // إظهار رسالة الـ SnackBar
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("$title confirmed"),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0BDCDC),
-              ),
-              child: const Text("OK", style: TextStyle(color: Colors.white)),
-            ),
-          ],
+      print('Loading availabilities for doctor ID: $doctorId');
+
+      final dio = Dio();
+      final response = await dio.get(
+        'https://healthcaresystem.runasp.net/api/Doctor/$doctorId/availability',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          currentAvailabilities = List<Map<String, dynamic>>.from(response.data);
+          errorMessage = null;
+        });
+        print('Loaded ${currentAvailabilities.length} availabilities');
+      } else {
+        throw Exception('Failed to load: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error loading availabilities: $e');
+      setState(() {
+        errorMessage = 'Failed to load availabilities';
+      });
+    }
+  }
+
+  Future<void> _sendAvailability() async {
+    if (selectedDay == null || selectedStartHour == null || selectedEndHour == null) {
+      setState(() {
+        errorMessage = 'Please select all fields';
+      });
+      return;
+    }
+
+    if (selectedEndHour! <= selectedStartHour!) {
+      setState(() {
+        errorMessage = 'End time must be after start time';
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final doctorId = prefs.getString('actorId') ?? prefs.getString('doctorId');
+
+      if (token == null || doctorId == null) {
+        throw Exception('Doctor information not found');
+      }
+
+      // Check for overlaps
+      final hasOverlap = currentAvailabilities.any((avail) {
+        return avail['day'] == selectedDay &&
+            ((selectedStartHour! < avail['endTimeInHours'] &&
+                selectedEndHour! > avail['startTimeInHours']));
+            });
+
+      if (hasOverlap) {
+        throw Exception('This time overlaps with an existing availability');
+      }
+
+      final dio = Dio();
+      final response = await dio.post(
+        'https://healthcaresystem.runasp.net/api/Doctor/SetAvailability?doctorId=$doctorId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: {
+          'day': selectedDay,
+          'startTimeInHours': selectedStartHour,
+          'endTimeInHours': selectedEndHour,
+          'status': 'available',
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        await _loadCurrentAvailabilities();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Availability added successfully'),
+            backgroundColor: Colors.green,
+          ),
         );
-      },
-    );
+      } else {
+        throw Exception('Failed to save: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error saving availability: $e');
+      setState(() {
+        errorMessage = e.toString();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _deleteAvailability(int index) async {
+    final availability = currentAvailabilities[index];
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final doctorId = prefs.getString('actorId') ?? prefs.getString('doctorId');
+
+      if (token == null || doctorId == null) {
+        throw Exception('Doctor information not found');
+      }
+
+      final dio = Dio();
+      final response = await dio.delete(
+        'https://healthcaresystem.runasp.net/api/Doctor/RemoveAvailability?doctorId=$doctorId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: {
+          'day': availability['day'],
+          'startTimeInHours': availability['startTimeInHours'],
+          'endTimeInHours': availability['endTimeInHours'],
+        },
+      );
+
+      if (response.statusCode == 200) {
+        await _loadCurrentAvailabilities();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Availability removed'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        throw Exception('Failed to delete: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error deleting availability: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  String _formatTime(double hour) {
+    int h = hour.floor();
+    int m = ((hour - h) * 60).round();
+    String period = h >= 12 ? 'PM' : 'AM';
+    int displayHour = h > 12 ? h - 12 : (h == 0 ? 12 : h);
+    return '${displayHour.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')} $period';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Date Selector
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 60.0, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                CalendarDaySlotNavigator(
-                  isGoogleFont: false,
-                  slotLength: 6,
-                  dayBoxHeightAspectRatio: 4,
-                  dayDisplayMode: DayDisplayMode.outsideDateBox,
-                  headerText: "Select Date",
-                  onDateSelect: (selectedDate) {
-                    _updateDate(selectedDate);
-                  },
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Current Availabilities
+            if (currentAvailabilities.isNotEmpty) ...[
+              const Text(
+                'Your Current Availabilities',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0BDCDC),
                 ),
-              ],
-            ),
-          ),
-
-          // Available Time Section
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 38.0, right: 16.0, bottom: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Available Time',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(height: 16),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 2.5,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: timeSlots.length,
+                child: ListView.builder(
+                  itemCount: currentAvailabilities.length,
                   itemBuilder: (context, index) {
-                    final isSelected = selectedTimeSlots.contains(timeSlots[index]);
-                    return _buildTimeSlot(timeSlots[index], isSelected);
+                    final avail = currentAvailabilities[index];
+                    return ListTile(
+                      title: Text(
+                        avail['day'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${_formatTime(avail['startTimeInHours'])} - ${_formatTime(avail['endTimeInHours'])}',
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteAvailability(index),
+                      ),
+                    );
                   },
                 ),
-              ],
+              ),
+              const Divider(height: 32),
+            ],
+
+            // Add New Availability
+            const Text(
+              'Add New Availability',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0BDCDC),
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
 
-          const Spacer(),
+            // Day Selection
+            const Text('Select Day'),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: selectedDay,
+              items: days.map((day) {
+                return DropdownMenuItem(
+                  value: day,
+                  child: Text(day),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedDay = value;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
 
-          // Bottom Buttons with Dialogs
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showConfirmationDialog("Receiving reservations", "Are you sure you want to start receiving reservations?");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0BDCDC),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Receiving reservations', style: TextStyle(color: Colors.white, fontSize: 16)),
+            // Start Time
+            const SizedBox(height: 16),
+            const Text('Start Time'),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<double>(
+              value: selectedStartHour,
+              items: hours.map((hour) {
+                return DropdownMenuItem(
+                  value: hour,
+                  child: Text(_formatTime(hour)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedStartHour = value;
+                  selectedEndHour = null;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            // End Time
+            const SizedBox(height: 16),
+            const Text('End Time'),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<double>(
+              value: selectedEndHour,
+              items: hours.where((h) {
+                return selectedStartHour == null || h > selectedStartHour!;
+              }).map((hour) {
+                return DropdownMenuItem(
+                  value: hour,
+                  child: Text(_formatTime(hour)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedEndHour = value;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            // Error Message
+            if (errorMessage != null) ...[
+              const SizedBox(height: 16),
+              Text(
+                errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
+
+            // Submit Button
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: isLoading ? null : _sendAvailability,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0BDCDC),
+                  padding: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showConfirmationDialog("Booking stopped", "Are you sure you want to stop booking?");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(color: Color(0xFF0BDCDC)),
-                      ),
-                    ),
-                    child: const Text('Booking stopped', style: TextStyle(color: Color(0xFF0BDCDC), fontSize: 16)),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                  'SAVE AVAILABILITY',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimeSlot(String time, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (selectedTimeSlots.contains(time)) {
-            selectedTimeSlots.remove(time);
-          } else {
-            selectedTimeSlots.add(time);
-          }
-        });
-      },
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? Colors.blue : Colors.grey.shade300),
-        ),
-        child: Text(
-          time,
-          style: TextStyle(color: isSelected ? Colors.white : Colors.grey[700], fontSize: 14),
+          ],
         ),
       ),
     );

@@ -1,30 +1,26 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_care_app/patient_features/doctors/data/services/service_api.dart';
-import 'package:health_care_app/patient_features/doctors/presentation/cubit/cubit_doctors_cubit.dart';
-import 'package:health_care_app/patient_features/doctors/presentation/views/doctors_view.dart';
+import '../cubit/doctors_cubit.dart';
+import '../views/doctors_view.dart';
+import '../../data/datasources/doctor_remote_data_source.dart';
+import '../../data/repositories/doctor_repository_impl.dart';
+import '../../domain/usecases/get_all_doctors_usecase.dart';
 
-import '../../data/repo_impl/repo_impl.dart';
-
-class DoctorsScreen extends StatelessWidget {
-  const DoctorsScreen({super.key});
+class DoctorsWidget extends StatelessWidget {
+  const DoctorsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      DoctorsCubit(RepoImpl(newsService: NewsService()))..fetchDoctorsData(),
-      child: Theme(
-        data: ThemeData(),
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xFF0BDCDC),
-            title: const Text('Cardiology', style: TextStyle(color: Colors.white)),
-            iconTheme: const IconThemeData(color: Colors.white),
+      create: (context) => DoctorsCubit(
+        GetAllDoctorsUseCase(
+          DoctorRepositoryImpl(
+            DoctorRemoteDataSource(Dio()),
           ),
-          body: const DoctorsView(),
         ),
       ),
+      child: const DoctorsView(),
     );
   }
 }

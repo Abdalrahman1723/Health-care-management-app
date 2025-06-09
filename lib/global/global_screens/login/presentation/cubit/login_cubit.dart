@@ -8,28 +8,18 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit(this.loginUseCase) : super(LoginInitial());
 
-  // Future<void> login({required String email, required String password}) async {
-  //   emit(LoginLoading());
-  //
-  //   try {
-  //     final loginEntity = await loginUseCase.call(email: email, password: password);
-  //     emit(LoginSuccess( loginEntity));
-  //   } catch (e) {
-  //     emit(LoginFailure( e.toString()));
-  //   }
-  // }
-
-  Future<String?> login({required String email, required String password}) async {
+  // الطريقة الصحيحة - void method
+  Future<void> login({required String email, required String password}) async {
     emit(LoginLoading());
 
     try {
       final loginEntity = await loginUseCase.call(email: email, password: password);
       emit(LoginSuccess(loginEntity));
-      return loginEntity.token;  // رجع التوكن هنا
     } catch (e) {
       emit(LoginFailure(e.toString()));
-      return null;  // رجع null لو فشل
     }
   }
 
+// شيل الطريقة القديمة اللي بترجع String
+// Future<String?> login() - دي كانت السبب في المشكلة
 }

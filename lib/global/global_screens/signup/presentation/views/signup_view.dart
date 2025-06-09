@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
 import '../../../login/presentation/views/login_view.dart';
@@ -22,9 +23,20 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _nationalIDController = TextEditingController();
+  final TextEditingController _chronicDiseasesController = TextEditingController();
+  final TextEditingController _allergiesController = TextEditingController();
+  final TextEditingController _currentMedicationsController = TextEditingController();
+  final TextEditingController _insuranceProviderController = TextEditingController();
 
+  String _selectedGender = 'Male';
+  String _selectedBloodType = 'O';
+  String _profilePicture = 'profile_url'; // Default value
 
-  // bool _obscurePassword = true;
+  final List<String> _bloodTypes = ['O', 'A', 'B', 'AB'];
+  final List<String> _genders = ['Male', 'Female'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +48,7 @@ class _SignupViewState extends State<SignupView> {
             showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل: ${state.registerEntity.message}')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
           } else if (state is RegisterFailure) {
             Navigator.pop(context);
@@ -66,10 +78,9 @@ class _SignupViewState extends State<SignupView> {
                         label: "Full Name",
                       ),
 
-
                       const SizedBox(height: 16),
 
-
+                      // Personal Name
                       const Text("Personal Name *",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
@@ -79,7 +90,7 @@ class _SignupViewState extends State<SignupView> {
                         label: "Personal Name",
                       ),
 
-
+                      const SizedBox(height: 16),
 
                       // Email
                       const Text("Email *",
@@ -117,6 +128,153 @@ class _SignupViewState extends State<SignupView> {
                         label: "Mobile Number",
                       ),
 
+                      const SizedBox(height: 16),
+
+                      // Date of Birth
+                      const Text("Date of Birth *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _dateOfBirthController,
+                        formKey: _formKey,
+                        label: "Date of Birth (YYYY-MM-DD)",
+                        onTap: () async {
+                          final DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          );
+                          if (picked != null) {
+                            _dateOfBirthController.text = DateFormat('yyyy-MM-dd').format(picked);
+                          }
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Age
+                      const Text("Age *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _ageController,
+                        formKey: _formKey,
+                        label: "Age",
+                        keyboardType: TextInputType.number,
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Gender
+                      const Text("Gender *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _selectedGender,
+                        items: _genders.map((String gender) {
+                          return DropdownMenuItem<String>(
+                            value: gender,
+                            child: Text(gender),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedGender = newValue!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // National ID
+                      const Text("National ID *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _nationalIDController,
+                        formKey: _formKey,
+                        label: "National ID",
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Blood Type
+                      const Text("Blood Type *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _selectedBloodType,
+                        items: _bloodTypes.map((String bloodType) {
+                          return DropdownMenuItem<String>(
+                            value: bloodType,
+                            child: Text(bloodType),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedBloodType = newValue!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Chronic Diseases
+                      const Text("Chronic Diseases",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _chronicDiseasesController,
+                        formKey: _formKey,
+                        label: "Chronic Diseases (if any)",
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Allergies
+                      const Text("Allergies",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _allergiesController,
+                        formKey: _formKey,
+                        label: "Allergies (if any)",
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Current Medications
+                      const Text("Current Medications",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _currentMedicationsController,
+                        formKey: _formKey,
+                        label: "Current Medications (if any)",
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Insurance Provider
+                      const Text("Insurance Provider",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        controller: _insuranceProviderController,
+                        formKey: _formKey,
+                        label: "Insurance Provider",
+                      ),
 
                       const SizedBox(height: 25),
 
@@ -133,22 +291,32 @@ class _SignupViewState extends State<SignupView> {
                               ),
                             ),
                             onPressed: () {
-                              print("Register Button Pressed");
-
-                              final cubit = context.read<RegisterCubit>();
-
-                              print("Attempting Register with Email: ${_emailController.text}");
-                              cubit.register(
-                                username: _fullNameController.text,
-                                personName: _personNameController.text,
-                                phoneNumber: _mobileController.text,
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                              );
+                              if (_formKey.currentState!.validate()) {
+                                final cubit = context.read<RegisterCubit>();
+                                cubit.register(
+                                  username: _fullNameController.text,
+                                  personName: _personNameController.text,
+                                  phoneNumber: _mobileController.text,
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  profilePicture: _profilePicture,
+                                  dateOfBirth: _dateOfBirthController.text,
+                                  gender: _selectedGender,
+                                  age: int.parse(_ageController.text),
+                                  nationalID: _nationalIDController.text,
+                                  bloodType: _selectedBloodType,
+                                  chronicDiseases: _chronicDiseasesController
+                                      .text,
+                                  allergies: _allergiesController.text,
+                                  currentMedications: _currentMedicationsController
+                                      .text,
+                                  insuranceProvider: _insuranceProviderController
+                                      .text,
+                                );
+                              }
                             },
-                            child: Text("تسجيل",style: TextStyle(color: Colors.white,fontSize: 25)),
+                            child: Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
                           ),
-
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -159,7 +327,6 @@ class _SignupViewState extends State<SignupView> {
                         children: [
                           const Text("Already have an account?"),
                           TextButton(
-
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -184,11 +351,9 @@ class _SignupViewState extends State<SignupView> {
           ),
         ),
       ),
-
     );
   }
 }
-
 
 void showErrorDialog(BuildContext context, String message) {
   showDialog(
