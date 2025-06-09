@@ -1,20 +1,22 @@
 // core/network/api_constants.dart
 class ApiConstants {
-  static const String baseUrl = 'https://healthcaresystem.runasp.net';
+  static const String baseUrl = 'https://healthcaresystem.runasp.net/api/';
 
   // Auth endpoints
-  static const String login = '/api/auth/login';
-  static const String register = '/api/auth/register';
+  static const String login = 'auth/login';
+  static const String register = 'auth/register';
 
-  //get doctor by ID
-  static const String getDoctorById = "api/Patient/";
+  //get doctors
+  static const String getDoctorById = "Patient/";
+  static const String getAllDoctors = "Patient/GetAllDoctor";
 
   //patient profile endpoints
-  static const String getPatientById =
-      "api/PatientProfile/"; // api/PatientProfile/{id}
+  static const String getPatientById = "PatientProfile/"; // PatientProfile/{id}
 
   //appointments endpoint
-  static String getPatientAppointments(String patientId) {
-    return "https://localhost:7042/api/Patient/patient/$patientId/appointments";
+  static const String getAllAppointments = "Patient/appointments";
+
+  static String getDoctorAppointmentsWithId(String doctorId) {
+    return "Patient/doctor/$doctorId/appointments";
   }
 }

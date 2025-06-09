@@ -32,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     // Fetch patient with ID 3 when screen loads
     context.read<PatientCubit>().fetchPatientById(patientID);
+    context.read<PatientCubit>().fetchAppointments();
   }
 
   @override
@@ -78,8 +79,6 @@ class _MainScreenState extends State<MainScreen> {
           // ==========success state =============//
         } else if (state is PatientLoaded) {
           //good to go
-          // Log the patient data
-          log('patient Data: ${state.patient.toString()}');
           return Scaffold(
             appBar: AppBar(
                 title: Column(
@@ -279,8 +278,6 @@ class _MainScreenState extends State<MainScreen> {
                             headerText: "Select Date",
                             onDateSelect: (selectedDate) {
                               _updateDate(selectedDate);
-                              // print("Selected date: $selectedDate");  //default
-                              //?here should send the selected date to the backend
                             },
                           ),
                           const SizedBox(
@@ -301,14 +298,25 @@ class _MainScreenState extends State<MainScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<PatientCubit>()
+                                            .fetchPatientById(patientID);
+                                        context
+                                            .read<PatientCubit>()
+                                            .fetchAppointments();
+                                      },
+                                      icon: const Icon(Icons.refresh),
+                                    ),
                                     //---see all appointments button
                                     ElevatedButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, Routes.allAppointments);
-                                        // Handle see all appointments button press
                                       },
                                       child: const Text(
                                         "See all",
@@ -328,35 +336,50 @@ class _MainScreenState extends State<MainScreen> {
                                   thickness: 1,
                                 ),
                                 //---------------appointment information---------------//
-
-                                //appointment 1
-
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(context,
-                                        Routes.appointmentDetailsScreen);
-                                  },
-                                  child: appointmentDetails(
-                                      doctorName: 'Ahmed Essam',
-                                      selectedDate: _selectedDate,
-                                      context: context),
-                                ),
-
-                                //appointment 2
-                                const Divider(
-                                  indent: 15,
-                                  endIndent: 15,
-                                  color: Colors.white,
-                                  thickness: 1,
-                                ),
-                                InkWell(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, Routes.appointmentDetailsScreen),
-                                  child: appointmentDetails(
-                                      doctorName: 'Helana Emad',
-                                      selectedDate: _selectedDate,
-                                      context: context),
-                                ),
+                                if (state.appointment.isNotEmpty)
+                                  ...state.appointment.map((appointment) =>
+                                      Column(
+                                        children: [
+                                          const Divider(
+                                            indent: 15,
+                                            endIndent: 15,
+                                            color: Colors.white,
+                                            thickness: 1,
+                                          ),
+                                          InkWell(
+                                            
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  Routes
+                                                      .appointmentDetailsScreen);
+                                            },
+                                            child: appointmentDetails(
+                                                doctorName:
+                                                    appointment?.doctor ??
+                                                        "Unknown Doctor",
+                                                selectedDate: DateTime.parse(
+                                                    appointment
+                                                            ?.appointmentDate ??
+                                                        DateTime.now()
+                                                            .toIso8601String()),
+                                                context: context),
+                                          ),
+                                        ],
+                                      )),
+                                if ((state.appointment.isEmpty ||
+                                    state.appointment.every((a) => a == null)))
+                                  const Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Text(
+                                      "No appointments found",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -397,6 +420,192 @@ class _MainScreenState extends State<MainScreen> {
                         specialty(AppIcons.oncology, "Oncology"),
                       ],
                     ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          //=====================no appointments=====================//
+        } else if (state is PatientLoadedWithNoAppointments) {
+          return Scaffold(
+            appBar: AppBar(
+                title: Column(
+                  children: [
+                    GradientBackground.gradientText("Hi, Welcome back!"),
+                    Text(
+                      state.patient.name,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: avatar(
+                      context: context,
+                      editIconSize: 8,
+                      avatarSize: 20,
+                      route: Routes.userProfileScreen),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.notifications_none),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, Routes.notificationsScreen);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, Routes.settingsScreen);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              // Handle search icon press
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ]),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // ... (keep all the categories and other sections)
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.containerBackground,
+                      ),
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Your Appointments",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text(
+                                  "Months&Year",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(
+                            color: Colors.white,
+                            thickness: 2,
+                            indent: 15,
+                            endIndent: 15,
+                          ),
+                          CalendarDaySlotNavigator(
+                            isGoogleFont: false,
+                            slotLength: 6,
+                            dayBoxHeightAspectRatio: 4,
+                            dayDisplayMode: DayDisplayMode.outsideDateBox,
+                            headerText: "Select Date",
+                            onDateSelect: (selectedDate) {
+                              _updateDate(selectedDate);
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          Container(
+                            width: 300,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<PatientCubit>()
+                                            .fetchPatientById(patientID);
+                                        context
+                                            .read<PatientCubit>()
+                                            .fetchAppointments();
+                                      },
+                                      icon: const Icon(Icons.refresh),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, Routes.allAppointments);
+                                      },
+                                      child: const Text(
+                                        "See all",
+                                        style: TextStyle(
+                                            color: Colors.blueGrey,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(
+                                  indent: 15,
+                                  endIndent: 15,
+                                  color: Colors.white,
+                                  thickness: 1,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text(
+                                    "No appointments found",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
+                    ),
+                    // ... (keep the rest of the UI elements)
                   ],
                 ),
               ),

@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             final cubit = AuthCubit(apiClient: apiClient);
             // Temporary hardcoded token for testing
             cubit.setTokenDirectly(
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4');
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c');
             return cubit;
           },
         ),
@@ -35,14 +35,14 @@ class MyApp extends StatelessWidget {
           create: (context) => PatientCubit(
             apiClient: apiClient,
             authToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c',
           ),
         ),
         BlocProvider(
           create: (context) => UserProfileCubit(
             apiClient: apiClient,
             authToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI4NjM0YmFlMC0yYzhiLTRiYWMtYjhmNC05NWM1NWFiYzY4ZjIiLCJVc2VyTmFtZSI6ImFiZG8iLCJyb2xlIjoiUGF0aWVudCIsIm5iZiI6MTc0OTA3NjI3NCwiZXhwIjoxNzQ5MTYyNjc0LCJpYXQiOjE3NDkwNzYyNzQsImlzcyI6IkNsaW5pY1Byb2plY3QifQ.m94cIlBRzPl9gzVTRbf2Fd38zFWih7Lk4WnKW7R0nw4',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c',
           ),
         ),
       ],

@@ -13,11 +13,12 @@ class PatientLoading extends PatientState {}
 
 class PatientLoaded extends PatientState {
   final PatientEntity patient;
+  final List<AppointmentEntity?> appointment;
 
-  const PatientLoaded(this.patient);
+  const PatientLoaded(this.patient, this.appointment);
 
   @override
-  List<Object> get props => [patient];
+  List<Object> get props => [patient, appointment ?? ''];
 }
 
 class PatientError extends PatientState {
@@ -48,4 +49,13 @@ class AppointmentsError extends PatientState {
 
   @override
   List<Object> get props => [message];
+}
+
+class PatientLoadedWithNoAppointments extends PatientState {
+  final PatientEntity patient;
+
+  const PatientLoadedWithNoAppointments(this.patient);
+
+  @override
+  List<Object> get props => [patient];
 }

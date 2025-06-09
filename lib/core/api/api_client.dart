@@ -29,7 +29,7 @@ class ApiClient {
   Future<dynamic> get(String endpoint, {Map<String, String>? headers}) async {
     try {
       final response = await client.get(
-        Uri.parse('$baseUrl/$endpoint'),
+        Uri.parse('$baseUrl$endpoint'),
         headers: headers,
       );
       return _handleResponse(response);
