@@ -74,7 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         } else if (state is ProfileLoaded) {
           //good to go
           // Log the patient data
-          log('patient Data: ${state.userData.toString()}');
+          // log('patient Data: ${state.userData.toString()}');
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(250),
@@ -149,7 +149,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    //the user profile details
+                    //-------------------the user profile details------------------//
                     ListTile(
                       leading: iconContainer(Icons.person_outline),
                       trailing: GradientBackground.gradientIcon(
@@ -161,7 +161,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    //the user favorite doctors
+                    //-----------------the user favorite doctors-----------------//
                     ListTile(
                       leading: iconContainer(Icons.favorite_outline),
                       trailing: GradientBackground.gradientIcon(
@@ -174,7 +174,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    //the user settings
+                    //---------------the user medical history------------------//
+                    ListTile(
+                      leading: iconContainer(Icons.medical_information),
+                      trailing: GradientBackground.gradientIcon(
+                          Icons.arrow_forward_ios),
+                      title: const Text("Medical History"),
+                      subtitle: const Text("View your medical records"),
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, Routes.medicalHistoryScreen);
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    //----------the user settings------------//
                     ListTile(
                       leading: iconContainer(Icons.settings_outlined),
                       trailing: GradientBackground.gradientIcon(
@@ -186,7 +199,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    //the user profile logout
+                    //--------------the user profile logout---------------//
                     ListTile(
                       leading: iconContainer(Icons.logout_outlined),
                       title: const Text("Logout"),
