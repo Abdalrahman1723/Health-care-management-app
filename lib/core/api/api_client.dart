@@ -35,6 +35,12 @@ class ApiClient {
       return _handleResponse(response);
     } catch (e) {
       log('Error in GET request: $e');
+      if (e is http.Response) {
+        log('Response status code: ${e.statusCode}');
+        log('Response body: ${e.body}');
+        throw Exception(
+            'Failed to make GET request: Status ${e.statusCode} - ${e.body}');
+      }
       throw Exception('Failed to make GET request: $e');
     }
   }
@@ -50,15 +56,54 @@ class ApiClient {
     return _handleResponse(response);
   }
 
-  //? Add put, delete, etc. as needed
+  //========the put method=========//
+  Future<dynamic> put(String endpoint,
+      {Map<String, String>? headers, dynamic body}) async {
+    try {
+      final response = await client.put(
+        Uri.parse('$baseUrl$endpoint'),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      log('Error in PUT request: $e');
+      throw Exception('Failed to make PUT request: $e');
+    }
+  }
+
+  //========the delete method=========//
+  Future<dynamic> delete(String endpoint,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await client.delete(
+        Uri.parse('$baseUrl$endpoint'),
+        headers: headers,
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      log('Error in DELETE request: $e');
+      throw Exception('Failed to make DELETE request: $e');
+    }
+  }
 
   dynamic _handleResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      log(response.body);
-      return jsonDecode(response.body);
+      try {
+        log('Response body: ${response.body}');
+        if (response.body.isEmpty) {
+          return null;
+        }
+        return jsonDecode(response.body);
+      } catch (e) {
+        log('Error parsing response: $e');
+        log('Raw response body: ${response.body}');
+        throw FormatException('Failed to parse response: ${response.body}');
+      }
     } else {
-      log("response error :${response.body}");
-      throw Exception('Failed to load data: ${response.statusCode}');
+      log("Response error - Status: ${response.statusCode}, Body: ${response.body}");
+      throw Exception(
+          'Failed to load data: ${response.statusCode} - ${response.body}');
     }
   }
 }

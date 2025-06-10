@@ -1,11 +1,13 @@
 class PatientEntity {
   final String id;
   final String name;
+  final String email;
   final String? imageUrl;
   final DateTime dateOfBirth;
   final int age;
   final String gender;
   final String nationalID;
+  final String? phoneNumber;
   final String? bloodType;
   final String? insuranceProvider;
   final String? chronicDiseases;
@@ -15,10 +17,12 @@ class PatientEntity {
   PatientEntity({
     required this.id,
     required this.name,
+    required this.email,
     this.imageUrl,
     required this.dateOfBirth,
     required this.gender,
     required this.nationalID,
+    this.phoneNumber,
     this.bloodType,
     this.insuranceProvider,
     this.chronicDiseases,
@@ -32,11 +36,12 @@ class PatientEntity {
     return PatientEntity(
       id: json['patientId'].toString(),
       name: json['personName'],
+      email: json['email'],
       imageUrl: json['profilePicture'],
-      dateOfBirth: DateTime.parse("2003-07-01"), //!temp date
-      // dateOfBirth: DateTime.parse(json['dateOfBirth']), //!temp date
+      dateOfBirth: DateTime.parse(json['dateOfBirth'].toString().split('T')[0]),
       gender: json['gender'],
       nationalID: json['nationalID'],
+      phoneNumber: json['phone'],
       bloodType: json['bloodType'],
       insuranceProvider: json['insuranceProvider'],
       chronicDiseases: json['chronicDiseases'],

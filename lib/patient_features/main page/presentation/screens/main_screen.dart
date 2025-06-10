@@ -24,8 +24,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
-  String patientID =
-      "12"; //! this is a temp (later should be actorId) with shared pref
+  static const String patientID =
+      "1"; //! this is a temp (later should be actorId) with shared pref
 
   @override
   void initState() {
@@ -611,6 +611,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           );
         } else {
+          log(name: "ERROR", state.runtimeType.toString());
           return const Center();
         }
       },

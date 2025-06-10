@@ -12,6 +12,7 @@ class ApiConstants {
 
   //patient profile endpoints
   static const String getPatientById = "PatientProfile/"; // PatientProfile/{id}
+  static const String updatePatientProfile = "PatientProfile/"; // PatientProfile/{id}
 
   //appointments endpoint
   static const String getAllAppointments = "Patient/appointments";

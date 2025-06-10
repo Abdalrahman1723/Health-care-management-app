@@ -15,8 +15,9 @@ import 'package:health_care_app/patient_features/main page/presentation/cubit/pa
 
 class MyApp extends StatelessWidget {
   final ApiClient apiClient;
+  final String authToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhMGVlM2JmOS00YmM1LTRjNGUtOGVlMy05ZDg0Yzc2OWI5YmMiLCJVc2VyTmFtZSI6ImFkbWluIiwicm9sZSI6IlN1cGVyQWRtaW4iLCJuYmYiOjE3NDk1MjU0NzgsImV4cCI6MTc0OTYxMTg3OCwiaWF0IjoxNzQ5NTI1NDc4LCJpc3MiOiJDbGluaWNQcm9qZWN0In0.AmyorW7lso9uBfdbg792ztgxHNnQGatiYebQhwytBTw";
   const MyApp({super.key, required this.apiClient});
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -26,24 +27,17 @@ class MyApp extends StatelessWidget {
           create: (context) {
             final cubit = AuthCubit(apiClient: apiClient);
             // Temporary hardcoded token for testing
-            cubit.setTokenDirectly(
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c');
+            cubit.setTokenDirectly(authToken);
             return cubit;
           },
         ),
         BlocProvider(
-          create: (context) => PatientCubit(
-            apiClient: apiClient,
-            authToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c',
-          ),
+          create: (context) =>
+              PatientCubit(apiClient: apiClient, authToken: authToken),
         ),
         BlocProvider(
-          create: (context) => UserProfileCubit(
-            apiClient: apiClient,
-            authToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIwMzA0OGU1OC01YWQ5LTQ1N2EtYTA3MS1lYmFlNjUzMzBkMWMiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk0NDY5MjAsImV4cCI6MTc0OTUzMzMyMCwiaWF0IjoxNzQ5NDQ2OTIwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.s3vtI8pZcw4s-fpVi7PFzcnbgE7-Vk6fD5X6LDpRi5c',
-          ),
+          create: (context) =>
+              UserProfileCubit(apiClient: apiClient, authToken: authToken),
         ),
       ],
       child: MaterialApp(

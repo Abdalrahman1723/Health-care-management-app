@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +20,7 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   String patientID =
-      "12"; //! this is a temp (later should be actorId) with shared pref
+      "1"; //! this is a temp (later should be actorId) with shared pref
   //logout function
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -74,7 +73,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         } else if (state is ProfileLoaded) {
           //good to go
           // Log the patient data
-          // log('patient Data: ${state.userData.toString()}');
+          log('patient Data: ${state.userData.toString()}');
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(250),
@@ -129,10 +128,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
                                 //the user Phone number
-                                const Text("+2010155446"),
+                                Text(state.userData.phoneNumber ?? ""),
                                 //  Text(${state.userData.phoneNumber}),
                                 //the user email
-                                const Text("example@gmail.com"),
+                                Text(state.userData.email),
                                 // const Text(${state.userData.email}),
                               ],
                             )

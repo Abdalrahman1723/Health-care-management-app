@@ -32,15 +32,24 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     }
   }
 
-  // Future<void> updateUserData(Map<String, dynamic> data) async {
-  //   try {
-  //     emit(ProfileLoading());
-  //     await _ProfileRepository.updateUserData(data);
-  //     await fetchUserData();
-  //   } catch (e) {
-  //     emit(ProfileError(e.toString()));
-  //   }
-  // }
+  Future<void> updateUserData(
+      Map<String, dynamic> data, String patientID) async {
+    try {
+      emit(ProfileLoading());
+      await apiClient.put(
+        "${ApiConstants.updatePatientProfile}$patientID",
+        headers: {
+          'Authorization': //!temp remove it
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJlM2M4MjE5YS03YjRiLTQ0NzAtYjhmOC0yNDY3ODM1ZDFkZDEiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk1MTUwNDAsImV4cCI6MTc0OTYwMTQ0MCwiaWF0IjoxNzQ5NTE1MDQwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.N4-WgiMXJcT1B7mDyqjnIZODFzgkV5eYJBQDt2jn_n4',
+          'Content-Type': 'application/json',
+        },
+        body: data,
+      );
+      await fetchUserData(patientID);
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+    }
+  }
 
   // Future<void> deleteAccount() async {
   //   try {

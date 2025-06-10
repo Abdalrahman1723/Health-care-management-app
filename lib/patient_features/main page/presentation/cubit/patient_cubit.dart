@@ -19,7 +19,7 @@ class PatientCubit extends Cubit<PatientState> {
     emit(PatientLoading());
     try {
       log('patient id : $patientId', name: "PATIENT ID");
-      log('your uri is :${ApiConstants.baseUrl}/${ApiConstants.getPatientById}$patientId',
+      log('your uri is :${ApiConstants.baseUrl}${ApiConstants.getPatientById}$patientId',
           name: "URI"); //log message
 
       final patientResponse = await apiClient.get(
@@ -31,7 +31,7 @@ class PatientCubit extends Cubit<PatientState> {
         },
       );
 
-      late List<AppointmentEntity> appointments;
+      List<AppointmentEntity?> appointments;
       try {
         final appointmentResponse = await apiClient.get(
           ApiConstants.getAllAppointments,
@@ -40,7 +40,7 @@ class PatientCubit extends Cubit<PatientState> {
             'Content-Type': 'application/json',
           },
         );
-
+        log(name: "APPOINTMENT ERROR", "$appointmentResponse");
         if (appointmentResponse != null &&
             appointmentResponse is List &&
             appointmentResponse.isNotEmpty) {
