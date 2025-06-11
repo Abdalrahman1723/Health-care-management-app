@@ -4,6 +4,11 @@ import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -15,6 +20,8 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   DateTime? _selectedDate;
   final _formKey = GlobalKey<FormState>();
+  final _picker = ImagePicker();
+  String? _imagePath;
   //------------controllers
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -56,6 +63,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     // Fetch user data when screen loads
     context.read<UserProfileCubit>().fetchUserData(patientID);
+    _loadImageFromPrefs();
+  }
+
+  Future<void> _loadImageFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedImagePath = prefs.getString('profile_image');
+    if (savedImagePath != null) {
+      setState(() {
+        _imagePath = savedImagePath;
+      });
+    }
+  }
+
+  Future<void> _saveImageToPrefs(String imagePath) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('profile_image', imagePath);
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _imagePath = pickedFile.path;
+        });
+        await _saveImageToPrefs(pickedFile.path);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to pick image'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -177,13 +223,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 8.0),
                       Center(
                         child: InkWell(
-                          onTap: () {
-                            //image picker
-                          },
-                          child: avatar(
-                            context: context,
-                            editIconSize: 18,
-                            avatarSize: 60,
+                          onTap: _pickImage,
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 60,
+                                backgroundImage: _imagePath != null
+                                    ? FileImage(File(_imagePath!))
+                                    : const AssetImage('assets/images/man.png')
+                                        as ImageProvider,
+                              ),
+                              Positioned(
+                                bottom: 1,
+                                right: 1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 3,
+                                      color: Colors.white,
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(50),
+                                    ),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: const Offset(2, 4),
+                                        color: Colors.black.withOpacity(0.3),
+                                        blurRadius: 3,
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.black,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

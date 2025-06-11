@@ -8,6 +8,7 @@ import 'package:health_care_app/core/utils/gradient_text.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/icon_container.dart';
 
@@ -19,6 +20,7 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  String? _imagePath;
   String patientID =
       "3"; //! this is a temp (later should be actorId) with shared pref
   //logout function
@@ -30,10 +32,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  Future<void> _loadImageFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedImagePath = prefs.getString('profile_image');
+    if (savedImagePath != null) {
+      setState(() {
+        _imagePath = savedImagePath;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadImageFromPrefs();
     context.read<UserProfileCubit>().fetchUserData(patientID);
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _loadImageFromPrefs();
+    });
   }
 
   @override
@@ -76,72 +95,83 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           log('patient Data: ${state.userData.toString()}');
           return Scaffold(
             appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(250),
-              child: AppBar(
-                // the back button
-                leading: IconButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(Colors.transparent),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                  ),
-                ),
-                automaticallyImplyLeading: false,
-                flexibleSpace: Container(
-                  padding: const EdgeInsets.only(top: 12),
-                  // for gradient color background
-                  decoration:
-                      BoxDecoration(gradient: AppColors.containerBackground),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        //the title
-                        Text(
-                          "My profile",
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                        const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+              preferredSize: const Size.fromHeight(260),
+              child: RefreshIndicator(
+                onRefresh: _refreshData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: AppBar(
+                    // the back button
+                    leading: IconButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            WidgetStateProperty.all(Colors.transparent),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: Container(
+                      padding: const EdgeInsets.only(top: 12),
+                      // for gradient color background
+                      decoration: BoxDecoration(
+                          gradient: AppColors.containerBackground),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            //the user avatar
-                            avatar(
-                              context: context,
-                              editIconSize: 18,
-                              avatarSize: 60,
+                            const SizedBox(
+                              height: 8,
                             ),
-                            const SizedBox(width: 12.0),
-                            //the user name, phone number and email
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            //the title
+                            Text(
+                              "My profile",
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                //the user name
-                                Text(
-                                  state.userData.name,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                //the user avatar
+                                avatar(
+                                  imageUrl: _imagePath,
+                                  context: context,
+                                  editIconSize: 18,
+                                  avatarSize: 60,
                                 ),
-                                //the user Phone number
-                                Text(state.userData.phoneNumber ?? ""),
-                                //  Text(${state.userData.phoneNumber}),
-                                //the user email
-                                Text(state.userData.email),
-                                // const Text(${state.userData.email}),
+                                const SizedBox(width: 12.0),
+                                //the user name, phone number and email
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //the user name
+                                    Text(
+                                      state.userData.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    //the user Phone number
+                                    Text(state.userData.phoneNumber ?? ""),
+                                    //  Text(${state.userData.phoneNumber}),
+                                    //the user email
+                                    Text(state.userData.email),
+                                    // const Text(${state.userData.email}),
+                                  ],
+                                )
                               ],
-                            )
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
+                    centerTitle: true,
                   ),
                 ),
-                centerTitle: true,
               ),
             ),
             body: SafeArea(

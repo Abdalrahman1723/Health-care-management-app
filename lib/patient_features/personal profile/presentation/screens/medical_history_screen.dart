@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
-import 'package:health_care_app/patient_features/personal%20profile/presentation/widgets/icon_container.dart';
 
 class MedicalHistoryScreen extends StatefulWidget {
   const MedicalHistoryScreen({super.key});
@@ -294,7 +293,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                       //=============update button=============//
                       Center(
                         child: Container(
-                          width: 200,
+                          width: 220,
                           decoration: BoxDecoration(
                             gradient: _hasChanges
                                 ? AppColors.containerBackground
