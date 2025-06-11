@@ -38,9 +38,12 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Key _refreshKey = UniqueKey();
+
   Future<void> _refreshData() async {
     setState(() {
       _loadImageFromPrefs();
+      _refreshKey = UniqueKey(); // triggers rebuild of content
     });
   }
 
@@ -326,14 +329,15 @@ class _MainScreenState extends State<MainScreen> {
                                     children: [
                                       IconButton(
                                         onPressed: () {
-                                          context
-                                              .read<PatientCubit>()
-                                              .fetchPatientById(patientID);
-                                          context
-                                              .read<PatientCubit>()
-                                              .fetchAppointments();
+                                          // context
+                                          //     .read<PatientCubit>()
+                                          //     .fetchPatientById(patientID);
+                                          // context
+                                          //     .read<PatientCubit>()
+                                          //     .fetchAppointments();
                                         },
-                                        icon: const Icon(Icons.refresh),
+                                        icon:
+                                            const Icon(Icons.dataset_outlined),
                                       ),
                                       //---see all appointments button
                                       ElevatedButton(
@@ -352,43 +356,41 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     ],
                                   ),
-                                  const Divider(
-                                    indent: 15,
-                                    endIndent: 15,
-                                    color: Colors.white,
-                                    thickness: 1,
-                                  ),
+
                                   //---------------appointment information---------------//
                                   if (state.appointment.isNotEmpty)
-                                    ...state.appointment.map((appointment) =>
-                                        Column(
-                                          children: [
-                                            const Divider(
-                                              indent: 15,
-                                              endIndent: 15,
-                                              color: Colors.white,
-                                              thickness: 1,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                Navigator.pushNamed(
-                                                    context,
-                                                    Routes
-                                                        .appointmentDetailsScreen);
-                                              },
-                                              child: appointmentDetails(
-                                                  doctorName:
-                                                      appointment?.doctor ??
-                                                          "Unknown Doctor",
-                                                  selectedDate: DateTime.parse(
-                                                      appointment
-                                                              ?.appointmentDate ??
-                                                          DateTime.now()
-                                                              .toIso8601String()),
-                                                  context: context),
-                                            ),
-                                          ],
-                                        )),
+                                    ...state.appointment
+                                        .map((appointment) => Column(
+                                              children: [
+                                                const Divider(
+                                                  indent: 15,
+                                                  endIndent: 15,
+                                                  color: Colors.white,
+                                                  thickness: 1,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        Routes
+                                                            .appointmentDetailsScreen);
+                                                  },
+                                                  child: appointmentDetails(
+                                                      doctorName:
+                                                          "Dr. ${appointment?.doctor}",
+                                                      selectedDate: appointment
+                                                              ?.appointmentDateTime ??
+                                                          DateTime.now(),
+                                                      context: context,
+                                                      startTimeInHours:
+                                                          appointment!
+                                                              .startTimeInHours,
+                                                      endTimeInHours:
+                                                          appointment
+                                                              .endTimeInHours),
+                                                ),
+                                              ],
+                                            )),
                                   if ((state.appointment.isEmpty ||
                                       state.appointment
                                           .every((a) => a == null)))
@@ -646,5 +648,17 @@ class _MainScreenState extends State<MainScreen> {
         }
       },
     );
+  }
+
+  DateTime _parseAppointmentDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) {
+      return DateTime.now();
+    }
+    try {
+      return DateTime.parse(dateStr);
+    } catch (e) {
+      log('Error parsing date: $dateStr', name: "DATE_PARSE");
+      return DateTime.now();
+    }
   }
 }

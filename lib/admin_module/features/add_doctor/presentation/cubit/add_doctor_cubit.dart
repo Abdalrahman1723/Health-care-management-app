@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import '../../../../../core/api/api_client.dart';
-import '../../../../../core/api/endpoints.dart';
 
 part 'add_doctor_state.dart';
 
