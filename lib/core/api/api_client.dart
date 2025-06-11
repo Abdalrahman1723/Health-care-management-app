@@ -49,7 +49,7 @@ class ApiClient {
   Future<dynamic> post(String endpoint,
       {Map<String, String>? headers, dynamic body}) async {
     final response = await client.post(
-      Uri.parse('$baseUrl/$endpoint'),
+      Uri.parse('$baseUrl$endpoint'),
       headers: headers,
       body: jsonEncode(body),
     );

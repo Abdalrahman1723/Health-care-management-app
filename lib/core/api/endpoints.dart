@@ -33,4 +33,7 @@ class AdminApiConstants {
 
   //get all doctors api
   static const String getAllDoctors = "Admin/doctors";
+
+  //create doctor api
+  static const String createDoctor = "Admin/doctors";
 }

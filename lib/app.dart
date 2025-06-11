@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/admin_module/features/add_doctor/presentation/cubit/add_doctor_cubit.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/config/theme/app_theme.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
         //admin provider
         BlocProvider(
           create: (context) => AdminMainPageCubit(
+              apiClient: apiClient, authToken: adminAuthToken),
+        ),
+        BlocProvider(
+          create: (context) => AddDoctorCubit(
               apiClient: apiClient, authToken: adminAuthToken),
         ),
       ],

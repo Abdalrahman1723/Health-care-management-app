@@ -308,7 +308,7 @@ Widget doctorDetails({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  doctor.name,
+                  doctor.fullName!,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
