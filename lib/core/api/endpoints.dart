@@ -20,4 +20,8 @@ class ApiConstants {
   static String getDoctorAppointmentsWithId(String doctorId) {
     return "Patient/doctor/$doctorId/appointments";
   }
+
+  //notifications
+    static const String getNotifications = "Notification/patient";//Notification/patient/{ID}
+
 }

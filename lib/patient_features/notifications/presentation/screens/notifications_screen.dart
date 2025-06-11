@@ -47,7 +47,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   endIndent: 15,
                   indent: 15,
                 ),
-                //----------notifications
+                //----------notifications-------------//
                 InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, Routes.addReviewScreen);
