@@ -18,7 +18,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       emit(NotificationLoading());
 
       final response = await _apiClient.get(
-        '${ApiConstants.getNotifications}/$patientId',
+        '${PatientApiConstants.getNotifications}/$patientId',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken',

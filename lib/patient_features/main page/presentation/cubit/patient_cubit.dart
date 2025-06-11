@@ -19,12 +19,12 @@ class PatientCubit extends Cubit<PatientState> {
     emit(PatientLoading());
     try {
       log('patient id : $patientId', name: "PATIENT ID");
-      log('your uri is :${ApiConstants.baseUrl}${ApiConstants.getPatientById}$patientId',
+      log('your uri is :${PatientApiConstants.baseUrl}${PatientApiConstants.getPatientById}$patientId',
           name: "URI"); //log message
 
       final patientResponse = await apiClient.get(
         //get
-        '${ApiConstants.getPatientById}$patientId',
+        '${PatientApiConstants.getPatientById}$patientId',
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ class PatientCubit extends Cubit<PatientState> {
       List<AppointmentEntity?> appointments;
       try {
         final appointmentResponse = await apiClient.get(
-          ApiConstants.getAllAppointments,
+          PatientApiConstants.getAllAppointments,
           headers: {
             'Authorization': 'Bearer $authToken',
             'Content-Type': 'application/json',
@@ -76,10 +76,10 @@ class PatientCubit extends Cubit<PatientState> {
     emit(AppointmentsLoading());
     try {
       log('Fetching appointments for patient', name: "APPOINTMENTS");
-      log('your uri is :${ApiConstants.baseUrl}${ApiConstants.getAllAppointments}',
+      log('your uri is :${PatientApiConstants.baseUrl}${PatientApiConstants.getAllAppointments}',
           name: "URI"); //log message
       final response = await apiClient.get(
-        ApiConstants.getAllAppointments,
+        PatientApiConstants.getAllAppointments,
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',

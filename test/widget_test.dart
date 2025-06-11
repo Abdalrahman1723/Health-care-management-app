@@ -14,7 +14,7 @@ import 'package:health_care_app/core/api/endpoints.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    final apiClient = ApiClient(baseUrl: ApiConstants.baseUrl);
+    final apiClient = ApiClient(baseUrl: PatientApiConstants.baseUrl);
     await tester.pumpWidget(MyApp(apiClient: apiClient));
 
     // Verify that our counter starts at 0.

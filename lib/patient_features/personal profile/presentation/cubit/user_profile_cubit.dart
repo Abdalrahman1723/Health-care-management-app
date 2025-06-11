@@ -18,7 +18,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       emit(ProfileLoading());
       final userData = await apiClient.get(
         //get
-        '${ApiConstants.getPatientById}$patientId',
+        '${PatientApiConstants.getPatientById}$patientId',
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     try {
       emit(ProfileLoading());
       await apiClient.put(
-        "${ApiConstants.updatePatientProfile}$patientID",
+        "${PatientApiConstants.updatePatientProfile}$patientID",
         headers: {
           'Authorization': //!temp remove it
               'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI0ZjliMWQ0MS1lNzdkLTQ5NGEtYWY1Ny0xNzFiNzlhZWMwNTciLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuMSIsInJvbGUiOiJQYXRpZW50IiwibmJmIjoxNzQ5NjAyODIyLCJleHAiOjE3NDk2ODkyMjIsImlhdCI6MTc0OTYwMjgyMiwiaXNzIjoiQ2xpbmljUHJvamVjdCJ9.tknRs2HGvDAuSsbxuqwvUp5yua8g3BtSrfHmTgRzpQI',

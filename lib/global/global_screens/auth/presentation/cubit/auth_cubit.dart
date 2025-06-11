@@ -17,10 +17,10 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final response = await apiClient.post(
-        ApiConstants.login,
+        PatientApiConstants.login,
         body: {'email': email, 'password': password},
       );
-      
+
       _currentToken = response['token'];
       emit(AuthAuthenticated(_currentToken!));
     } catch (e) {

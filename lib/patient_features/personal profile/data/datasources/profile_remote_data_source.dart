@@ -13,7 +13,7 @@ class ProfileRemoteDataSource {
   Future<Map<String, dynamic>> getUserData() async {
     try {
       final response = await apiClient.get(
-        ApiConstants.getPatientById,
+        PatientApiConstants.getPatientById,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken',

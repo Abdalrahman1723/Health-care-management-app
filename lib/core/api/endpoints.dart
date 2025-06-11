@@ -1,5 +1,5 @@
 // core/network/api_constants.dart
-class ApiConstants {
+class PatientApiConstants {
   static const String baseUrl = 'https://healthcaresystem.runasp.net/api/';
 
   // Auth endpoints
@@ -12,7 +12,8 @@ class ApiConstants {
 
   //patient profile endpoints
   static const String getPatientById = "PatientProfile/"; // PatientProfile/{id}
-  static const String updatePatientProfile = "PatientProfile/"; // PatientProfile/{id}
+  static const String updatePatientProfile =
+      "PatientProfile/"; // PatientProfile/{id}
 
   //appointments endpoint
   static const String getAllAppointments = "Patient/appointments";
@@ -22,6 +23,14 @@ class ApiConstants {
   }
 
   //notifications
-    static const String getNotifications = "Notification/patient";//Notification/patient/{ID}
+  static const String getNotifications =
+      "Notification/patient"; //Notification/patient/{ID}
+}
 
+//-----admin------//
+class AdminApiConstants {
+  static const String baseUrl = 'https://healthcaresystem.runasp.net/api/';
+
+  //get all doctors api
+  static const String getAllDoctors = "Admin/doctors";
 }

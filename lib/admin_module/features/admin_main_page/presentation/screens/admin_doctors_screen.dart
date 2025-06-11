@@ -83,6 +83,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  //-----------clear button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -98,6 +99,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                     children: [
                       SizedBox(
                         width: 300,
+                        //-----------------search bar---------------//
                         child: SearchAnchor.bar(
                           searchController: _searchController,
                           onChanged: (value) {
@@ -114,7 +116,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                       )
                     ],
                   ),
-                  //specialty dropdown menu
+                  //---------specialty dropdown menu
                   DropdownButton(
                     dropdownColor: Colors.amber,
                     iconEnabledColor: Colors.green,
