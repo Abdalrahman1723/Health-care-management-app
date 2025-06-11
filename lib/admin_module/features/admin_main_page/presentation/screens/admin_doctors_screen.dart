@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctor_avatar.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/assets_manager.dart';
@@ -19,9 +22,19 @@ class AdminDoctorsScreen extends StatefulWidget {
 class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
   DoctorSpecialty? selectedSpecialty; //for dropdown menu
   final SearchController _searchController = SearchController();
+  DoctorEntity? selectedDoctor;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch doctors when screen loads
+    log('Initializing AdminDoctorsScreen', name: 'ADMIN_DOCTORS');
+    context.read<AdminMainPageCubit>().fetchDoctors();
+  }
 
   //clear filters
   void clearFilters() {
+    log('Clearing filters', name: 'ADMIN_DOCTORS');
     setState(() {
       selectedSpecialty = null;
       selectedDoctor = null;
@@ -38,168 +51,209 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: AdminAppColors.containerBackground,
-      ),
-      width: double.infinity,
-      height: double.infinity,
-      child: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Column(
-          //---------Header section
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("All Doctors",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(width: 20),
-                ],
-              ),
-            ),
-            //------------ divider
-            const Divider(
-              color: Colors.white,
-              thickness: 2,
-              indent: 15,
-              endIndent: 15,
-            ),
-            //------------ doctors info section
-            const SizedBox(height: 15),
-            Container(
-              width: 350,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
+    return BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
+      builder: (context, state) {
+        // Handle loading state
+        if (state is DoctorsLoading) {
+          log('Loading doctors...', name: 'ADMIN_DOCTORS');
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Handle error state
+        if (state is DoctorsError) {
+          log('Error loading doctors: ${state.message}', name: 'ADMIN_DOCTORS');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.black),
                 ),
-              ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    log('Retrying to fetch doctors', name: 'ADMIN_DOCTORS');
+                    context.read<AdminMainPageCubit>().fetchDoctors();
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Handle loaded state
+        if (state is DoctorsLoaded) {
+          log('Doctors loaded successfully: ${state.doctors.length} doctors',
+              name: 'ADMIN_DOCTORS');
+          return Container(
+            decoration: BoxDecoration(
+              gradient: AdminAppColors.containerBackground,
+            ),
+            width: double.infinity,
+            height: double.infinity,
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //-----------clear button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Add filters"),
-                      ElevatedButton(
-                          onPressed: clearFilters, child: const Text("Clear")),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  //----------------search bar
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        //-----------------search bar---------------//
-                        child: SearchAnchor.bar(
-                          searchController: _searchController,
-                          onChanged: (value) {
-                            if (value.isEmpty) {
-                              //if search value is null -> show all doctors
-                              setState(() {
-                                selectedDoctor = null;
-                              });
-                            }
-                          },
-                          barHintText: "name / ID",
-                          suggestionsBuilder: searchBuilder,
-                        ),
-                      )
-                    ],
-                  ),
-                  //---------specialty dropdown menu
-                  DropdownButton(
-                    dropdownColor: Colors.amber,
-                    iconEnabledColor: Colors.green,
-                    value: selectedSpecialty,
-                    items: DoctorSpecialty.values.map((specialty) {
-                      return DropdownMenuItem<DoctorSpecialty>(
-                        value: specialty,
-                        child: Text(camelCaseToNormal(specialty.name)
-                            .toString()
-                            .split('.')
-                            .last),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedSpecialty = value!;
-                        selectedDoctor = null;
-                        _searchController.clear();
-                      });
-                    },
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("All Doctors",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(width: 20),
+                      ],
+                    ),
                   ),
                   const Divider(
+                    color: Colors.white,
+                    thickness: 2,
                     indent: 15,
                     endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
                   ),
-                  //------------ doctors information cards
-                  //doctors list example
-                  if (selectedDoctor == null &&
-                      selectedSpecialty ==
-                          null) //no doctor selected -> show all
-                    for (var dr in doctors)
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, Routes.doctorProfileScreen);
-                        },
-                        child: doctorDetails(
-                          context: context,
-                          doctor: dr,
-                        ),
-                      )
-                  else if (selectedSpecialty != null)
-                    for (var dr in doctors.where(
-                      (dr) => dr.specialty == selectedSpecialty,
-                    ))
-                      InkWell(
-                        onTap: () {
-                          // Navigator.pushNamed(
-                          //     context, Routes.appointmentDetailsScreen);
-                        },
-                        child: doctorDetails(
-                          context: context,
-                          doctor: dr,
-                        ),
-                      )
-                  else //search result
-                    doctorDetails(
-                      context: context,
-                      doctor: selectedDoctor!,
+                  const SizedBox(height: 15),
+                  Container(
+                    width: 350,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Add filters"),
+                            ElevatedButton(
+                                onPressed: clearFilters,
+                                child: const Text("Clear")),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SizedBox(
+                              width: 300,
+                              child: SearchAnchor.bar(
+                                searchController: _searchController,
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    log('Search cleared',
+                                        name: 'ADMIN_DOCTORS');
+                                    setState(() {
+                                      selectedDoctor = null;
+                                    });
+                                  }
+                                },
+                                barHintText: "name / ID",
+                                suggestionsBuilder: (context, controller) =>
+                                    searchBuilder(
+                                        context, controller, state.doctors),
+                              ),
+                            )
+                          ],
+                        ),
+                        DropdownButton(
+                          dropdownColor: Colors.amber,
+                          iconEnabledColor: Colors.green,
+                          value: selectedSpecialty,
+                          items: DoctorSpecialty.values.map((specialty) {
+                            return DropdownMenuItem<DoctorSpecialty>(
+                              value: specialty,
+                              child: Text(camelCaseToNormal(specialty.name)
+                                  .toString()
+                                  .split('.')
+                                  .last),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            log('Specialty selected: $value',
+                                name: 'ADMIN_DOCTORS');
+                            setState(() {
+                              selectedSpecialty = value!;
+                              selectedDoctor = null;
+                              _searchController.clear();
+                            });
+                          },
+                        ),
+                        const Divider(
+                          indent: 15,
+                          endIndent: 15,
+                          color: Colors.white,
+                          thickness: 1,
+                        ),
+                        if (selectedDoctor == null && selectedSpecialty == null)
+                          ...state.doctors.map((dr) => InkWell(
+                                onTap: () {
+                                  log('Doctor selected: ${dr.name}',
+                                      name: 'ADMIN_DOCTORS');
+                                  Navigator.pushNamed(
+                                      context, Routes.doctorProfileScreen);
+                                },
+                                child: doctorDetails(
+                                  context: context,
+                                  doctor: dr,
+                                ),
+                              ))
+                        else if (selectedSpecialty != null)
+                          ...state.doctors
+                              .where((dr) => dr.specialty == selectedSpecialty)
+                              .map((dr) => InkWell(
+                                    onTap: () {
+                                      log('Doctor selected: ${dr.name}',
+                                          name: 'ADMIN_DOCTORS');
+                                      Navigator.pushNamed(
+                                          context, Routes.doctorProfileScreen);
+                                    },
+                                    child: doctorDetails(
+                                      context: context,
+                                      doctor: dr,
+                                    ),
+                                  ))
+                        else
+                          doctorDetails(
+                            context: context,
+                            doctor: selectedDoctor!,
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 15),
                 ],
               ),
             ),
-            //the end of the information section
-            const SizedBox(height: 15),
-          ],
-        ),
-      ),
+          );
+        }
+
+        // Default state
+        return const Center(child: Text('No data available'));
+      },
     );
   }
 
-//--------------------------search builder
-  DoctorEntity? selectedDoctor;
-
-  FutureOr<Iterable<Widget>> searchBuilder(context, controller) {
+  // Search builder function
+  FutureOr<Iterable<Widget>> searchBuilder(BuildContext context,
+      SearchController controller, List<DoctorEntity> doctors) {
     final query = controller.text.toLowerCase().trim();
+    log('Searching for: $query', name: 'ADMIN_DOCTORS');
 
     final results = doctors.where((doc) {
       return doc.name.toLowerCase().contains(query) ||
           doc.id.toLowerCase().contains(query);
     }).toList();
+
+    log('Found ${results.length} results', name: 'ADMIN_DOCTORS');
 
     return List<Widget>.generate(results.length, (index) {
       final doc = results[index];
@@ -214,6 +268,8 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
           color: isAvailable ? Colors.green : Colors.red,
         ),
         onTap: () {
+          log('Doctor selected from search: ${doc.name}',
+              name: 'ADMIN_DOCTORS');
           controller.closeView(doc.name);
           setState(() {
             selectedDoctor = doc;
@@ -224,7 +280,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
   }
 }
 
-//-------------------------- show doctor's card
+// Doctor details card widget
 Widget doctorDetails({
   required BuildContext context,
   required DoctorEntity doctor,
@@ -240,13 +296,13 @@ Widget doctorDetails({
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          // Doctor Avatar
           doctorAvatar(
-            imageUrl: doctor.imageUrl,
+            imageUrl: doctor.imageUrl!.contains("http")
+                ? doctor.imageUrl
+                : ImageAsset.doctorImageFemale,
             size: 60,
           ),
           const SizedBox(width: 16.0),
-          // Doctor info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

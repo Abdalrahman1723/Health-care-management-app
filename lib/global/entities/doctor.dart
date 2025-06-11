@@ -7,6 +7,7 @@ import '../../core/utils/doctor_specialties.dart';
 class DoctorEntity {
   final String id;
   final String name;
+  final String? fullName;
   final String? imageUrl;
   final DoctorSpecialty specialty;
   final double rating;
@@ -24,11 +25,12 @@ class DoctorEntity {
   DoctorEntity({
     required this.id,
     required this.name,
+    this.fullName,
     this.imageUrl,
     required this.specialty,
-    required this.rating,
+    this.rating = 0.0,
     this.reviewCount = 0,
-    required this.availableSlots,
+    this.availableSlots = const [],
     this.bio = '',
     this.focus = '',
     this.careerPath = '',
@@ -43,52 +45,56 @@ class DoctorEntity {
   }
 
   factory DoctorEntity.fromJson(Map<String, dynamic> json, {String? id}) {
+    // Safely parse specialization string to DoctorSpecialty enum
+    DoctorSpecialty parseSpecialty(String? specialization) {
+      if (specialization == null) return DoctorSpecialty.generalPractitioner;
+
+      try {
+        return DoctorSpecialty.values.firstWhere(
+          (e) =>
+              e.toString().split('.').last.toLowerCase() ==
+              specialization.toLowerCase(),
+          orElse: () => DoctorSpecialty.generalPractitioner,
+        );
+      } catch (e) {
+        return DoctorSpecialty.generalPractitioner;
+      }
+    }
+
     return DoctorEntity(
-      id: id ?? json['id'] ?? '', // Priority: passed ID > json['id'] > empty
-      name: json['fullName'] as String,
-      specialty: DoctorSpecialty.values.firstWhere(
-        (e) => e.toString() == 'DoctorSpecialty.${json['specialization']}',
-        orElse: () => DoctorSpecialty
-            .generalPractitioner, // Default to generalPractitioner if not found
-      ),
-      rating: (json['rating'] as num).toDouble(),
-      imageUrl: json['photo'] as String?,
-      availableSlots: [], // TODO: Parse workingHours string into TimeSlotEntity list
-      bio: json['profile'] as String? ?? '',
-      focus: json['focus'] as String? ?? '',
-      careerPath: json['careerPath'] as String? ?? '',
-      highlights: json['highlights'] as String? ?? '',
-      reviewCount: (json['reviewsCount'] as num?)?.toInt() ?? 0,
-      experienceYears: (json['experienceYears'] as num?)?.toInt() ?? 0,
-      clinic: json['clinicName'] != null
-          ? ClinicEntity(
-              id: '', // Required but not provided in JSON
-              name: json['clinicName'] as String,
-              address: '', // Required but not provided in JSON
-              phoneNumber: '', // Required but not provided in JSON
-              doctorId: id ??
-                  json['id'] ??
-                  '', // Use doctor's ID as clinic's doctorId
-            )
-          : null,
+      id: id ?? json['doctorId']?.toString() ?? '',
+      name: json['userName']?.toString() ?? 'Unknown Doctor',
+      fullName: json['fullName']?.toString(),
+      specialty: parseSpecialty(json['specialization']?.toString()),
+      rating: 0.0, // Default rating since not provided in response
+      imageUrl: json['photo']?.toString(),
+      availableSlots: const [], // Default empty list since not provided in response
+      bio: '', // Default empty string since not provided in response
+      focus: '', // Default empty string since not provided in response
+      careerPath: '', // Default empty string since not provided in response
+      highlights: '', // Default empty string since not provided in response
+      reviewCount: 0, // Default 0 since not provided in response
+      experienceYears: 0, // Default 0 since not provided in response
+      clinic: null, // Default null since not provided in response
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'specialty': specialty.toString().split('.').last,
+      'doctorId': id,
+      'userName': name,
+      'fullName': fullName,
+      'photo': imageUrl,
+      'specialization': specialty.toString().split('.').last,
       'rating': rating,
       'reviewCount': reviewCount,
-      'imageUrl': imageUrl,
       'availableSlots': availableSlots.map((slot) => slot.toJson()).toList(),
       'bio': bio,
       'focus': focus,
       'careerPath': careerPath,
       'highlights': highlights,
       'experienceYears': experienceYears,
-      'clinic': clinic!.toJson(),
+      'clinic': clinic?.toJson(),
     };
   }
 }
