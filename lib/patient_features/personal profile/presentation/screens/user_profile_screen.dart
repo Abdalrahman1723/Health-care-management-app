@@ -20,7 +20,7 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   String patientID =
-      "1"; //! this is a temp (later should be actorId) with shared pref
+      "3"; //! this is a temp (later should be actorId) with shared pref
   //logout function
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();

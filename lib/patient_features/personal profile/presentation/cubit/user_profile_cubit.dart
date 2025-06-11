@@ -40,7 +40,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
         "${ApiConstants.updatePatientProfile}$patientID",
         headers: {
           'Authorization': //!temp remove it
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJlM2M4MjE5YS03YjRiLTQ0NzAtYjhmOC0yNDY3ODM1ZDFkZDEiLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuIiwicm9sZSI6IlBhdGllbnQiLCJuYmYiOjE3NDk1MTUwNDAsImV4cCI6MTc0OTYwMTQ0MCwiaWF0IjoxNzQ5NTE1MDQwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.N4-WgiMXJcT1B7mDyqjnIZODFzgkV5eYJBQDt2jn_n4',
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI0ZjliMWQ0MS1lNzdkLTQ5NGEtYWY1Ny0xNzFiNzlhZWMwNTciLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuMSIsInJvbGUiOiJQYXRpZW50IiwibmJmIjoxNzQ5NjAyODIyLCJleHAiOjE3NDk2ODkyMjIsImlhdCI6MTc0OTYwMjgyMiwiaXNzIjoiQ2xpbmljUHJvamVjdCJ9.tknRs2HGvDAuSsbxuqwvUp5yua8g3BtSrfHmTgRzpQI',
           'Content-Type': 'application/json',
         },
         body: data,

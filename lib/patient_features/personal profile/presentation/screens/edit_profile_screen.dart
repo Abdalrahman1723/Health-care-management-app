@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
-import 'package:health_care_app/patient_features/personal%20profile/presentation/widgets/gradient_button.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -18,23 +15,40 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   DateTime? _selectedDate;
   final _formKey = GlobalKey<FormState>();
+  //------------controllers
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
+  //------------medical info controllers
+  final _bloodTypeController = TextEditingController();
+  final _chronicDiseasesController = TextEditingController();
+  final _allergiesController = TextEditingController();
+  final _currentMedicationsController = TextEditingController();
+  //------patient id
   String patientID =
-      "1"; //! this is a temp (later should be actorId) with shared pref
+      "3"; //! this is a temp (later should be actorId) with shared pref
   String _selectedGender = 'male'; // Default value with lowercase to match API
   // Track initial values
   String _initialName = '';
   String _initialPhone = '';
   String _initialGender = 'male';
   DateTime? _initialDate;
+  bool _isUpdating = false; // Add flag to track update operation
+  // Track initial medical values
+  String _initialBloodType = '';
+  String _initialChronicDiseases = '';
+  String _initialAllergies = '';
+  String _initialCurrentMedications = '';
 
   bool get _hasChanges {
     return _nameController.text != _initialName ||
         _phoneController.text != _initialPhone ||
         _selectedGender != _initialGender ||
-        _selectedDate != _initialDate;
+        _selectedDate != _initialDate ||
+        _bloodTypeController.text != _initialBloodType ||
+        _chronicDiseasesController.text != _initialChronicDiseases ||
+        _allergiesController.text != _initialAllergies ||
+        _currentMedicationsController.text != _initialCurrentMedications;
   }
 
   @override
@@ -49,20 +63,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _bloodTypeController.dispose();
+    _chronicDiseasesController.dispose();
+    _allergiesController.dispose();
+    _currentMedicationsController.dispose();
     super.dispose();
   }
 
+  //-----------------update profile function PUT
   void _updateProfile() {
     late final age = DateTime.now().year - _selectedDate!.year;
     if (_formKey.currentState!.validate()) {
+      _isUpdating = true; // Set flag before update
       final updateData = {
-        'personName': _nameController.text, //?name is not updated
-        'phoneNumber': _phoneController.text, //?phone is not updated
+        'personName': _nameController.text,
+        'phoneNumber': _phoneController.text,
         'gender': _selectedGender,
         if (_selectedDate != null)
           'dateOfBirth': _selectedDate!.toIso8601String(),
         "NationalID": "30307010103319", //just a temp value
         "age": age,
+        //unchanged values
+        "bloodType": _bloodTypeController.text,
+        "chronicDiseases": _chronicDiseasesController.text,
+        "allergies": _allergiesController.text,
+        "currentMedications": _currentMedicationsController.text,
       };
       _selectedDate = _initialDate;
       context.read<UserProfileCubit>().updateUserData(updateData, patientID);
@@ -81,14 +106,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           _selectedDate = state.userData.dateOfBirth;
           _selectedGender = state.userData.gender;
 
+          // Initialize medical info controllers
+          _bloodTypeController.text = state.userData.bloodType ?? "";
+          _chronicDiseasesController.text =
+              state.userData.chronicDiseases ?? "";
+          _allergiesController.text = state.userData.allergies ?? "";
+          _currentMedicationsController.text =
+              state.userData.currentMedications ?? "";
+
           // Store initial values
           _initialName = state.userData.name;
           _initialPhone = _phoneController.text;
           _initialGender = state.userData.gender;
           _initialDate = state.userData.dateOfBirth;
+          _initialBloodType = _bloodTypeController.text;
+          _initialChronicDiseases = _chronicDiseasesController.text;
+          _initialAllergies = _allergiesController.text;
+          _initialCurrentMedications = _currentMedicationsController.text;
+
+          // Show success message if this is after an update
+          if (_isUpdating) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Profile updated successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            _isUpdating = false; // Reset the flag
+          }
         } else if (state is ProfileError) {
+          _isUpdating = false; // Reset the flag on error
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       },

@@ -25,7 +25,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
   static const String patientID =
-      "1"; //! this is a temp (later should be actorId) with shared pref
+      "3"; //! this is a temp (later should be actorId) with shared pref
 
   @override
   void initState() {

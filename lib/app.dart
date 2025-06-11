@@ -16,7 +16,7 @@ import 'package:health_care_app/patient_features/main page/presentation/cubit/pa
 class MyApp extends StatelessWidget {
   final ApiClient apiClient;
   final String authToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhMGVlM2JmOS00YmM1LTRjNGUtOGVlMy05ZDg0Yzc2OWI5YmMiLCJVc2VyTmFtZSI6ImFkbWluIiwicm9sZSI6IlN1cGVyQWRtaW4iLCJuYmYiOjE3NDk1MjU0NzgsImV4cCI6MTc0OTYxMTg3OCwiaWF0IjoxNzQ5NTI1NDc4LCJpc3MiOiJDbGluaWNQcm9qZWN0In0.AmyorW7lso9uBfdbg792ztgxHNnQGatiYebQhwytBTw";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI0ZjliMWQ0MS1lNzdkLTQ5NGEtYWY1Ny0xNzFiNzlhZWMwNTciLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuMSIsInJvbGUiOiJQYXRpZW50IiwibmJmIjoxNzQ5NjAyODIyLCJleHAiOjE3NDk2ODkyMjIsImlhdCI6MTc0OTYwMjgyMiwiaXNzIjoiQ2xpbmljUHJvamVjdCJ9.tknRs2HGvDAuSsbxuqwvUp5yua8g3BtSrfHmTgRzpQI";
   const MyApp({super.key, required this.apiClient});
   @override
   Widget build(BuildContext context) {
