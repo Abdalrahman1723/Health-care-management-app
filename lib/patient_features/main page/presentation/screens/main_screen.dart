@@ -451,6 +451,14 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
+            //--------------------FAB--------------------//
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.predictionScreen);
+              },
+              tooltip: "AI diagnosis",
+              child: const Icon(Icons.chat),
+            ),
           );
           //=====================no appointments=====================//
         } else if (state is PatientLoadedWithNoAppointments) {
@@ -644,7 +652,7 @@ class _MainScreenState extends State<MainScreen> {
           );
         } else {
           log(name: "ERROR", state.runtimeType.toString());
-          return const Center();
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
       },
     );

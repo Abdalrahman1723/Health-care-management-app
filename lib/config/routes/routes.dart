@@ -1,5 +1,5 @@
-import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
 import 'package:health_care_app/app.dart';
+import 'package:health_care_app/patient_features/ML_predection/presentation/screens/prediction_screen.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import '../../admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
@@ -44,6 +44,7 @@ class Routes {
   static const String adminAddDoctorScreen = '/AdminAddDoctorScreen';
   static const String doctorProfileScreen = '/DoctorProfileScreen';
   static const String medicalHistoryScreen = '/MedicalHistoryScreen';
+  static const String predictionScreen = '/PredictionScreen';
 }
 
 final routes = {
@@ -71,6 +72,7 @@ final routes = {
   Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
   Routes.doctorProfileScreen: (context) => const DoctorProfileScreen(),
   Routes.medicalHistoryScreen: (context) => const MedicalHistoryScreen(),
+  Routes.predictionScreen: (context) => const PredictionScreen(),
 };
 
 //---------------------------helana
