@@ -50,7 +50,7 @@ class ApiClient {
       {Map<String, String>? headers, dynamic body}) async {
     String myUri = '$baseUrl$endpoint';
     if (endpoint.contains("")) {
-      myUri = "https://1282-197-45-97-59.ngrok-free.app/predict";
+      myUri = "https://f084-197-45-97-59.ngrok-free.app/predict";
     }
     log("the client uri : $myUri");
     final response = await client.post(

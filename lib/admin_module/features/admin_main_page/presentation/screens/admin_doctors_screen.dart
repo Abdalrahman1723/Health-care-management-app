@@ -249,7 +249,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
     log('Searching for: $query', name: 'ADMIN_DOCTORS');
 
     final results = doctors.where((doc) {
-      return doc.name.toLowerCase().contains(query) ||
+      return doc.fullName!.toLowerCase().contains(query) ||
           doc.id.toLowerCase().contains(query);
     }).toList();
 
@@ -260,7 +260,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
       final isAvailable = doc.isAvailableAt(DateTime.now());
       return ListTile(
         leading: const Icon(Icons.person),
-        title: Text(doc.name),
+        title: Text(doc.fullName!),
         subtitle:
             Text('${camelCaseToNormal(doc.specialty.name)} • ⭐ ${doc.rating}'),
         trailing: Icon(
