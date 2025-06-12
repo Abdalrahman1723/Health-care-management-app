@@ -39,4 +39,7 @@ class AdminApiConstants {
 
   //update doctor api
   static const String updateDoctor = "Admin/doctors/update";//Admin/doctors/update/{ID}
+
+  //update doctor api
+  static const String deleteDoctor = "Admin/doctors/delete";//Admin/doctors/delete/{ID}
 }

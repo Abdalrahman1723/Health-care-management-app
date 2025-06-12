@@ -1,6 +1,6 @@
 // This file defines the sheared Doctor entity with its properties and constructor.
+import 'dart:developer';
 import 'package:health_care_app/global/entities/time_slot.dart';
-
 import '../../core/utils/doctor_specialties.dart';
 
 class DoctorEntity {
@@ -66,8 +66,20 @@ class DoctorEntity {
       }
     }
 
+    // Try to get ID from different possible fields
+    String? doctorId = id ??
+        json['id']?.toString() ??
+        json['doctorId']?.toString() ??
+        json['Id']?.toString() ??
+        json['DoctorId']?.toString();
+
+    if (doctorId == null || doctorId.isEmpty) {
+      log('Warning: No ID found for doctor in JSON: $json',
+          name: 'DOCTOR_ENTITY');
+    }
+
     return DoctorEntity(
-      id: id ?? json['id']?.toString() ?? '',
+      id: doctorId ?? 'unknown',
       userName: json['userName']?.toString() ?? 'Unknown Doctor',
       fullName: json['fullName']?.toString(),
       email: json['email'].toString(),

@@ -368,8 +368,52 @@ Widget doctorDetails({
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const InkWell(
-                  child: Icon(Icons.delete),
+                child: InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Confirm Delete'),
+                          content: Text(
+                            'Are you sure you want to delete Dr. ${doctor.fullName}?',
+                            style: const TextStyle(color: Colors.orange),
+                          ),
+                          actions: [
+                            //---cancel button
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close dialog
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            //---confirm button
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close dialog
+                                log("---------the doctor id from delete is : ${doctor.id}");
+                                context
+                                    .read<AdminMainPageCubit>()
+                                    .deleteDoctor(doctor.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Doctor deleted successfully'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.delete),
                 ),
               ),
             ],

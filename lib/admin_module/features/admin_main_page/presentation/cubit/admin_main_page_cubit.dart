@@ -30,6 +30,14 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
         },
       );
       log(name: "CUBIT RESPONSE DOCTORS", "doctors loaded: \n $response");
+      log(
+          name: "CUBIT RESPONSE DOCTORS RAW",
+          "Raw response type: ${response.runtimeType}");
+      if (response is List) {
+        log(
+            name: "CUBIT RESPONSE DOCTORS RAW",
+            "First doctor data: ${response.first}");
+      }
 
       if (response == null) {
         log("error number : ${response.runtimeType}");
@@ -80,6 +88,7 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
     }
   }
 
+  //---------------------update a doctor
   Future<void> updateDoctor(DoctorEntity doctor) async {
     try {
       emit(DoctorsLoading());
@@ -121,6 +130,32 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
     } catch (e) {
       log('Error updating doctor: $e', name: "DOCTORS");
       emit(DoctorsError('Failed to update doctor: ${e.toString()}'));
+    }
+  }
+
+  //---------------------delete a doctor
+  Future<void> deleteDoctor(String doctorId) async {
+    try {
+      emit(DoctorsLoading());
+
+      final response = await apiClient.delete(
+        '${AdminApiConstants.deleteDoctor}/$doctorId',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response == null) {
+        emit(const DoctorsError('Failed to delete doctor'));
+        return;
+      }
+
+      // Refresh the doctors list after successful deletion
+      await fetchDoctors();
+    } catch (e) {
+      log('Error deleting doctor: $e', name: "DOCTORS");
+      emit(DoctorsError('Failed to delete doctor: ${e.toString()}'));
     }
   }
 }
