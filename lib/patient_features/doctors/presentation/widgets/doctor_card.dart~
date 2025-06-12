@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import '../../domain/entities/doctor_entity.dart';
+
+class DoctorCard extends StatelessWidget {
+  final DoctorEntity doctor;
+  final bool isFavorite;
+  final VoidCallback onFavorite;
+  final VoidCallback onInfo;
+
+  const DoctorCard({
+    Key? key,
+    required this.doctor,
+    required this.isFavorite,
+    required this.onFavorite,
+    required this.onInfo,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(doctor.photoUrl),
+              radius: 40,
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    doctor.fullName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0BDCDC),
+                        fontSize: 18),
+                  ),
+                  Text(
+                    doctor.specialization,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: onInfo,
+                        child: const Text(
+                          'Info',
+                          style: TextStyle(
+                              color: Color(0xFF0BDCDC),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? const Color(0xFF0BDCDC) : Colors.grey,
+                        ),
+                        onPressed: onFavorite,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+} 
