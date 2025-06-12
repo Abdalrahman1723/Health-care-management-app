@@ -86,8 +86,9 @@ class _DoctorCardState extends State<DoctorCard> {
                       if (!widget.hideFavoriteIcon)  // لو مش مخفي، اعرض الايقونة
                         IconButton(
                           icon: Icon(
+                            size: 25,
                             _isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: _isFavorite ? const Color(0xFF0BDCDC) : Colors.grey,
+                            color: _isFavorite ? Colors.red : Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -99,6 +100,7 @@ class _DoctorCardState extends State<DoctorCard> {
                     ],
                   ),
 
+                   SizedBox(height: 15,),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -117,7 +119,7 @@ class _DoctorCardState extends State<DoctorCard> {
                       'Make Appointment',
                       style: TextStyle(
                         color: Color(0xFF0BDCDC),
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

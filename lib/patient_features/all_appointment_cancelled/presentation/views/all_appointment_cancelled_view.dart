@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class CancelledAppointmentsScreen extends StatefulWidget {
   const CancelledAppointmentsScreen({Key? key}) : super(key: key);
@@ -12,11 +13,27 @@ class CancelledAppointmentsScreen extends StatefulWidget {
 class _CancelledAppointmentsScreenState extends State<CancelledAppointmentsScreen> {
   List<dynamic> _cancelledAppointments = [];
   bool _isLoading = true;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     fetchCancelledAppointments();
+    // Start auto-refresh timer
+    _startAutoRefresh();
+  }
+
+  void _startAutoRefresh() {
+    // Refresh every 30 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      fetchCancelledAppointments();
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> fetchCancelledAppointments() async {
@@ -122,9 +139,8 @@ class _CancelledAppointmentsScreenState extends State<CancelledAppointmentsScree
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(width: 4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

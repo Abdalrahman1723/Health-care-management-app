@@ -1,4 +1,5 @@
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
+import 'package:health_care_app/patient_features/all_appointement_upcoming/presentation/widgets/all_appointment_upcoming_widget.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import '../../patient_features/all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
 import '../../patient_features/app settings/presentation/screens/notification_settings_screen.dart';
@@ -29,7 +30,7 @@ class Routes {
   static const String loginAndSignup = "/LoginAndSignupScreen";
   static const String signup = "/SignUpScreen";
   static const String passwordManager = "/PasswordManagerScreen";
-  static const String allDoctors = "/DoctorsWidget";
+  static const String allDoctors = "/DoctorsScreen";
   static const String favDoctors = "/FavDoctors";
   static const String notificationsScreen = "/NotificationsScreen";
   static const String addReviewScreen = "/AddReviewScreen";
@@ -46,7 +47,7 @@ final routes = {
   Routes.settingsScreen: (context) => const SettingsScreen(),
   Routes.editProfileScreen: (context) => const EditProfileScreen(),
   Routes.notificationSettingsScreen: (context) =>
-      const NotificationSettingsScreen(),
+  const NotificationSettingsScreen(),
   Routes.login: (context) => const LoginScreen(),
   Routes.loginAndSignup: (context) => const LoginAndSignupScreen(),
   Routes.signup: (context) => const SignUpScreen(),
@@ -57,7 +58,7 @@ final routes = {
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
   Routes.appointmentDetailsScreen: (context) =>
-      const AppointmentDetailsScreen(),
+  const AppointmentDetailsScreen(),
 };
 
 //---------------------------helana

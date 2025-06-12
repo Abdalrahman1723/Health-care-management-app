@@ -46,7 +46,7 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  _buildFilterButton("Complete", 0),
+                //  _buildFilterButton("Complete", 0),
                   const SizedBox(width: 8),
                   _buildFilterButton("Upcoming", 1),
                   const SizedBox(width: 8),

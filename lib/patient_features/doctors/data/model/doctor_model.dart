@@ -13,3 +13,26 @@ class ModelDoctor extends Entity {
     );
   }
 }
+
+class DoctorModel {
+  final int doctorId;
+  final String fullName;
+  final String specialization;
+  final String photo;
+
+  DoctorModel({
+    required this.doctorId,
+    required this.fullName,
+    required this.specialization,
+    required this.photo,
+  });
+
+  factory DoctorModel.fromJson(Map<String, dynamic> json) {
+    return DoctorModel(
+      doctorId: json['doctorId'],
+      fullName: json['fullName'],
+      specialization: json['specialization'],
+      photo: json['photo'],
+    );
+  }
+}

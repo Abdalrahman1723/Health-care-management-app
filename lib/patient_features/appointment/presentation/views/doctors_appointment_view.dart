@@ -5,7 +5,6 @@ import '../../../all_appointement_upcoming/presentation/views/all_appointment_up
 import '../../../doctors/presentation/widgets/doctors_widget.dart';
 import 'dart:convert';
 
-
 class DoctorsAppointment extends StatefulWidget {
   final String doctorName;
   final String specialty;
@@ -96,6 +95,28 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
         _availableTimeSlots = [];
         _isLoading = false;
       });
+    }
+  }
+
+  Future<Map<String, dynamic>> _fetchDoctorProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      if (token == null) throw Exception('Authentication token not found');
+
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Patient/${widget.doctorId}',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to load doctor profile');
+      }
+    } catch (e) {
+      print('Error fetching doctor profile: $e');
+      rethrow;
     }
   }
 
@@ -233,24 +254,23 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Confirm Appointment'),
-                        content: Text('Do you want to confirm this appointment?'),
+                        title: const Text('Confirm Appointment'),
+                        content: const Text('Do you want to confirm this appointment?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                           ),
                           TextButton(
                             onPressed: () async {
                               Navigator.pop(context); // Close dialog
                               await bookAppointment();
                             },
-                            child: Text('Confirm'),
+                            child: const Text('Confirm'),
                           ),
                         ],
                       ),
                     );
-
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
@@ -282,16 +302,40 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   }
 
   Widget _buildProfileCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Text(
-        'Dr. Emma Hall is a highly experienced General Doctor with over 10 years of practice. She specializes in preventive care, chronic disease management, and women\'s health. Dr. Hall is known for her compassionate approach and thorough examinations.',
-        style: TextStyle(color: Colors.grey, height: 1.5),
-      ),
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _fetchDoctorProfile(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'A dedicated healthcare professional committed to providing exceptional medical care. With extensive experience in their field, they focus on delivering personalized treatment plans and maintaining the highest standards of patient care.',
+              style: TextStyle(color: Colors.grey, height: 1.5),
+            ),
+          );
+        }
+
+        final profile = snapshot.data?['profile'] ?? '';
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            profile.isNotEmpty ? profile : 'A dedicated healthcare professional committed to providing exceptional medical care. With extensive experience in their field, they focus on delivering personalized treatment plans and maintaining the highest standards of patient care.',
+            style: const TextStyle(color: Colors.grey, height: 1.5),
+          ),
+        );
+      },
     );
   }
 
@@ -446,7 +490,6 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully Booked'), backgroundColor: Colors.green),
         );
-        // لا ترجع للصفحة السابقة تلقائياً
       } else {
         throw Exception('Booking failed: ${bookResponse.statusCode}');
       }

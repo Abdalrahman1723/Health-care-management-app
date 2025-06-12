@@ -8,9 +8,8 @@ import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
 import '../../../info/preentation/views/doctors_profile.dart';
 import '../../domain/entities/doctor_entity.dart';
 import '../cubit/doctors_cubit.dart';
-import '../cubit/doctors_state.dart';
-import '../widgets/doctor_card.dart';
 import '../../../info/preentation/widget/doctors_profile_widget.dart';
+import 'doctor_card.dart';
 
 
 class DoctorsView extends StatefulWidget {
@@ -46,7 +45,7 @@ class _DoctorsViewState extends State<DoctorsView> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token != null) {
-      context.read<DoctorsCubit>().getAllDoctors(token);
+      context.read<DoctorsCubit>().fetchDoctorsData();
     }
   }
 
@@ -60,7 +59,7 @@ class _DoctorsViewState extends State<DoctorsView> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
               style: const TextStyle(color: Colors.black), // 👈 ده السطر اللي يغير لون النص
@@ -74,13 +73,13 @@ class _DoctorsViewState extends State<DoctorsView> {
             ),
 
           ),
-          Expanded(
+            Expanded(
             child: BlocBuilder<DoctorsCubit, DoctorsState>(
               builder: (context, state) {
                 if (state is DoctorsLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is DoctorsSuccess) {
-                  final filteredDoctors = state.doctors.where((doctor) {
+                  final filteredDoctors = state.entities.where((doctor) {
                     final name = doctor.fullName.toLowerCase();
                     final spec = doctor.specialization.toLowerCase();
                     return name.contains(_searchQuery) || spec.contains(_searchQuery);
@@ -94,22 +93,22 @@ class _DoctorsViewState extends State<DoctorsView> {
                     );
                   }
                   return ListView.builder(
-                    itemCount: filteredDoctors.length,
-                    itemBuilder: (context, index) {
-                      final doctor = filteredDoctors[index];
+                itemCount: filteredDoctors.length,
+                itemBuilder: (context, index) {
+                  final doctor = filteredDoctors[index];
                       final isFav = favDoctors.any((d) => d.fullName == doctor.fullName);
-                      return DoctorCard(
-                        doctor: doctor,
+                  return DoctorCard(
+                    doctor: doctor,
                         isFavorite: isFav,
-                        onFavorite: () {
-                          setState(() {
+                    onFavorite: () {
+                      setState(() {
                             if (isFav) {
                               favDoctors.removeWhere((d) => d.fullName == doctor.fullName);
-                            } else {
+                        } else {
                               favDoctors.add(doctor);
-                            }
-                          });
-                        },
+                        }
+                      });
+                    },
                         onInfo: () {
                           Navigator.push(
                             context,
@@ -127,7 +126,7 @@ class _DoctorsViewState extends State<DoctorsView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Error: ${state.error}',
+                          'Error: ${state.errMessage}',
                           style: const TextStyle(color: Colors.red),
                           textAlign: TextAlign.center,
                         ),
@@ -149,7 +148,7 @@ class _DoctorsViewState extends State<DoctorsView> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                        onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -172,14 +171,14 @@ class _DoctorsViewState extends State<DoctorsView> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text(
+                      child: const Text(
                   'Go to Fav Doctors',
                   style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
+              ),
             ),
-          ),
-        ],
+          ],
       ),
     );
   }

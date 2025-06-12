@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorProfileScreen extends StatefulWidget {
   final int doctorId;
@@ -26,16 +27,33 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       error = null;
     });
     try {
+      print('doctorId: [32m${widget.doctorId}[0m');
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      if (token == null) {
+        setState(() {
+          error = 'Authentication token not found. Please login again.';
+          isLoading = false;
+        });
+        return;
+      }
       final response = await Dio().get(
         'https://healthcaresystem.runasp.net/api/Patient/${widget.doctorId}',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
       );
+      print('API response: [34m${response.data}[0m');
       setState(() {
         doctorData = response.data;
         isLoading = false;
       });
     } catch (e) {
+      print('Error fetching doctor info: $e');
       setState(() {
-        error = 'Failed to load doctor data';
+        error = 'Failed to load doctor data. Please check your internet connection or try again later.';
         isLoading = false;
       });
     }
@@ -49,9 +67,21 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : error != null
-            ? Center(child: Text(error!))
+            ? Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, color: Colors.red, size: 40),
+                  const SizedBox(height: 12),
+                  Text(error!, style: const TextStyle(color: Colors.red, fontSize: 18)),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: fetchDoctorData,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ))
             : doctorData == null
-            ? const Center(child: Text('No data found'))
+            ? const Center(child: Text('No data found for this doctor.', style: TextStyle(fontSize: 18)))
             : SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

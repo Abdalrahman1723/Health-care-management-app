@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../doctors/presentation/widgets/doctor_card.dart';
 import '../../../doctors/domain/entities/doctor_entity.dart';
+import '../../../doctors/presentation/views/doctor_card.dart';
+
 
 
 class FavDoctors extends StatefulWidget {

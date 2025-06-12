@@ -48,7 +48,7 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token == null) return;
-    
+
     try {
       final url = 'https://healthcaresystem.runasp.net/api/Patient/cancel/$appointmentId';
       print('Cancel appointmentId: $appointmentId');
@@ -193,8 +193,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(width: 4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

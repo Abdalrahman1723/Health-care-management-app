@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../views/doctors_profile.dart';
 import '../../../doctors/domain/entities/doctor_entity.dart';
+import '../views/doctors_profile.dart';
+
 
 class DoctorsProfileWidget extends StatelessWidget {
   final DoctorEntity doctor;

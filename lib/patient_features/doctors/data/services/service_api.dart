@@ -29,3 +29,25 @@ class NewsService {
     }
   }
 }
+
+class DoctorsService {
+  final Dio dio = Dio();
+
+  Future<List<Map<String, dynamic>>> fetchAllDoctors() async {
+    final response = await dio.get('https://healthcaresystem.runasp.net/api/Admin/doctors');
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(response.data);
+    } else {
+      throw Exception('Failed to load doctors');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchDoctorById(int doctorId) async {
+    final response = await dio.get('https://healthcaresystem.runasp.net/api/Admin/doctors/$doctorId');
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      throw Exception('Failed to load doctor details');
+    }
+  }
+}
