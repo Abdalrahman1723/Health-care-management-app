@@ -168,8 +168,8 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
       final response = await apiClient.get(
         AdminApiConstants.getAdminStats,
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
         },
       );
 

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   final String authToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI0ZjliMWQ0MS1lNzdkLTQ5NGEtYWY1Ny0xNzFiNzlhZWMwNTciLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuMSIsInJvbGUiOiJQYXRpZW50IiwibmJmIjoxNzQ5NjAyODIyLCJleHAiOjE3NDk2ODkyMjIsImlhdCI6MTc0OTYwMjgyMiwiaXNzIjoiQ2xpbmljUHJvamVjdCJ9.tknRs2HGvDAuSsbxuqwvUp5yua8g3BtSrfHmTgRzpQI";
   final String adminAuthToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJmOWVkNjI5Mi0wZTE2LTRmYmUtOTRmNi00YmM0NmQ4NGQ4ZGEiLCJVc2VyTmFtZSI6ImFkbWluIiwicm9sZSI6IlN1cGVyQWRtaW4iLCJuYmYiOjE3NDk2MTkxOTAsImV4cCI6MTc0OTcwNTU5MCwiaWF0IjoxNzQ5NjE5MTkwLCJpc3MiOiJDbGluaWNQcm9qZWN0In0.treGTHZGm0tlWMqkIezMsqaQXZmJ0KJVj-KQGeI7-E8";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJmOWVkNjI5Mi0wZTE2LTRmYmUtOTRmNi00YmM0NmQ4NGQ4ZGEiLCJVc2VyTmFtZSI6ImFkbWluIiwicm9sZSI6IlN1cGVyQWRtaW4iLCJuYmYiOjE3NDk3MTU5MjgsImV4cCI6MTc0OTgwMjMyOCwiaWF0IjoxNzQ5NzE1OTI4LCJpc3MiOiJDbGluaWNQcm9qZWN0In0.hjOLE9Tzwe6dDOzgN_uQFOANVMKn2RRnxPQHXmt6Ubc";
   const MyApp({super.key, required this.apiClient});
   @override
   Widget build(BuildContext context) {
@@ -50,13 +50,13 @@ class MyApp extends StatelessWidget {
               apiClient: apiClient, authToken: adminAuthToken),
         ),
         BlocProvider(
-          create: (context) => AddDoctorCubit(
-              apiClient: apiClient, authToken: adminAuthToken),
+          create: (context) =>
+              AddDoctorCubit(apiClient: apiClient, authToken: adminAuthToken),
         ),
         //predict provider
         BlocProvider(
-          create: (context) => PredictionCubit(
-              apiClient: apiClient, authToken: adminAuthToken),
+          create: (context) =>
+              PredictionCubit(apiClient: apiClient, authToken: adminAuthToken),
         ),
       ],
       child: MaterialApp(
