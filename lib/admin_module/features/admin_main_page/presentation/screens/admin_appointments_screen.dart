@@ -1,9 +1,8 @@
-import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/utils/get_weekday_name.dart';
 import '../../../../core/utils/admin_app_colors.dart';
+import '../cubit/admin_main_page_cubit.dart';
 
 class AdminAppointmentsScreen extends StatefulWidget {
   const AdminAppointmentsScreen({super.key});
@@ -14,290 +13,247 @@ class AdminAppointmentsScreen extends StatefulWidget {
 }
 
 class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
-  DateTime _selectedDate = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+    context.read<AdminMainPageCubit>().getAdminStats();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: AdminAppColors.containerBackground,
-        ),
-        width: double.infinity,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: AdminAppColors.containerBackground,
+      ),
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height,
+      child: SingleChildScrollView(
         child: Column(
-          //---------Header section
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("All Appointments",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  //months button
                   Text(
-                    "Months&Year",
+                    "Admin Stats",
                     style: TextStyle(
-                        // decoration: TextDecoration.underline,
-                        color: Colors.white,
-                        fontSize: 12),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
             ),
-            //------------ divider
             const Divider(
               color: Colors.white,
               thickness: 2,
               indent: 15,
               endIndent: 15,
             ),
-            //------------ date picker section
-            CalendarDaySlotNavigator(
-              activeColor: Colors.orange,
-              isGoogleFont: false,
-              slotLength: 6,
-              dayBoxHeightAspectRatio: 5,
-              dayDisplayMode: DayDisplayMode.outsideDateBox,
-              headerText: "Select Date",
-              onDateSelect: (selectedDate) {
-                _selectedDate = selectedDate;
-                //?here should send the selected date to the backend
-              },
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Container(
-              width: 350,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
-                ),
-              ),
-              child: Column( 
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      //---filter appointments button
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange),
-                        onPressed: () {
-                          //todo filter to all appointments screen
-                          // Navigator.pushNamed(
-                          //     context, Routes.allAppointments);
-                          // Handle see all appointments button press
-                        },
-                        child: const Text(
-                          "filter with doctor",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              decoration: TextDecoration.underline),
-                        ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
+                builder: (context, state) {
+                  if (state is AdminStatsLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  //------------ appointment information
+                    );
+                  }
 
-                  //appointment 1 example
+                  if (state is AdminStatsError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  }
 
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(
-                      //     context, Routes.appointmentDetailsScreen);
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Ahmed Essam',
-                        patientName: "Hossam Ali",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
+                  if (state is AdminStatsLoaded) {
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildStatCard(
+                                title: 'Total Doctors',
+                                value: state.stats.totalDoctors.toString(),
+                                icon: Icons.medical_services_outlined,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildStatCard(
+                                title: 'Total Patients',
+                                value: state.stats.totalPatients.toString(),
+                                icon: Icons.people_outline,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSpecializationsCard(
+                            state.stats.mostRequestedSpecializations),
+                      ],
+                    );
+                  }
 
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                  //appointment 2
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, Routes.appointmentDetailsScreen),
-                    },
-                    child: appointmentDetails(
-                        doctorName: 'Helana Emad',
-                        patientName: "Mohamed Yasser",
-                        selectedDate: _selectedDate,
-                        context: context),
-                  ),
-                ],
+                  return const SizedBox.shrink();
+                },
               ),
             ),
-            //the end of the information section
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
-}
 
-//-----------------------------------
-Widget appointmentDetails(
-    {required String doctorName,
-    required String patientName,
-    required DateTime selectedDate,
-    required BuildContext context}) {
-  return Column(
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          //------weekday
-          Text(
-            getWeekdayName(selectedDate.weekday),
-            style: Theme.of(context).textTheme.titleMedium,
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          //------date
-          Text(
-            DateFormat('dd/MMM/yyyy').format(selectedDate),
-          ),
-          //------time
-          const Text('8:00 AM'), //later we will change this to a dynamic value
         ],
       ),
-      const SizedBox(height: 8),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          //---Doctor's name
-          Text(
-            "Dr. $doctorName",
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-          //---patient's name
-          Text(patientName)
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
-    ],
-  );
+    );
+  }
+
+  Widget _buildSpecializationsCard(Map<String, int> specializations) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.medical_information_outlined,
+                  color: Colors.orange, size: 20),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  'Most Requested Specializations',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...specializations.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 2,
+                    child: Text(
+                      entry.key,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        entry.value.toString(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
 }

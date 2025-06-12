@@ -5,6 +5,7 @@ import 'package:health_care_app/global/entities/doctor.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import '../../../../../core/api/api_client.dart';
 import '../../../../../core/api/endpoints.dart';
+import '../../domain/entities/admin_status.dart';
 
 part 'admin_main_page_state.dart';
 
@@ -156,6 +157,32 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
     } catch (e) {
       log('Error deleting doctor: $e', name: "DOCTORS");
       emit(DoctorsError('Failed to delete doctor: ${e.toString()}'));
+    }
+  }
+
+  //---------------------admin stats
+  Future<void> getAdminStats() async {
+    try {
+      emit(AdminStatsLoading());
+
+      final response = await apiClient.get(
+        AdminApiConstants.getAdminStats,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response == null) {
+        emit(const AdminStatsError('Failed to fetch admin stats'));
+        return;
+      }
+
+      final adminStats = AdminStatus.fromJson(response as Map<String, dynamic>);
+      emit(AdminStatsLoaded(adminStats));
+    } catch (e) {
+      log('Error fetching admin stats: $e', name: "ADMIN_STATS");
+      emit(AdminStatsError('Failed to fetch admin stats: ${e.toString()}'));
     }
   }
 }

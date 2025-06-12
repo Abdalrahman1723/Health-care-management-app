@@ -361,6 +361,7 @@ Widget doctorDetails({
                 ),
               ),
               const SizedBox(height: 12),
+              //---------------delete and edit button----------------//
               Container(
                 width: 40,
                 height: 40,

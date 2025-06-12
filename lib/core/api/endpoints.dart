@@ -38,8 +38,13 @@ class AdminApiConstants {
   static const String createDoctor = "Admin/doctors";
 
   //update doctor api
-  static const String updateDoctor = "Admin/doctors/update";//Admin/doctors/update/{ID}
+  static const String updateDoctor =
+      "Admin/doctors/update"; //Admin/doctors/update/{ID}
 
   //update doctor api
-  static const String deleteDoctor = "Admin/doctors/delete";//Admin/doctors/delete/{ID}
+  static const String deleteDoctor =
+      "Admin/doctors/delete"; //Admin/doctors/delete/{ID}
+
+  //update doctor api
+  static const String getAdminStats = "Admin/stats"; //Admin/stats
 }

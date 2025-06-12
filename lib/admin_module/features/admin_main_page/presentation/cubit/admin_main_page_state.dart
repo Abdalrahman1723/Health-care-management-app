@@ -50,3 +50,24 @@ class DoctorsError extends AdminMainPageState {
   @override
   List<Object?> get props => [message];
 }
+
+//-----------------the admin stats-------------------//
+class AdminStatsLoaded extends AdminMainPageState {
+  final AdminStatus stats;
+
+  const AdminStatsLoaded(this.stats);
+
+  @override
+  List<Object?> get props => [stats];
+}
+
+class AdminStatsLoading extends AdminMainPageState {}
+
+class AdminStatsError extends AdminMainPageState {
+  final String message;
+
+  const AdminStatsError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
