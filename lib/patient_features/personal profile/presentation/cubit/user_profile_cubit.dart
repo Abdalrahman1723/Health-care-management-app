@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/endpoints.dart';
@@ -9,15 +10,23 @@ import '../../../../global/entities/patient.dart';
 
 class UserProfileCubit extends Cubit<UserProfileState> {
   final ApiClient apiClient;
-  final String authToken; //! will be fetched from shared pref later
-  UserProfileCubit({required this.apiClient, required this.authToken})
-      : super(ProfileInitial());
+  String? authToken;
+
+  UserProfileCubit({required this.apiClient}) : super(ProfileInitial());
 
   Future<void> fetchUserData(String patientId) async {
     try {
       emit(ProfileLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(ProfileError('Authentication token not found'));
+        return;
+      }
+
       final userData = await apiClient.get(
-        //get
         '${PatientApiConstants.getPatientById}$patientId',
         headers: {
           'Authorization': 'Bearer $authToken',
@@ -36,11 +45,19 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       Map<String, dynamic> data, String patientID) async {
     try {
       emit(ProfileLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(ProfileError('Authentication token not found'));
+        return;
+      }
+
       await apiClient.put(
         "${PatientApiConstants.updatePatientProfile}$patientID",
         headers: {
-          'Authorization': //!temp remove it
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI0ZjliMWQ0MS1lNzdkLTQ5NGEtYWY1Ny0xNzFiNzlhZWMwNTciLCJVc2VyTmFtZSI6ImFiZGFscmFobWFuMSIsInJvbGUiOiJQYXRpZW50IiwibmJmIjoxNzQ5NjAyODIyLCJleHAiOjE3NDk2ODkyMjIsImlhdCI6MTc0OTYwMjgyMiwiaXNzIjoiQ2xpbmljUHJvamVjdCJ9.tknRs2HGvDAuSsbxuqwvUp5yua8g3BtSrfHmTgRzpQI',
+          'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
         },
         body: data,

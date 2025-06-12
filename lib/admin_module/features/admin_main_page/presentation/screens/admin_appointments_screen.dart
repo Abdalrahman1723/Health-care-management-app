@@ -16,7 +16,7 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AdminMainPageCubit>().getAdminStats();
+    context.read<AdminMainPageCubit>().fetchAdminStats();
   }
 
   @override

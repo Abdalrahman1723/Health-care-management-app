@@ -6,11 +6,9 @@ import 'prediction_state.dart';
 
 class PredictionCubit extends Cubit<PredictionState> {
   final ApiClient apiClient;
-  final String authToken;
 
   PredictionCubit({
     required this.apiClient,
-    required this.authToken,
   }) : super(PredictionInitial());
 
   String _formatSymptom(String symptom) {
@@ -47,9 +45,8 @@ class PredictionCubit extends Cubit<PredictionState> {
       log("Sending symptoms: $formattedSymptoms");
 
       final response = await apiClient.post(
-        'http://localhost:8000/predict',
+        '',
         headers: {
-          'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
         },
         body: {

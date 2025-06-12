@@ -1,3 +1,4 @@
+import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,7 +64,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       );
       final List<dynamic> data = response.data;
       final List<Map<String, dynamic>> slots = data
-          .where((item) => item['status'] != null && item['status'].toString().toLowerCase() == 'available')
+          .where((item) =>
+              item['status'] != null &&
+              item['status'].toString().toLowerCase() == 'available')
           .map<Map<String, dynamic>>((item) {
         double start = (item['startTimeInHours'] ?? 0).toDouble();
         double end = (item['endTimeInHours'] ?? 0).toDouble();
@@ -75,6 +78,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           int displayHour = h > 12 ? h - 12 : (h == 0 ? 12 : h);
           return '${displayHour.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')} $period';
         }
+
         String slotText = '$day: ${formatTime(start)} - ${formatTime(end)}';
         return {
           'id': item['id'] ?? item['availabilityId'],
@@ -172,7 +176,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       ),
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(12),
@@ -187,20 +192,17 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       ),
                     ],
                   ),
-                  Container(
-
-                    child: CalendarDaySlotNavigator(
-                      isGoogleFont: false,
-                      slotLength: 6,
-                      dayBoxHeightAspectRatio: 4,
-                      dayDisplayMode: DayDisplayMode.outsideDateBox,
-                      headerText: "Select Date",
-                      onDateSelect: (selectedDate) {
-                        _updateDate(selectedDate);
-                        // print("Selected date: $selectedDate");  //default
-                        //?here should send the selected date to the backend
-                      },
-                    ),
+                  CalendarDaySlotNavigator(
+                    isGoogleFont: false,
+                    slotLength: 6,
+                    dayBoxHeightAspectRatio: 4,
+                    dayDisplayMode: DayDisplayMode.outsideDateBox,
+                    headerText: "Select Date",
+                    onDateSelect: (selectedDate) {
+                      _updateDate(selectedDate);
+                      // print("Selected date: $selectedDate");  //default
+                      //?here should send the selected date to the backend
+                    },
                   ),
                 ],
               ),
@@ -213,15 +215,14 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('Profile', color: const Color(0xFF0BDCDC)),
+                    _buildSectionTitle('Profile',
+                        color: const Color(0xFF0BDCDC)),
                     const SizedBox(height: 8),
                     _buildProfileCard(),
-
                     const SizedBox(height: 24),
                     _buildSectionTitle('Available Time'),
                     const SizedBox(height: 16),
                     _buildTimeSlotGrid(),
-
                     const SizedBox(height: 24),
                     _buildSectionTitle('Patient Details'),
                     const SizedBox(height: 16),
@@ -260,7 +261,10 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   onPressed: () async {
                     if (_selectedAvailabilityId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please select an available time slot'), backgroundColor: Colors.red),
+                        const SnackBar(
+                            content:
+                                Text('Please select an available time slot'),
+                            backgroundColor: Colors.red),
                       );
                       return;
                     }
@@ -268,7 +272,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Confirm Appointment'),
-                        content: const Text('Do you want to confirm this appointment?'),
+                        content: const Text(
+                            'Do you want to confirm this appointment?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -287,12 +292,17 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                   ),
                   child: const Text(
                     "Save Appointment",
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -344,7 +354,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            profile.isNotEmpty ? profile : 'A dedicated healthcare professional committed to providing exceptional medical care. With extensive experience in their field, they focus on delivering personalized treatment plans and maintaining the highest standards of patient care.',
+            profile.isNotEmpty
+                ? profile
+                : 'A dedicated healthcare professional committed to providing exceptional medical care. With extensive experience in their field, they focus on delivering personalized treatment plans and maintaining the highest standards of patient care.',
             style: const TextStyle(color: Colors.grey, height: 1.5),
           ),
         );
@@ -360,7 +372,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       return const Center(
         child: Text(
           'No Available Appointments',
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
         ),
       );
     }
@@ -394,15 +407,17 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               color: isBooked
                   ? Colors.red.withOpacity(0.7)
                   : isSelected
-                  ? const Color(0xFF0BDCDC)
-                  : Colors.transparent,
+                      ? const Color(0xFF0BDCDC)
+                      : Colors.transparent,
               border: Border.all(color: const Color(0xFF0BDCDC)),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               slot['text'],
               style: TextStyle(
-                color: isBooked || isSelected ? Colors.white : const Color(0xFF0BDCDC),
+                color: isBooked || isSelected
+                    ? Colors.white
+                    : const Color(0xFF0BDCDC),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -423,7 +438,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     );
   }
 
-  Widget _buildInputField(TextEditingController controller, {int maxLines = 1, bool isNumber = false}) {
+  Widget _buildInputField(TextEditingController controller,
+      {int maxLines = 1, bool isNumber = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -450,14 +466,18 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: _selectedGender == gender ? const Color(0xFF0BDCDC) : Colors.transparent,
+                color: _selectedGender == gender
+                    ? const Color(0xFF0BDCDC)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: const Color(0xFF0BDCDC)),
               ),
               child: Text(
                 gender,
                 style: TextStyle(
-                  color: _selectedGender == gender ? Colors.white : const Color(0xFF0BDCDC),
+                  color: _selectedGender == gender
+                      ? Colors.white
+                      : const Color(0xFF0BDCDC),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -501,15 +521,28 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully Booked'), backgroundColor: Colors.green),
+          const SnackBar(
+              content: Text('Successfully Booked'),
+              backgroundColor: Colors.green),
         );
       } else {
         throw Exception('Booking failed: ${bookResponse.statusCode}');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Booking error: $e'), backgroundColor: Colors.red),
+        SnackBar(
+            content: Text('Booking error: $e'), backgroundColor: Colors.red),
       );
     }
+  }
+
+  void _updateDate(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+      _selectedTimeSlot = null;
+      _selectedAvailabilityId = null;
+    });
+    // Refresh appointments for the selected date
+    fetchDoctorAppointments();
   }
 }

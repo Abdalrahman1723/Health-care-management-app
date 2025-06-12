@@ -26,8 +26,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DateTime _selectedDate = DateTime.now();
   String? _imagePath;
-  static const String patientID =
-      "3"; //! this is a temp (later should be actorId) with shared pref
+  String? patientID;
+
   Future<void> _loadImageFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final savedImagePath = prefs.getString('profile_image');
@@ -38,11 +38,35 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future<void> _loadPatientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('actorId');
+    if (id != null && id.isNotEmpty) {
+      setState(() {
+        patientID = id;
+      });
+      if (mounted) {
+        context.read<PatientCubit>().fetchPatientById(id);
+        context.read<PatientCubit>().fetchAppointments();
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to load profile: Patient ID not found'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Key _refreshKey = UniqueKey();
 
   Future<void> _refreshData() async {
     setState(() {
       _loadImageFromPrefs();
+      _loadPatientId();
       _refreshKey = UniqueKey(); // triggers rebuild of content
     });
   }
@@ -51,10 +75,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _loadImageFromPrefs();
-
-    // Fetch patient with ID 3 when screen loads
-    context.read<PatientCubit>().fetchPatientById(patientID);
-    context.read<PatientCubit>().fetchAppointments();
+    _loadPatientId();
   }
 
   @override
@@ -89,9 +110,19 @@ class _MainScreenState extends State<MainScreen> {
                   const SizedBox(height: 12),
                   ElevatedButton(
                       onPressed: () {
-                        context
-                            .read<PatientCubit>()
-                            .fetchPatientById(patientID);
+                        if (patientID != null) {
+                          context
+                              .read<PatientCubit>()
+                              .fetchPatientById(patientID!);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Unable to load profile: Patient ID not found'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       },
                       child: const Text("restart connection"))
                 ],
@@ -596,7 +627,7 @@ class _MainScreenState extends State<MainScreen> {
                                         onPressed: () {
                                           context
                                               .read<PatientCubit>()
-                                              .fetchPatientById(patientID);
+                                              .fetchPatientById(patientID!);
                                           context
                                               .read<PatientCubit>()
                                               .fetchAppointments();
@@ -652,7 +683,8 @@ class _MainScreenState extends State<MainScreen> {
           );
         } else {
           log(name: "ERROR", state.runtimeType.toString());
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         }
       },
     );

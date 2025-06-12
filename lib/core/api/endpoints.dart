@@ -46,5 +46,5 @@ class AdminApiConstants {
       "Admin/doctors/delete"; //Admin/doctors/delete/{ID}
 
   //update doctor api
-  static const String getAdminStats = "Admin/stats"; //Admin/stats
+  static const String fetchAdminStats = "Admin/stats"; //Admin/stats
 }

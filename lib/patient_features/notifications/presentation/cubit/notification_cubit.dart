@@ -4,18 +4,33 @@ import 'package:health_care_app/core/api/api_client.dart';
 import 'package:health_care_app/core/api/endpoints.dart';
 import 'package:health_care_app/patient_features/notifications/domain/entities/notification.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   final ApiClient _apiClient;
-  final String authToken; //! will be fetched from shared pref later
+  String? authToken;
 
-  NotificationCubit(this.authToken, {required ApiClient apiClient})
+  NotificationCubit({required ApiClient apiClient})
       : _apiClient = apiClient,
         super(NotificationInitial());
 
   Future<void> fetchNotifications(String patientId) async {
+    if (patientId.isEmpty) {
+      emit(NotificationError('Invalid patient ID'));
+      return;
+    }
+
     try {
       emit(NotificationLoading());
+
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(NotificationError('Authentication token not found'));
+        return;
+      }
 
       final response = await _apiClient.get(
         '${PatientApiConstants.getNotifications}/$patientId',
@@ -49,7 +64,21 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   Future<void> markNotificationAsRead(String notificationId) async {
+    if (notificationId.isEmpty) {
+      emit(NotificationError('Invalid notification ID'));
+      return;
+    }
+
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(NotificationError('Authentication token not found'));
+        return;
+      }
+
       final currentState = state;
       if (currentState is NotificationLoaded) {
         final updatedNotifications =
@@ -70,6 +99,15 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> markAllNotificationsAsRead() async {
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(NotificationError('Authentication token not found'));
+        return;
+      }
+
       final currentState = state;
       if (currentState is NotificationLoaded) {
         final updatedNotifications =

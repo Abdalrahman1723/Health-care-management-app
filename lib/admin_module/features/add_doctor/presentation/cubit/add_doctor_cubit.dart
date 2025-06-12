@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import '../../../../../core/api/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'add_doctor_state.dart';
 
 class AddDoctorCubit extends Cubit<AddDoctorState> {
   final ApiClient apiClient;
-  final String authToken;
+  String? authToken;
 
-  AddDoctorCubit({required this.apiClient, required this.authToken})
-      : super(AddDoctorInitial());
+  AddDoctorCubit({required this.apiClient}) : super(AddDoctorInitial());
 
   // Validate doctor data before submission
   Map<String, String> _validateDoctorData({
@@ -192,6 +192,15 @@ class AddDoctorCubit extends Cubit<AddDoctorState> {
     }
 
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(AddDoctorError('Authentication token not found'));
+        return;
+      }
+
       log('Adding new doctor...', name: 'ADD_DOCTOR');
       log('Request data: {userName: $userName, fullName: $fullName, specialization: $specialization, ...}',
           name: 'ADD_DOCTOR');
@@ -222,22 +231,17 @@ class AddDoctorCubit extends Cubit<AddDoctorState> {
         },
       );
 
-      log('Response received: $response', name: 'ADD_DOCTOR');
-
-      if (response == null) {
-        emit(
-            const AddDoctorError('Failed to add doctor: No response received'));
-        return;
+      if (response != null) {
+        log('Doctor added successfully', name: 'ADD_DOCTOR');
+        final doctor = DoctorEntity.fromJson(response as Map<String, dynamic>);
+        emit(AddDoctorSuccess(doctor));
+      } else {
+        log('Failed to add doctor', name: 'ADD_DOCTOR');
+        emit(const AddDoctorError('Failed to add doctor'));
       }
-
-      // Parse the response into a DoctorEntity
-      final doctor = DoctorEntity.fromJson(response as Map<String, dynamic>);
-      emit(AddDoctorSuccess(doctor));
-
-      log('Doctor added successfully: ${doctor.userName}', name: 'ADD_DOCTOR');
     } catch (e) {
       log('Error adding doctor: $e', name: 'ADD_DOCTOR');
-      emit(AddDoctorError('Failed to add doctor: ${e.toString()}'));
+      emit(AddDoctorError(e.toString()));
     }
   }
 }

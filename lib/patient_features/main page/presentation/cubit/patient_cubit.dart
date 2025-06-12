@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/entities/patient.dart';
 import 'package:health_care_app/global/entities/appointment.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/endpoints.dart';
 
@@ -10,20 +11,27 @@ part 'patient_state.dart';
 
 class PatientCubit extends Cubit<PatientState> {
   final ApiClient apiClient;
-  final String authToken; //! will be fetched from shared pref later
+  String? authToken;
 
-  PatientCubit({required this.apiClient, required this.authToken})
-      : super(PatientInitial());
-  //========the get method=========//
+  PatientCubit({required this.apiClient}) : super(PatientInitial());
+
   Future<void> fetchPatientById(String patientId) async {
     emit(PatientLoading());
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(const PatientError('Authentication token not found'));
+        return;
+      }
+
       log('patient id : $patientId', name: "PATIENT ID");
       log('your uri is :${PatientApiConstants.baseUrl}${PatientApiConstants.getPatientById}$patientId',
           name: "URI"); //log message
 
       final patientResponse = await apiClient.get(
-        //get
         '${PatientApiConstants.getPatientById}$patientId',
         headers: {
           'Authorization': 'Bearer $authToken',
@@ -71,10 +79,18 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  //========fetch appointments method=========//
   Future<void> fetchAppointments() async {
     emit(AppointmentsLoading());
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(const AppointmentsError('Authentication token not found'));
+        return;
+      }
+
       log('Fetching appointments for patient', name: "APPOINTMENTS");
       log('your uri is :${PatientApiConstants.baseUrl}${PatientApiConstants.getAllAppointments}',
           name: "URI"); //log message

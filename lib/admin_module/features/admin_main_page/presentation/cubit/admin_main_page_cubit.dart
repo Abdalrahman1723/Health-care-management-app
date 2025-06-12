@@ -6,20 +6,29 @@ import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import '../../../../../core/api/api_client.dart';
 import '../../../../../core/api/endpoints.dart';
 import '../../domain/entities/admin_status.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'admin_main_page_state.dart';
 
 class AdminMainPageCubit extends Cubit<AdminMainPageState> {
   final ApiClient apiClient;
-  final String authToken;
+  String? authToken;
 
-  AdminMainPageCubit({required this.apiClient, required this.authToken})
-      : super(AdminInitial());
+  AdminMainPageCubit({required this.apiClient}) : super(AdminInitial());
 
   // --------------------Fetch all doctors
   Future<void> fetchDoctors() async {
     emit(DoctorsLoading());
     try {
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(DoctorsError('Authentication token not found'));
+        return;
+      }
+
       log(
           name: "ADMIN URI",
           "your admin URI is : ${AdminApiConstants.baseUrl}${AdminApiConstants.getAllDoctors}");
@@ -93,41 +102,29 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
   Future<void> updateDoctor(DoctorEntity doctor) async {
     try {
       emit(DoctorsLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
 
-      final response = await apiClient.put(
-        '${AdminApiConstants.updateDoctor}/1',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-        body: {
-          "id": doctor.id,
-          "photo": doctor.imageUrl ?? "",
-          "userName": doctor.userName,
-          "fullName": doctor.fullName ?? "",
-          "email": doctor.email,
-          "password": doctor.password,
-          "specialization": doctor.specialty.name,
-          "rating": doctor.rating,
-          "reviewsCount": doctor.reviewCount,
-          "experienceYears": doctor.experienceYears,
-          "workingHours": "9",
-          "focus": doctor.focus,
-          "profile": doctor.bio,
-          "careerPath": doctor.careerPath,
-          "highlights": doctor.highlights,
-          "clinicName": doctor.clinic,
-          "phoneNumber": doctor.phoneNumber ?? "",
-        },
-      );
-
-      if (response == null) {
-        emit(const DoctorsError('Failed to update doctor'));
+      if (authToken == null) {
+        emit(DoctorsError('Authentication token not found'));
         return;
       }
 
-      // Refresh the doctors list after successful update
-      await fetchDoctors();
+      final response = await apiClient.put(
+        "Admin/doctors/${doctor.id}",
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
+        },
+        body: doctor.toJson(),
+      );
+
+      if (response != null) {
+        await fetchDoctors();
+      } else {
+        emit(const DoctorsError('Failed to update doctor'));
+      }
     } catch (e) {
       log('Error updating doctor: $e', name: "DOCTORS");
       emit(DoctorsError('Failed to update doctor: ${e.toString()}'));
@@ -138,50 +135,63 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
   Future<void> deleteDoctor(String doctorId) async {
     try {
       emit(DoctorsLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
 
-      final response = await apiClient.delete(
-        '${AdminApiConstants.deleteDoctor}/$doctorId',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
-
-      if (response == null) {
-        emit(const DoctorsError('Failed to delete doctor'));
+      if (authToken == null) {
+        emit(DoctorsError('Authentication token not found'));
         return;
       }
 
-      // Refresh the doctors list after successful deletion
-      await fetchDoctors();
+      final response = await apiClient.delete(
+        "Admin/doctors/$doctorId",
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response != null) {
+        await fetchDoctors();
+      } else {
+        emit(const DoctorsError('Failed to delete doctor'));
+      }
     } catch (e) {
       log('Error deleting doctor: $e', name: "DOCTORS");
       emit(DoctorsError('Failed to delete doctor: ${e.toString()}'));
     }
   }
 
-  //---------------------admin stats
-  Future<void> getAdminStats() async {
+  //---------------------fetch admin stats
+  Future<void> fetchAdminStats() async {
     try {
       emit(AdminStatsLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        emit(AdminStatsError('Authentication token not found'));
+        return;
+      }
 
       final response = await apiClient.get(
-        AdminApiConstants.getAdminStats,
+        AdminApiConstants.fetchAdminStats,
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
         },
       );
 
-      if (response == null) {
+      if (response != null) {
+        final stats = AdminStatus.fromJson(response);
+        emit(AdminStatsLoaded(stats));
+      } else {
         emit(const AdminStatsError('Failed to fetch admin stats'));
-        return;
       }
-
-      final adminStats = AdminStatus.fromJson(response as Map<String, dynamic>);
-      emit(AdminStatsLoaded(adminStats));
     } catch (e) {
-      log('Error fetching admin stats: $e', name: "ADMIN_STATS");
+      log('Error fetching admin stats: $e', name: "ADMIN");
       emit(AdminStatsError('Failed to fetch admin stats: ${e.toString()}'));
     }
   }

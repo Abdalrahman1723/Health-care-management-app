@@ -21,8 +21,8 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   String? _imagePath;
-  String patientID =
-      "3"; //! this is a temp (later should be actorId) with shared pref
+  String? patientID; // Changed to nullable String
+
   //logout function
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -42,11 +42,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  Future<void> _loadPatientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('actorId');
+    if (id != null && id.isNotEmpty) {
+      setState(() {
+        patientID = id;
+      });
+      await context.read<UserProfileCubit>().fetchUserData(id);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to load profile: Patient ID not found'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadImageFromPrefs();
-    context.read<UserProfileCubit>().fetchUserData(patientID);
+    _loadPatientId();
   }
 
   Future<void> _refreshData() async {
@@ -79,9 +99,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   const SizedBox(height: 12),
                   ElevatedButton(
                       onPressed: () {
-                        context
-                            .read<UserProfileCubit>()
-                            .fetchUserData(patientID);
+                        if (patientID != null) {
+                          context
+                              .read<UserProfileCubit>()
+                              .fetchUserData(patientID!);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Unable to load profile: Patient ID not found'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       },
                       child: const Text("restart connection"))
                 ],
