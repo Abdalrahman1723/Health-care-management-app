@@ -1,12 +1,14 @@
 // This file defines the sheared Doctor entity with its properties and constructor.
-import 'package:health_care_app/global/entities/clinic.dart';
+import 'dart:developer';
 import 'package:health_care_app/global/entities/time_slot.dart';
-
 import '../../core/utils/doctor_specialties.dart';
 
 class DoctorEntity {
   final String id;
-  final String name;
+  final String userName;
+  final String? fullName;
+  final String email;
+  final String password;
   final String? imageUrl;
   final DoctorSpecialty specialty;
   final double rating;
@@ -19,22 +21,27 @@ class DoctorEntity {
   final String highlights; // the highlights of the doctor's career
   final int experienceYears;
   //------------------------
-  final ClinicEntity? clinic;
+  final String clinic;
+  final String? phoneNumber; // Added phone number field
 
   DoctorEntity({
     required this.id,
-    required this.name,
+    required this.userName,
+    required this.email,
+    required this.password,
+    this.fullName,
     this.imageUrl,
     required this.specialty,
-    required this.rating,
+    this.rating = 0.0,
     this.reviewCount = 0,
-    required this.availableSlots,
+    this.availableSlots = const [],
     this.bio = '',
     this.focus = '',
     this.careerPath = '',
     this.highlights = '',
     this.experienceYears = 0,
-    this.clinic,
+    required this.clinic,
+    this.phoneNumber,
   });
 
   bool isAvailableAt(DateTime time) {
@@ -42,43 +49,75 @@ class DoctorEntity {
     return availableSlots.any((slot) => slot.contains(time));
   }
 
-  factory DoctorEntity.fromJson(Map<String, dynamic> json) {
+  factory DoctorEntity.fromJson(Map<String, dynamic> json, {String? id}) {
+    // Safely parse specialization string to DoctorSpecialty enum
+    DoctorSpecialty parseSpecialty(String? specialization) {
+      if (specialization == null) return DoctorSpecialty.generalPractitioner;
+
+      try {
+        return DoctorSpecialty.values.firstWhere(
+          (e) =>
+              e.toString().split('.').last.toLowerCase() ==
+              specialization.toLowerCase(),
+          orElse: () => DoctorSpecialty.generalPractitioner,
+        );
+      } catch (e) {
+        return DoctorSpecialty.generalPractitioner;
+      }
+    }
+
+    // Try to get ID from different possible fields
+    String? doctorId = id ??
+        json['id']?.toString() ??
+        json['doctorId']?.toString() ??
+        json['Id']?.toString() ??
+        json['DoctorId']?.toString();
+
+    if (doctorId == null || doctorId.isEmpty) {
+      log('Warning: No ID found for doctor in JSON: $json',
+          name: 'DOCTOR_ENTITY');
+    }
+
     return DoctorEntity(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      specialty: DoctorSpecialty.values.firstWhere(
-        (e) => e.toString() == 'DoctorSpecialty.${json['specialty']}',
-      ),
-      rating: (json['rating'] as num).toDouble(),
-      imageUrl: json['imageUrl'] as String?,
-      availableSlots: (json['availableSlots'] as List<dynamic>)
-          .map((slot) => TimeSlotEntity.fromJson(slot as Map<String, dynamic>))
-          .toList(),
-      bio: json['bio'] as String? ?? '',
-      focus: json['focus'] as String? ?? '',
-      careerPath: json['careerPath'] as String? ?? '',
-      highlights: json['highlights'] as String? ?? '',
-      reviewCount: (json['reviewCount'] as num?)?.toInt() ?? 0,
-      experienceYears: (json['experienceYears'] as num?)?.toInt() ?? 0,
-      clinic: ClinicEntity.fromJson(json['clinic'] as Map<String, dynamic>),
+      id: doctorId ?? 'unknown',
+      userName: json['userName']?.toString() ?? 'Unknown Doctor',
+      fullName: json['fullName']?.toString(),
+      email: json['email'].toString(),
+      password: json['password'].toString(),
+      specialty: parseSpecialty(json['specialization']?.toString()),
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: json['photo']?.toString(),
+      availableSlots: const [], // Default empty list since not provided in response
+      bio: json['profile'] ?? '', // Using profile as bio
+      focus: json['focus'] ?? '',
+      careerPath: json['careerPath'] ?? '',
+      highlights: json['highlights'] ?? '',
+      reviewCount: json['reviewsCount'] ?? 0,
+      experienceYears: json['experienceYears'] ?? 0,
+      clinic: json['clinicName'] ?? '',
+      phoneNumber: json['phoneNumber']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'specialty': specialty.toString().split('.').last,
+      'userName': userName,
+      'fullName': fullName,
+      'photo': imageUrl,
+      'specialization': specialty.toString().split('.').last,
       'rating': rating,
-      'reviewCount': reviewCount,
-      'imageUrl': imageUrl,
+      'reviewsCount': reviewCount,
       'availableSlots': availableSlots.map((slot) => slot.toJson()).toList(),
-      'bio': bio,
+      'profile': bio,
       'focus': focus,
       'careerPath': careerPath,
       'highlights': highlights,
       'experienceYears': experienceYears,
-      'clinic': clinic!.toJson(),
+      'clinicName': clinic,
+      'email': email,
+      'password': password,
+      'phoneNumber': phoneNumber,
     };
   }
 }

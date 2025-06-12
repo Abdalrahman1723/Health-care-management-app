@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
@@ -114,14 +115,29 @@ class _LoginViewState extends State<LoginView> {
                             try {
                               final credential = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
-                                email: _emailController.text,
+                                email: _emailController.text.trim(),
                                 password: _passwordController.text,
                               );
                               if (_emailController.text == 'doctor@gmail.com' &&
                                   _passwordController.text == '123456') {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorHomeWidget()));// Replace 'doctor_home' with your actual route name
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DoctorHomeWidget())); // Replace 'doctor_home' with your actual route name
+                              } else //!temp for admin navigation
+                              if (_emailController.text == 'admin@gmail.com' &&
+                                  _passwordController.text == '123456') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AdminMainScreen())); // Replace 'doctor_home' with your actual route name
                               } else {
-                                Navigator.pushNamed(context, Routes.mainScreen); // Navigate to main screen for other users
+                                Navigator.pushNamed(
+                                    context,
+                                    Routes
+                                        .mainScreen); // Navigate to main screen for other users
                               }
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'user-not-found') {

@@ -5,15 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_care_app/app.dart';
 import 'package:health_care_app/firebase_options.dart';
+import 'core/api/api_client.dart';
+import 'core/api/endpoints.dart';
 
 void main() async {
+  final apiClient = ApiClient(
+    baseUrl: PatientApiConstants.baseUrl,
+  );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform, // This must not be null
   );
   await ScreenUtil.ensureScreenSize();
   runApp(DevicePreview(
-    builder: (BuildContext context) => const MyApp(),
+    builder: (BuildContext context) => MyApp(
+      apiClient: apiClient,
+    ),
     enabled: !kReleaseMode,
   ));
 }

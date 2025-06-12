@@ -1,4 +1,5 @@
-import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_main_screen.dart';
+import 'package:health_care_app/app.dart';
+import 'package:health_care_app/patient_features/ML_predection/presentation/screens/prediction_screen.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import '../../admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
@@ -10,6 +11,7 @@ import 'package:health_care_app/global/global_screens/login/presentation/widgets
 import 'package:health_care_app/global/global_screens/login_and_signup/presentation/views/login_and_signup_view.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/screens/main_screen.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/screens/edit_profile_screen.dart';
+import 'package:health_care_app/patient_features/personal%20profile/presentation/screens/medical_history_screen.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
 import 'package:health_care_app/patient_features/specializations/presentation/screens/specializations_screen.dart';
 import 'package:health_care_app/global/global_screens/welcome/welcome.dart';
@@ -20,7 +22,8 @@ import '../../patient_features/personal profile/presentation/screens/user_profil
 import 'package:go_router/go_router.dart';
 
 class Routes {
-  static const String welcome = "/"; //initial route
+  static const String routeWrapper = "/"; //initial route
+  static const String welcome = "/welcome"; //?initial route
   static const String mainScreen = '/MainScreen';
   static const String specializationsScreen = '/SpecializationsScreen';
   static const String userProfileScreen = '/UserProfileScreen';
@@ -40,9 +43,12 @@ class Routes {
   static const String appointmentDetailsScreen = "/AppointmentDetailsScreen";
   static const String adminAddDoctorScreen = '/AdminAddDoctorScreen';
   static const String doctorProfileScreen = '/DoctorProfileScreen';
+  static const String medicalHistoryScreen = '/MedicalHistoryScreen';
+  static const String predictionScreen = '/PredictionScreen';
 }
 
 final routes = {
+  Routes.routeWrapper: (context) => const RouteWrapper(), //testing
   Routes.welcome: (context) => const WelcomeScreen(),
   // Routes.welcome: (context) => const AdminMainScreen(), //!for testing admin
   Routes.mainScreen: (context) => const MainScreen(),
@@ -65,6 +71,8 @@ final routes = {
       const AppointmentDetailsScreen(),
   Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
   Routes.doctorProfileScreen: (context) => const DoctorProfileScreen(),
+  Routes.medicalHistoryScreen: (context) => const MedicalHistoryScreen(),
+  Routes.predictionScreen: (context) => const PredictionScreen(),
 };
 
 //---------------------------helana

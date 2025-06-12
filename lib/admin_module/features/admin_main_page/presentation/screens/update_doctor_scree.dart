@@ -1,37 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
-import '../cubit/add_doctor_cubit.dart';
+import 'package:health_care_app/global/entities/doctor.dart';
 
-class AdminAddDoctorScreen extends StatefulWidget {
-  const AdminAddDoctorScreen({super.key});
+class AdminUpdateDoctorScreen extends StatefulWidget {
+  final DoctorEntity doctor;
+
+  const AdminUpdateDoctorScreen({
+    super.key,
+    required this.doctor,
+  });
 
   @override
-  State<AdminAddDoctorScreen> createState() => _AdminAddDoctorScreenState();
+  State<AdminUpdateDoctorScreen> createState() =>
+      _AdminUpdateDoctorScreenState();
 }
 
-class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
+class _AdminUpdateDoctorScreenState extends State<AdminUpdateDoctorScreen> {
   // Controllers for fields
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _clinicNameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _focusController = TextEditingController();
-  final TextEditingController _careerPathController = TextEditingController();
-  final TextEditingController _highlightsController = TextEditingController();
-  final TextEditingController _experienceYearsController =
-      TextEditingController();
-  final TextEditingController _workingHoursController = TextEditingController();
-  final TextEditingController _photoUrlController = TextEditingController();
+  late final TextEditingController _userNameController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _confirmPasswordController;
+  late final TextEditingController _clinicNameController;
+  late final TextEditingController _bioController;
+  late final TextEditingController _focusController;
+  late final TextEditingController _careerPathController;
+  late final TextEditingController _highlightsController;
+  late final TextEditingController _experienceYearsController;
+  late final TextEditingController _workingHoursController;
+  late final TextEditingController _photoUrlController;
 
   // Selected specialization
-  DoctorSpecialty? _selectedSpecialty;
+  late DoctorSpecialty _selectedSpecialty;
 
   // Form key
   final _formKey = GlobalKey<FormState>();
@@ -40,9 +45,38 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  // Default values for rating and reviews
-  int _rating = 0;
-  int _reviewsCount = 0;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with doctor's data, providing default values for nullable fields
+    _userNameController = TextEditingController(text: widget.doctor.userName);
+    _nameController = TextEditingController(text: widget.doctor.fullName ?? '');
+    _phoneController =
+        TextEditingController(text: widget.doctor.phoneNumber ?? '');
+    _emailController = TextEditingController(text: widget.doctor.email);
+    _passwordController = TextEditingController(text: widget.doctor.password);
+    _confirmPasswordController =
+        TextEditingController(text: widget.doctor.password);
+    _clinicNameController = TextEditingController(text: widget.doctor.clinic);
+    _bioController = TextEditingController(text: widget.doctor.bio);
+    _focusController = TextEditingController(text: widget.doctor.focus);
+    _careerPathController =
+        TextEditingController(text: widget.doctor.careerPath);
+    _highlightsController =
+        TextEditingController(text: widget.doctor.highlights);
+    _experienceYearsController =
+        TextEditingController(text: widget.doctor.experienceYears.toString());
+    _workingHoursController = TextEditingController(
+        text: widget.doctor.availableSlots.isNotEmpty
+            ? widget.doctor.availableSlots
+                .map((slot) => slot.toString())
+                .join(', ')
+            : '');
+    _photoUrlController =
+        TextEditingController(text: widget.doctor.imageUrl ?? '');
+
+    _selectedSpecialty = widget.doctor.specialty;
+  }
 
   @override
   void dispose() {
@@ -66,24 +100,27 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      context.read<AddDoctorCubit>().addDoctor(
-            userName: _userNameController.text,
-            fullName: _nameController.text,
-            specialization: _selectedSpecialty!.name,
-            email: _emailController.text,
-            password: _passwordController.text,
-            phoneNumber: _phoneController.text,
-            photo: _photoUrlController.text,
-            workingHours: _workingHoursController.text,
-            profile: _bioController.text,
-            focus: _focusController.text,
-            careerPath: _careerPathController.text,
-            highlights: _highlightsController.text,
-            clinicName: _clinicNameController.text,
-            experienceYears: int.parse(_experienceYearsController.text),
-            rating: _rating,
-            reviewsCount: _reviewsCount,
-          );
+      final updatedDoctor = DoctorEntity(
+        id: "1",
+        userName: _userNameController.text,
+        fullName: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        imageUrl: _photoUrlController.text,
+        specialty: _selectedSpecialty,
+        rating: widget.doctor.rating,
+        reviewCount: widget.doctor.reviewCount,
+        availableSlots: widget.doctor.availableSlots,
+        bio: _bioController.text,
+        focus: _focusController.text,
+        careerPath: _careerPathController.text,
+        highlights: _highlightsController.text,
+        experienceYears: int.parse(_experienceYearsController.text),
+        clinic: _clinicNameController.text,
+        phoneNumber: _phoneController.text,
+      );
+
+      context.read<AdminMainPageCubit>().updateDoctor(updatedDoctor);
     }
   }
 
@@ -96,35 +133,28 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
           bodyMedium: TextStyle(color: Colors.black, fontSize: 18),
           titleLarge: TextStyle(color: Colors.black, fontSize: 18),
           labelMedium: TextStyle(color: Colors.black, fontSize: 18),
-          bodyLarge:
-              TextStyle(color: Colors.black, fontSize: 18), // the text field
+          bodyLarge: TextStyle(color: Colors.black, fontSize: 18),
         ),
       ),
       child: Scaffold(
-        resizeToAvoidBottomInset:
-            true, // default is true, but make sure it’s not false
-
-        appBar: adminAppBar(context: context, title: "Add New Doctor"),
+        resizeToAvoidBottomInset: true,
+        appBar: adminAppBar(context: context, title: "Update Doctor"),
         body: SafeArea(
-          child: BlocConsumer<AddDoctorCubit, AddDoctorState>(
+          child: BlocConsumer<AdminMainPageCubit, AdminMainPageState>(
             listener: (context, state) {
-              if (state is AddDoctorSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Doctor added successfully')),
-                );
-                Navigator.pop(context);
-              } else if (state is AddDoctorError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
-              } else if (state is AddDoctorValidationError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errors.values.first)),
-                );
-              }
+              // Always show success and pop
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Doctor updated successfully'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.pop(context);
             },
             builder: (context, state) {
               return SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -186,7 +216,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                             }).toList(),
                             onChanged: (value) {
                               setState(() {
-                                _selectedSpecialty = value;
+                                _selectedSpecialty = value!;
                               });
                             },
                             validator: (value) {
@@ -462,12 +492,11 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: state is AddDoctorLoading
-                                  ? null
-                                  : _submitForm,
-                              child: state is AddDoctorLoading
+                              onPressed:
+                                  state is DoctorsLoading ? null : _submitForm,
+                              child: state is DoctorsLoading
                                   ? const CircularProgressIndicator()
-                                  : const Text('Add Doctor'),
+                                  : const Text('Update Doctor'),
                             ),
                           ),
                         ],

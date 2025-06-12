@@ -5,8 +5,10 @@ Widget doctorAvatar({required String? imageUrl, required double size}) {
     radius: size / 2,
     backgroundColor: Colors.grey.shade200,
     backgroundImage:
-        imageUrl != null && imageUrl.isNotEmpty ? AssetImage(imageUrl) : null,
-    child: imageUrl == null || imageUrl.isEmpty
+        imageUrl != null && imageUrl.isNotEmpty && imageUrl.contains("jpg")
+            ? AssetImage(imageUrl)
+            : NetworkImage(imageUrl!),
+    child: imageUrl.isEmpty
         ? Icon(Icons.person, size: size * 0.6, color: Colors.grey)
         : null,
   );

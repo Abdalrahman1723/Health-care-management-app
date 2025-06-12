@@ -8,11 +8,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_care_app/app.dart';
+import 'package:health_care_app/core/api/api_client.dart';
+import 'package:health_care_app/core/api/endpoints.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    final apiClient = ApiClient(baseUrl: PatientApiConstants.baseUrl);
+    await tester.pumpWidget(MyApp(apiClient: apiClient));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
