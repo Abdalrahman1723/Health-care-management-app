@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class DoctorsInfo extends StatefulWidget {
-  const DoctorsInfo({Key? key}) : super(key: key);
+class DoctorsFavWidget extends StatefulWidget {
+  const DoctorsFavWidget({Key? key}) : super(key: key);
 
   @override
-  _DoctorsInfoState createState() => _DoctorsInfoState();
+  _DoctorsFavWidgetState createState() => _DoctorsFavWidgetState();
 }
 
-class _DoctorsInfoState extends State<DoctorsInfo> {
+class _DoctorsFavWidgetState extends State<DoctorsFavWidget> {
   bool isFavorite = false;
 
   @override

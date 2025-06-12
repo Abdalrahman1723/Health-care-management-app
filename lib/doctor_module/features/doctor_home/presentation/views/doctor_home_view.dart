@@ -1,11 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
-import '../../../doctors_appointment/presentation/widget/doctors_appointement_avaliablity_widget.dart';
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../../global/global_screens/login/presentation/widgets/login_widget.dart';
+import '../../../notifications/presentation/views/doctors_notification_screen.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
-import '../../../doctors_notification/presentation/widgets/doctors_notification_widget.dart';
 
 class DoctorHomeView extends StatefulWidget {
-  const DoctorHomeView({Key? key}) : super(key: key);
+  final String doctorId;
+  final String token;
+
+  const DoctorHomeView({
+    Key? key,
+    required this.doctorId,
+    required this.token,
+  }) : super(key: key);
 
   @override
   State<DoctorHomeView> createState() => _DoctorHomeViewState();
@@ -13,11 +23,137 @@ class DoctorHomeView extends StatefulWidget {
 
 class _DoctorHomeViewState extends State<DoctorHomeView> {
   int _currentIndex = 0;
+  int _notificationCount = 0;
+  List<Map<String, dynamic>> appointments = [];
+  bool isAppointmentsLoading = true;
+  Set<int> rejectedAppointments = {};
+  Set<int> acceptedAppointments = {};
 
-  // List of Screens
-  final List<Widget> _pages = [
-    const DoctorHomeContent(), // Home Screen
-    const DoctorDatesWidget(), // Availability Screen
+  @override
+  void initState() {
+    super.initState();
+    _loadPersistedStates();
+    _fetchNotifications();
+    _fetchAppointments();
+  }
+
+  Future<void> _loadPersistedStates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rejected = prefs.getStringList('rejectedAppointments') ?? [];
+    final accepted = prefs.getStringList('acceptedAppointments') ?? [];
+    setState(() {
+      rejectedAppointments = rejected.map((e) => int.tryParse(e) ?? -1).where((e) => e != -1).toSet();
+      acceptedAppointments = accepted.map((e) => int.tryParse(e) ?? -1).where((e) => e != -1).toSet();
+    });
+  }
+
+  Future<void> _persistStates() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('rejectedAppointments', rejectedAppointments.map((e) => e.toString()).toList());
+    await prefs.setStringList('acceptedAppointments', acceptedAppointments.map((e) => e.toString()).toList());
+  }
+
+  Future<void> _fetchNotifications() async {
+    try {
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Notification/doctor/${widget.doctorId}',
+        options: Options(headers: {'Authorization': 'Bearer ${widget.token}'}),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> notifications = response.data;
+        setState(() {
+          _notificationCount = notifications.length;
+        });
+      }
+    } catch (e) {
+      print('Error fetching notifications: $e');
+    }
+  }
+
+  Future<void> _fetchAppointments() async {
+    setState(() {
+      isAppointmentsLoading = true;
+    });
+    try {
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Doctor/ViewAppointments',
+        options: Options(headers: {'Authorization': 'Bearer ${widget.token}'}),
+        queryParameters: {
+          'doctorId': widget.doctorId,
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          appointments = List<Map<String, dynamic>>.from(response.data);
+          isAppointmentsLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isAppointmentsLoading = false;
+      });
+      print('Error fetching appointments: $e');
+    }
+  }
+
+  Future<void> _rejectAppointment(int appointmentId) async {
+    try {
+      final response = await Dio().put(
+        'https://healthcaresystem.runasp.net/api/Doctor/Reject/$appointmentId',
+        options: Options(headers: {'Authorization': 'Bearer ${widget.token}'}),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          rejectedAppointments.add(appointmentId);
+        });
+        await _persistStates();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to reject appointment'), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  Future<void> _acceptAppointment(int appointmentId) async {
+    try {
+      final response = await Dio().put(
+        'https://healthcaresystem.runasp.net/api/Doctor/accept/$appointmentId',
+        options: Options(headers: {'Authorization': 'Bearer ${widget.token}'}),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          acceptedAppointments.add(appointmentId);
+        });
+        await _persistStates();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to accept appointment'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.green),
+      );
+    }
+  }
+
+  List<Widget> get _pages => [
+    DoctorHomeContent(
+      notificationCount: _notificationCount,
+      appointments: appointments,
+      isAppointmentsLoading: isAppointmentsLoading,
+      rejectedAppointments: rejectedAppointments,
+      acceptedAppointments: acceptedAppointments,
+      onReject: _rejectAppointment,
+      onAccept: _acceptAppointment,
+    ),
+    const DoctorDatesWidget(),
   ];
 
   void onTabTapped(int index) {
@@ -57,79 +193,114 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
   }
 }
 
-// Extracted Home Screen Content for Clean Code
 class DoctorHomeContent extends StatelessWidget {
-  const DoctorHomeContent({Key? key}) : super(key: key);
+  final int notificationCount;
+  final List<Map<String, dynamic>> appointments;
+  final bool isAppointmentsLoading;
+  final Set<int> rejectedAppointments;
+  final Set<int> acceptedAppointments;
+  final Function(int) onReject;
+  final Function(int) onAccept;
+
+  const DoctorHomeContent({
+    Key? key,
+    this.notificationCount = 0,
+    required this.appointments,
+    required this.isAppointmentsLoading,
+    required this.rejectedAppointments,
+    required this.acceptedAppointments,
+    required this.onReject,
+    required this.onAccept,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Welcome Back Section
-        Padding(
-          padding: const EdgeInsets.all(16.0),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          decoration: const BoxDecoration(
+            color: Color(0xFFE0F7F7),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+          ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.blue[100],
-                backgroundImage: const AssetImage(
-                  'lib/core/assets/images/img.png', // Replace with actual image
-                ),
-              ),
-              const SizedBox(width: 12),
               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome Back',
+                      'Welcome',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      'Dr. Andrew Smith',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.notifications_none,
-                    size: 27, color: Color(0xFF0BDCDC)),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DoctorsNotification()));
-                },
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_none, size: 27, color: Color(0xFF0BDCDC)),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DoctorsNotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (notificationCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          '$notificationCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               IconButton(
-                icon: const Icon(Icons.fact_check,
-                    size: 27, color: Color(0xFF0BDCDC)),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const DoctorsAppointmentScreen()));
+                icon: const Icon(Icons.logout, size: 27, color: Colors.red),
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
                 },
               ),
             ],
           ),
         ),
-
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Upcoming Appointments Section
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Row(
@@ -146,81 +317,131 @@ class DoctorHomeContent extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Appointment List
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const PatientDetailsInDoctorWidget()));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 30,
-                              backgroundImage: AssetImage(
-                                'lib/core/assets/images/download.jpg', // Replace with actual image
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'James Harris',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Psychologist | Mercy Hospital Patient',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  Row(
+                if (isAppointmentsLoading)
+                  const Center(child: CircularProgressIndicator())
+                else if (appointments.isEmpty)
+                  const Center(child: Text('No appointments found'))
+                else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: appointments.length,
+                    itemBuilder: (context, index) {
+                      final appointment = appointments[index];
+                      final appointmentId = appointment['appointmentId'] as int;
+                      final isRejected = rejectedAppointments.contains(appointmentId);
+                      final isAccepted = acceptedAppointments.contains(appointmentId);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                        child: Card(
+                          elevation: 2,
+                          color: isRejected
+                              ? Colors.red[100]
+                              : isAccepted
+                              ? Colors.green[100]
+                              : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  radius: 28,
+                                  backgroundImage: NetworkImage(appointment['patientImage'] ?? ''),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      const Icon(
-                                        Icons.access_time,
-                                        size: 14,
-                                        color: Colors.grey,
-                                      ),
-                                      const SizedBox(width: 4),
                                       Text(
-                                        'Sat 12/5/2025 10:30am - 5:30pm',
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 15,
+                                        appointment['patientFullName'] ?? '',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17,
+                                          color: Colors.black,
                                         ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            _formatAppointmentTime(appointment),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: (isRejected || isAccepted)
+                                                ? null
+                                                : () {
+                                              onAccept(appointmentId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.green,
+                                              minimumSize: const Size(80, 34),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                            child: const Text('Accept'),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          ElevatedButton(
+                                            onPressed: (isRejected || isAccepted)
+                                                ? null
+                                                : () {
+                                              onReject(appointmentId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              minimumSize: const Size(80, 34),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                            child: const Text('Reject'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  String _formatAppointmentTime(Map<String, dynamic> appointment) {
+    final date = DateTime.parse(appointment['appointmentDate']);
+    final start = appointment['startTimeInHours'];
+    final end = appointment['endTimeInHours'];
+    return '${DateFormat('E d/M/yyyy').format(date)} $start:00 - $end:00';
   }
 }

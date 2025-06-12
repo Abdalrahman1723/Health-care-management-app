@@ -57,22 +57,18 @@ final routes = {
   Routes.settingsScreen: (context) => const SettingsScreen(),
   Routes.editProfileScreen: (context) => const EditProfileScreen(),
   Routes.notificationSettingsScreen: (context) =>
-      const NotificationSettingsScreen(),
+  const NotificationSettingsScreen(),
   Routes.login: (context) => const LoginScreen(),
   Routes.loginAndSignup: (context) => const LoginAndSignupScreen(),
   Routes.signup: (context) => const SignUpScreen(),
   Routes.passwordManager: (context) => const PasswordManagerScreen(),
-  Routes.allDoctors: (context) => const DoctorsScreen(),
+  Routes.allDoctors: (context) => const DoctorsWidget(),
   // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
   Routes.appointmentDetailsScreen: (context) =>
-      const AppointmentDetailsScreen(),
-  Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
-  Routes.doctorProfileScreen: (context) => const DoctorProfileScreen(),
-  Routes.medicalHistoryScreen: (context) => const MedicalHistoryScreen(),
-  Routes.predictionScreen: (context) => const PredictionScreen(),
+  const AppointmentDetailsScreen(),
 };
 
 //---------------------------helana
