@@ -1,13 +1,14 @@
 // This file defines the sheared Doctor entity with its properties and constructor.
-import 'package:health_care_app/global/entities/clinic.dart';
 import 'package:health_care_app/global/entities/time_slot.dart';
 
 import '../../core/utils/doctor_specialties.dart';
 
 class DoctorEntity {
   final String id;
-  final String name;
+  final String userName;
   final String? fullName;
+  final String email;
+  final String password;
   final String? imageUrl;
   final DoctorSpecialty specialty;
   final double rating;
@@ -20,11 +21,14 @@ class DoctorEntity {
   final String highlights; // the highlights of the doctor's career
   final int experienceYears;
   //------------------------
-  final ClinicEntity? clinic;
+  final String clinic;
+  final String? phoneNumber; // Added phone number field
 
   DoctorEntity({
     required this.id,
-    required this.name,
+    required this.userName,
+    required this.email,
+    required this.password,
     this.fullName,
     this.imageUrl,
     required this.specialty,
@@ -36,7 +40,8 @@ class DoctorEntity {
     this.careerPath = '',
     this.highlights = '',
     this.experienceYears = 0,
-    this.clinic,
+    required this.clinic,
+    this.phoneNumber,
   });
 
   bool isAvailableAt(DateTime time) {
@@ -62,39 +67,45 @@ class DoctorEntity {
     }
 
     return DoctorEntity(
-      id: id ?? json['doctorId']?.toString() ?? '',
-      name: json['userName']?.toString() ?? 'Unknown Doctor',
+      id: id ?? json['id']?.toString() ?? '',
+      userName: json['userName']?.toString() ?? 'Unknown Doctor',
       fullName: json['fullName']?.toString(),
+      email: json['email'].toString(),
+      password: json['password'].toString(),
       specialty: parseSpecialty(json['specialization']?.toString()),
-      rating: 0.0, // Default rating since not provided in response
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       imageUrl: json['photo']?.toString(),
       availableSlots: const [], // Default empty list since not provided in response
-      bio: '', // Default empty string since not provided in response
-      focus: '', // Default empty string since not provided in response
-      careerPath: '', // Default empty string since not provided in response
-      highlights: '', // Default empty string since not provided in response
-      reviewCount: 0, // Default 0 since not provided in response
-      experienceYears: 0, // Default 0 since not provided in response
-      clinic: null, // Default null since not provided in response
+      bio: json['profile'] ?? '', // Using profile as bio
+      focus: json['focus'] ?? '',
+      careerPath: json['careerPath'] ?? '',
+      highlights: json['highlights'] ?? '',
+      reviewCount: json['reviewsCount'] ?? 0,
+      experienceYears: json['experienceYears'] ?? 0,
+      clinic: json['clinicName'] ?? '',
+      phoneNumber: json['phoneNumber']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'doctorId': id,
-      'userName': name,
+      'id': id,
+      'userName': userName,
       'fullName': fullName,
       'photo': imageUrl,
       'specialization': specialty.toString().split('.').last,
       'rating': rating,
-      'reviewCount': reviewCount,
+      'reviewsCount': reviewCount,
       'availableSlots': availableSlots.map((slot) => slot.toJson()).toList(),
-      'bio': bio,
+      'profile': bio,
       'focus': focus,
       'careerPath': careerPath,
       'highlights': highlights,
       'experienceYears': experienceYears,
-      'clinic': clinic?.toJson(),
+      'clinicName': clinic,
+      'email': email,
+      'password': password,
+      'phoneNumber': phoneNumber,
     };
   }
 }

@@ -64,6 +64,8 @@ class ApiClient {
   //========the put method=========//
   Future<dynamic> put(String endpoint,
       {Map<String, String>? headers, dynamic body}) async {
+    String myUri = '$baseUrl$endpoint';
+    log("------------------my uri is : $myUri");
     try {
       final response = await client.put(
         Uri.parse('$baseUrl$endpoint'),

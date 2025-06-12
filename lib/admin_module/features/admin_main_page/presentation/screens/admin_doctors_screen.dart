@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/update_doctor_scree.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctor_avatar.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/assets_manager.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
-import '../../../../../global/entities/time_slot.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 
 class AdminDoctorsScreen extends StatefulWidget {
@@ -194,32 +194,16 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                           thickness: 1,
                         ),
                         if (selectedDoctor == null && selectedSpecialty == null)
-                          ...state.doctors.map((dr) => InkWell(
-                                onTap: () {
-                                  log('Doctor selected: ${dr.name}',
-                                      name: 'ADMIN_DOCTORS');
-                                  Navigator.pushNamed(
-                                      context, Routes.doctorProfileScreen);
-                                },
-                                child: doctorDetails(
-                                  context: context,
-                                  doctor: dr,
-                                ),
+                          ...state.doctors.map((dr) => doctorDetails(
+                                context: context,
+                                doctor: dr,
                               ))
                         else if (selectedSpecialty != null)
                           ...state.doctors
                               .where((dr) => dr.specialty == selectedSpecialty)
-                              .map((dr) => InkWell(
-                                    onTap: () {
-                                      log('Doctor selected: ${dr.name}',
-                                          name: 'ADMIN_DOCTORS');
-                                      Navigator.pushNamed(
-                                          context, Routes.doctorProfileScreen);
-                                    },
-                                    child: doctorDetails(
-                                      context: context,
-                                      doctor: dr,
-                                    ),
+                              .map((dr) => doctorDetails(
+                                    context: context,
+                                    doctor: dr,
                                   ))
                         else
                           doctorDetails(
@@ -260,7 +244,13 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
       final isAvailable = doc.isAvailableAt(DateTime.now());
       return ListTile(
         leading: const Icon(Icons.person),
-        title: Text(doc.fullName!),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(doc.fullName!),
+            Text("ID: ${doc.id}"),
+          ],
+        ),
         subtitle:
             Text('${camelCaseToNormal(doc.specialty.name)} • ⭐ ${doc.rating}'),
         trailing: Icon(
@@ -268,9 +258,9 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
           color: isAvailable ? Colors.green : Colors.red,
         ),
         onTap: () {
-          log('Doctor selected from search: ${doc.name}',
+          log('Doctor selected from search: ${doc.userName}',
               name: 'ADMIN_DOCTORS');
-          controller.closeView(doc.name);
+          controller.closeView(doc.userName);
           setState(() {
             selectedDoctor = doc;
           });
@@ -296,11 +286,17 @@ Widget doctorDetails({
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          doctorAvatar(
-            imageUrl: doctor.imageUrl!.contains("http")
-                ? doctor.imageUrl
-                : ImageAsset.doctorImageFemale,
-            size: 60,
+          InkWell(
+            onTap: () {
+              log('Doctor selected: ${doctor.userName}', name: 'ADMIN_DOCTORS');
+              Navigator.pushNamed(context, Routes.doctorProfileScreen);
+            },
+            child: doctorAvatar(
+              imageUrl: doctor.imageUrl!.contains("http")
+                  ? doctor.imageUrl
+                  : ImageAsset.doctorImageFemale,
+              size: 60,
+            ),
           ),
           const SizedBox(width: 16.0),
           Expanded(
@@ -341,112 +337,45 @@ Widget doctorDetails({
               ],
             ),
           ),
+          //-----------edit and delete doctor buttons
+          Column(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AdminUpdateDoctorScreen(doctor: doctor),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.edit),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const InkWell(
+                  child: Icon(Icons.delete),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     ),
   );
 }
-
-//-----------dummy data for doctor user
-final List<DoctorEntity> doctors = [
-  DoctorEntity(
-    id: 'D1',
-    name: 'Dr. Alice Smith',
-    specialty: DoctorSpecialty.cardiologist,
-    rating: 4.8,
-    imageUrl: ImageAsset.doctorImageFemale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 12, 9), end: DateTime(2025, 4, 12, 12)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 13, 14), end: DateTime(2025, 4, 13, 17)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D2',
-    name: 'Dr. Bob Johnson',
-    specialty: DoctorSpecialty.neurologist,
-    rating: 4.6,
-    imageUrl: ImageAsset.doctorImageMale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 12, 10), end: DateTime(2025, 4, 12, 13)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D3',
-    name: 'Dr. Clara Davis',
-    specialty: DoctorSpecialty.pediatrician,
-    rating: 4.9,
-    imageUrl: ImageAsset.doctorImageFemale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 15, 13), end: DateTime(2025, 4, 15, 16)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D4',
-    name: 'Dr. Michael Chen',
-    specialty: DoctorSpecialty.dermatologist,
-    rating: 4.7,
-    imageUrl: ImageAsset.doctorImageMale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 14, 9), end: DateTime(2025, 4, 14, 12)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 16, 14), end: DateTime(2025, 4, 16, 17)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D5',
-    name: 'Dr. Sarah Wilson',
-    specialty: DoctorSpecialty.orthopedic,
-    rating: 4.5,
-    imageUrl: ImageAsset.doctorImageFemale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 13, 8), end: DateTime(2025, 4, 13, 11)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 17, 13), end: DateTime(2025, 4, 17, 16)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D6',
-    name: 'Dr. James Brown',
-    specialty: DoctorSpecialty.ophthalmologist,
-    rating: 4.9,
-    imageUrl: ImageAsset.doctorImageMale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 15, 10), end: DateTime(2025, 4, 15, 13)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 18, 9), end: DateTime(2025, 4, 18, 12)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D7',
-    name: 'Dr. Emily Taylor',
-    specialty: DoctorSpecialty.psychiatrist,
-    rating: 4.8,
-    imageUrl: ImageAsset.doctorImageFemale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 14, 14), end: DateTime(2025, 4, 14, 17)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 19, 10), end: DateTime(2025, 4, 19, 13)),
-    ],
-  ),
-  DoctorEntity(
-    id: 'D8',
-    name: 'Dr. Robert Garcia',
-    specialty: DoctorSpecialty.generalPractitioner,
-    rating: 4.6,
-    imageUrl: ImageAsset.doctorImageMale,
-    availableSlots: [
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 16, 8), end: DateTime(2025, 4, 16, 12)),
-      TimeSlotEntity(
-          start: DateTime(2025, 4, 18, 14), end: DateTime(2025, 4, 18, 17)),
-    ],
-  ),
-];

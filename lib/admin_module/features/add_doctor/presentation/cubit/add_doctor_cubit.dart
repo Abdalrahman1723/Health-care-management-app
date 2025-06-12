@@ -234,7 +234,7 @@ class AddDoctorCubit extends Cubit<AddDoctorState> {
       final doctor = DoctorEntity.fromJson(response as Map<String, dynamic>);
       emit(AddDoctorSuccess(doctor));
 
-      log('Doctor added successfully: ${doctor.name}', name: 'ADD_DOCTOR');
+      log('Doctor added successfully: ${doctor.userName}', name: 'ADD_DOCTOR');
     } catch (e) {
       log('Error adding doctor: $e', name: 'ADD_DOCTOR');
       emit(AddDoctorError('Failed to add doctor: ${e.toString()}'));
