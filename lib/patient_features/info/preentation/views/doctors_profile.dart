@@ -70,7 +70,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             ? Center(child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error, color: Colors.red, size: 40),
+                  const Icon(Icons.error, color: Colors.red, size: 40),
                   const SizedBox(height: 12),
                   Text(error!, style: const TextStyle(color: Colors.red, fontSize: 18)),
                   const SizedBox(height: 12),
@@ -131,14 +131,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.star, color: Colors.yellow, size: 20),
+                        const Icon(Icons.star, color: Colors.yellow, size: 20),
                         const SizedBox(width: 4),
                         Text(
                           '${doctorData!['rating'] ?? ''}',
                           style: const TextStyle(color: Colors.white, fontSize: 16),
                         ),
                         const SizedBox(width: 16),
-                        Icon(Icons.people, color: Colors.white, size: 20),
+                        const Icon(Icons.people, color: Colors.white, size: 20),
                         const SizedBox(width: 4),
                         Text(
                           '${doctorData!['reviewsCount'] ?? ''}',

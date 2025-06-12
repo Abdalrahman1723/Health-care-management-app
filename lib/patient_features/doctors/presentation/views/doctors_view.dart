@@ -3,12 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../appointment/presentation/views/doctors_appointment_view.dart';
 import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
 import '../../../info/preentation/views/doctors_profile.dart';
 import '../../domain/entities/doctor_entity.dart';
 import '../cubit/doctors_cubit.dart';
-import '../../../info/preentation/widget/doctors_profile_widget.dart';
 import 'doctor_card.dart';
 
 

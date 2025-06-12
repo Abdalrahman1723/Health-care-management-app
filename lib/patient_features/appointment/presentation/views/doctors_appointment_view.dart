@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../all_appointement_upcoming/presentation/views/all_appointment_upcoming_view.dart';
-import '../../../doctors/presentation/widgets/doctors_widget.dart';
-import 'dart:convert';
 
 class DoctorsAppointment extends StatefulWidget {
   final String doctorName;

@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../../global/global_screens/login/presentation/widgets/login_widget.dart';
 import '../../../notifications/presentation/views/doctors_notification_screen.dart';
-import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
 
 class DoctorHomeView extends StatefulWidget {

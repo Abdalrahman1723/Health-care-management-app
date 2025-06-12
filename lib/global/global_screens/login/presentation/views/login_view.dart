@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/cubit/login_state.dart';
 import 'package:health_care_app/global/global_screens/signup/presentation/widgets/signup_widget.dart';
 import 'package:flutter/material.dart';
