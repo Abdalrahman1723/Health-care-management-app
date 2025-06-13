@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicalHistoryScreen extends StatefulWidget {
   const MedicalHistoryScreen({super.key});
@@ -17,8 +18,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
   final _chronicDiseasesController = TextEditingController();
   final _allergiesController = TextEditingController();
   final _currentMedicationsController = TextEditingController();
-  String patientID =
-      "3"; //! this is a temp (later should be actorId) with shared pref
+  String patientID = "";
   bool _isUpdating = false;
 
   // Track initial values
@@ -37,7 +37,30 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserProfileCubit>().fetchUserData(patientID);
+    _loadPatientId();
+  }
+
+//-------------->get patient ID
+  Future<void> _loadPatientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('actorId');
+    if (id != null && id.isNotEmpty) {
+      setState(() {
+        patientID = id;
+      });
+      if (mounted) {
+        context.read<UserProfileCubit>().fetchUserData(id);
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to load profile: Patient ID not found'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override

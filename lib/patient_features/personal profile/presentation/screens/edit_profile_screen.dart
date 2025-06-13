@@ -30,8 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _allergiesController = TextEditingController();
   final _currentMedicationsController = TextEditingController();
   //------patient id
-  String patientID =
-      "3"; //! this is a temp (later should be actorId) with shared pref
+  String patientID = "";
   String _selectedGender = 'male'; // Default value with lowercase to match API
   // Track initial values
   String _initialName = '';
@@ -59,8 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch user data when screen loads
-    context.read<UserProfileCubit>().fetchUserData(patientID);
+    _loadPatientId();
     _loadImageFromPrefs();
   }
 
@@ -77,6 +75,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _saveImageToPrefs(String imagePath) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('profile_image', imagePath);
+  }
+
+  Future<void> _loadPatientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('actorId');
+    if (id != null && id.isNotEmpty) {
+      setState(() {
+        patientID = id;
+      });
+      if (mounted) {
+        // Only fetch user data after we have the patient ID
+        context.read<UserProfileCubit>().fetchUserData(id);
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to load profile: Patient ID not found'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _pickImage() async {
@@ -344,11 +365,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             TextFormField(
                               readOnly: true,
-                              initialValue: "abdalrahman@gmail.com", //!temp
+                              initialValue: _emailController.text, //!temp
                               // controller: _emailController,
                               style: Theme.of(context).textTheme.displayMedium,
                               decoration: const InputDecoration(
-                                hintText: 'Enter your email',
+                                hintText: 'your email',
                                 border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.emailAddress,

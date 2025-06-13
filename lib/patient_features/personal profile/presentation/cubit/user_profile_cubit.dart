@@ -22,7 +22,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(ProfileError('Authentication token not found'));
+        emit(const ProfileError('Authentication token not found'));
         return;
       }
 
@@ -68,13 +68,4 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     }
   }
 
-  // Future<void> deleteAccount() async {
-  //   try {
-  //     emit(ProfileLoading());
-  //     await _ProfileRepository.deleteAccount();
-  //     emit(ProfileInitial());
-  //   } catch (e) {
-  //     emit(ProfileError(e.toString()));
-  //   }
-  // }
 }
