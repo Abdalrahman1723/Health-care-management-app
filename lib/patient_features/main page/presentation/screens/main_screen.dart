@@ -401,7 +401,7 @@ class _MainScreenState extends State<MainScreen> {
                               height: 15,
                             ),
                             Container(
-                              width: 300,
+                              width: 350,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 12),
                               decoration: BoxDecoration(
