@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
+import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/appointment_details.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
@@ -14,6 +15,7 @@ import 'package:health_care_app/patient_features/main%20page/presentation/widget
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/utils/doctor_specialties.dart';
 import '../cubit/patient_cubit.dart';
 
 class MainScreen extends StatefulWidget {
@@ -355,18 +357,6 @@ class _MainScreenState extends State<MainScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          // context
-                                          //     .read<PatientCubit>()
-                                          //     .fetchPatientById(patientID);
-                                          // context
-                                          //     .read<PatientCubit>()
-                                          //     .fetchAppointments();
-                                        },
-                                        icon:
-                                            const Icon(Icons.dataset_outlined),
-                                      ),
                                       //---see all appointments button
                                       ElevatedButton(
                                         onPressed: () {
@@ -460,18 +450,23 @@ class _MainScreenState extends State<MainScreen> {
                         //specialties list
                         children: [
                           //specialty 1
-                          specialty(AppIcons.cardiology, "Cardiology"),
+                          specialty(AppIcons.cardiology,
+                              DoctorSpecialtyName.cardiology.name),
                           //specialty 2
-                          specialty(AppIcons.dermatology, "Dermatology"),
+                          specialty(AppIcons.dermatology,
+                              DoctorSpecialtyName.dermatology.name),
                           //specialty 3
                           specialty(
-                              AppIcons.generalMedicine, "General Medicine"),
+                              AppIcons.generalMedicine,
+                              camelCaseToNormal(
+                                  DoctorSpecialtyName.generalMedicine.name)),
                           //specialty 4
-                          specialty(AppIcons.gynecology, "Gynecology"),
+                          specialty(AppIcons.gynecology, DoctorSpecialtyName.gynecology.name),
                           //specialty 5
-                          specialty(AppIcons.dentistry, "Dentistry"),
+                          specialty(AppIcons.dentistry, DoctorSpecialtyName.dentistry.name),
                           //specialty 6
-                          specialty(AppIcons.oncology, "Oncology"),
+                          specialty(AppIcons.oncology, DoctorSpecialtyName.oncology.name),
+
                         ],
                       ),
                     ],

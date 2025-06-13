@@ -19,12 +19,18 @@ Widget specialty(String icon, String title) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            icon,
-            // color: Colors.white,
-            height: 55,
-            width: 60,
-          ),
+          icon.contains("svg")
+              ? SvgPicture.asset(
+                  icon,
+                  height: 55,
+                  width: 60,
+                )
+              : Image.asset(
+                  icon,
+                  color: Colors.white,
+                  height: 55,
+                  width: 60,
+                ),
           Text(
             title,
             textAlign: TextAlign.center,

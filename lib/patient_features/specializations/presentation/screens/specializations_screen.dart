@@ -3,6 +3,8 @@ import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart';
 
+import '../../../../core/utils/doctor_specialties.dart';
+
 class SpecializationsScreen extends StatefulWidget {
   const SpecializationsScreen({super.key});
 
@@ -98,9 +100,24 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                   //specialty 7
                   specialty(AppIcons.orthopedics, "Orthopedics"),
                   //specialty 8
-                  specialty(AppIcons.otolaryngology, "Pediatrics"),
+                  specialty(AppIcons.otolaryngology, "otolaryngology"),
                   //specialty 9
                   specialty(AppIcons.ophtamology, "ophtamology"),
+                  //------------new-----------//
+                  //specialty 10
+                  specialty(AppIcons.endocrinology,
+                      DoctorSpecialtyName.endocrinology.name),
+                  //specialty 11
+                  specialty(AppIcons.rheumatology,
+                      DoctorSpecialtyName.rheumatology.name),
+                  //specialty 12
+                  specialty(AppIcons.urology, DoctorSpecialtyName.urology.name),
+                  //specialty 13
+                  specialty(AppIcons.gastroenterology,
+                      DoctorSpecialtyName.gastroenterology.name),
+                  //specialty 14
+                  specialty(AppIcons.pulmonology,
+                      DoctorSpecialtyName.pulmonology.name),
                 ],
               ),
               const SizedBox(
