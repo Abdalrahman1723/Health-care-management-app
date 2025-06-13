@@ -61,13 +61,10 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Key _refreshKey = UniqueKey();
-
   Future<void> _refreshData() async {
     setState(() {
       _loadImageFromPrefs();
       _loadPatientId();
-      _refreshKey = UniqueKey(); // triggers rebuild of content
     });
   }
 

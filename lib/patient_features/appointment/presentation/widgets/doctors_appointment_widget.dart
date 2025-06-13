@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../views/doctors_appointment_view.dart';
 
 class DoctorsAppointmentWidget extends StatelessWidget {

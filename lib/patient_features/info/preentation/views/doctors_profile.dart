@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/utils/app_bar.dart';
+
 class DoctorProfileScreen extends StatefulWidget {
   final int doctorId;
-  const DoctorProfileScreen({Key? key, required this.doctorId}) : super(key: key);
+  const DoctorProfileScreen({Key? key, required this.doctorId})
+      : super(key: key);
 
   @override
   State<DoctorProfileScreen> createState() => _DoctorProfileScreenState();
@@ -53,7 +56,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     } catch (e) {
       print('Error fetching doctor info: $e');
       setState(() {
-        error = 'Failed to load doctor data. Please check your internet connection or try again later.';
+        error =
+            'Failed to load doctor data. Please check your internet connection or try again later.';
         isLoading = false;
       });
     }
@@ -62,153 +66,171 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: myAppBar(context: context, title: "Doctor Profile"),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : error != null
-            ? Center(child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error, color: Colors.red, size: 40),
-                  const SizedBox(height: 12),
-                  Text(error!, style: const TextStyle(color: Colors.red, fontSize: 18)),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: fetchDoctorData,
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ))
-            : doctorData == null
-            ? const Center(child: Text('No data found for this doctor.', style: TextStyle(fontSize: 18)))
-            : SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF0BDCDC), Color(0xFF00B4D8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                    CircleAvatar(
-                      radius: 45,
-                      backgroundImage: NetworkImage(doctorData!['photo'] ?? ''),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      doctorData!['fullName'] ?? '',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                ? Center(
+                    child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error, color: Colors.red, size: 40),
+                      const SizedBox(height: 12),
+                      Text(error!,
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 18)),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: fetchDoctorData,
+                        child: const Text('Retry'),
                       ),
-                    ),
-                    Text(
-                      doctorData!['specialization'] ?? '',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.star, color: Colors.yellow, size: 20),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${doctorData!['rating'] ?? ''}',
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        const SizedBox(width: 16),
-                        const Icon(Icons.people, color: Colors.white, size: 20),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${doctorData!['reviewsCount'] ?? ''}',
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _infoChip(
-                          icon: Icons.work,
-                          label: '${doctorData!['experienceYears'] ?? ''} years experience',
-                        ),
-                        const SizedBox(width: 8),
-                        _infoChip(
-                          icon: Icons.access_time,
-                          label: doctorData!['workingHours'] ?? '',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Focus
-              if ((doctorData!['focus'] ?? '').isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          const TextSpan(
-                            text: 'Focus: ',
-                            style: TextStyle(
-                              color: Color(0xFF0BDCDC),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                    ],
+                  ))
+                : doctorData == null
+                    ? const Center(
+                        child: Text('No data found for this doctor.',
+                            style: TextStyle(fontSize: 18)))
+                    : SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF0BDCDC),
+                                    Color(0xFF00B4D8)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.arrow_back,
+                                            color: Colors.white),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  ),
+                                  CircleAvatar(
+                                    radius: 45,
+                                    backgroundImage: NetworkImage(
+                                        doctorData!['photo'] ?? ''),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    doctorData!['fullName'] ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    doctorData!['specialization'] ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.star,
+                                          color: Colors.yellow, size: 20),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${doctorData!['rating'] ?? ''}',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      const Icon(Icons.people,
+                                          color: Colors.white, size: 20),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${doctorData!['reviewsCount'] ?? ''}',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _infoChip(
+                                        icon: Icons.work,
+                                        label:
+                                            '${doctorData!['experienceYears'] ?? ''} years experience',
+                                      ),
+                                      const SizedBox(width: 8),
+                                      _infoChip(
+                                        icon: Icons.access_time,
+                                        label:
+                                            doctorData!['workingHours'] ?? '',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          TextSpan(
-                            text: doctorData!['focus'] ?? '',
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
+                            // Focus
+                            if ((doctorData!['focus'] ?? '').isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade50,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Focus: ',
+                                          style: TextStyle(
+                                            color: Color(0xFF0BDCDC),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: doctorData!['focus'] ?? '',
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            // Profile, Career Path, Highlights
+                            _section('Profile', doctorData!['profile']),
+                            _section('Career Path', doctorData!['careerPath']),
+                            _section('Highlights', doctorData!['highlights']),
+                            // Clinic Name
+                            if ((doctorData!['clinicName'] ?? '').isNotEmpty)
+                              _section(
+                                  'Clinic Name', doctorData!['clinicName']),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              // Profile, Career Path, Highlights
-              _section('Profile', doctorData!['profile']),
-              _section('Career Path', doctorData!['careerPath']),
-              _section('Highlights', doctorData!['highlights']),
-              // Clinic Name
-              if ((doctorData!['clinicName'] ?? '').isNotEmpty)
-                _section('Clinic Name', doctorData!['clinicName']),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ),
       ),
     );
   }

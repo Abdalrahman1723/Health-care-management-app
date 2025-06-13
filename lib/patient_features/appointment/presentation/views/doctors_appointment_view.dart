@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/utils/app_bar.dart';
+
 class DoctorsAppointment extends StatefulWidget {
   final String doctorName;
   final String specialty;
@@ -133,6 +135,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: myAppBar(context: context, title: "Book Your Appointment"),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -150,61 +153,67 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   ),
                   const SizedBox(width: 8),
                   CircleAvatar(
-                    radius: 40,
+                    radius: 35,
                     backgroundImage: NetworkImage(widget.doctorImage),
                   ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.doctorName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.doctorName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.specialty,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.specialty,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, color: Colors.white, size: 16),
+                              SizedBox(width: 4),
+                              Text('5', style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
                         ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.white, size: 16),
-                            SizedBox(width: 4),
-                            Text('5', style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  CalendarDaySlotNavigator(
-                    isGoogleFont: false,
-                    slotLength: 6,
-                    dayBoxHeightAspectRatio: 4,
-                    dayDisplayMode: DayDisplayMode.outsideDateBox,
-                    headerText: "Select Date",
-                    onDateSelect: (selectedDate) {
-                      _updateDate(selectedDate);
-                      // print("Selected date: $selectedDate");  //default
-                      //?here should send the selected date to the backend
-                    },
+                      ],
+                    ),
                   ),
                 ],
+              ),
+            ),
+
+            // Calendar Section
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: CalendarDaySlotNavigator(
+                isGoogleFont: false,
+                slotLength: 6,
+                dayBoxHeightAspectRatio: 4,
+                dayDisplayMode: DayDisplayMode.outsideDateBox,
+                headerText: "Select Date",
+                onDateSelect: (selectedDate) {
+                  _updateDate(selectedDate);
+                },
               ),
             ),
 
@@ -273,7 +282,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       builder: (context) => AlertDialog(
                         title: const Text('Confirm Appointment'),
                         content: const Text(
-                            'Do you want to confirm this appointment?'),
+                          'Do you want to confirm this appointment?',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -293,15 +304,16 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                        horizontal: 32, vertical: 16),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
+                    elevation: 2,
                   ),
                   child: const Text(
                     "Save Appointment",
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -383,9 +395,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       itemCount: _availableTimeSlots.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 4,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        childAspectRatio: 2.5,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemBuilder: (context, index) {
         final slot = _availableSlots[index];
@@ -412,13 +424,17 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               border: Border.all(color: const Color(0xFF0BDCDC)),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              slot['text'],
-              style: TextStyle(
-                color: isBooked || isSelected
-                    ? Colors.white
-                    : const Color(0xFF0BDCDC),
-                fontWeight: FontWeight.w500,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                slot['text'],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isBooked || isSelected
+                      ? Colors.white
+                      : const Color(0xFF0BDCDC),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -445,12 +461,16 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       decoration: BoxDecoration(
         color: Colors.blue.shade50.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: TextField(
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         maxLines: maxLines,
-        decoration: const InputDecoration(border: InputBorder.none),
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+        ),
         style: const TextStyle(fontSize: 16, color: Colors.black87),
       ),
     );
