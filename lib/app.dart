@@ -9,6 +9,7 @@ import 'package:health_care_app/config/theme/app_theme.dart';
 import 'package:health_care_app/core/api/api_client.dart';
 import 'package:health_care_app/core/utils/app_strings.dart';
 import 'package:health_care_app/patient_features/ML_predection/presentation/cubit/prediction_cubit.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/main page/presentation/cubit/patient_cubit.dart';
 
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
         //predict provider
         BlocProvider(
           create: (context) => PredictionCubit(apiClient: apiClient),
+        ),
+        //notification provider
+        BlocProvider(
+          create: (context) => NotificationCubit(apiClient: apiClient),
         ),
       ],
       child: MaterialApp(

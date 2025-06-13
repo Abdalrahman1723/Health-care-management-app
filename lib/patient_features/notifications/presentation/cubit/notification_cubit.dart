@@ -14,6 +14,16 @@ class NotificationCubit extends Cubit<NotificationState> {
       : _apiClient = apiClient,
         super(NotificationInitial());
 
+  int getUnreadCount() {
+    if (state is NotificationLoaded) {
+      return (state as NotificationLoaded)
+          .notifications
+          .where((notification) => !notification.isRead)
+          .length;
+    }
+    return 0;
+  }
+
   Future<void> fetchNotifications(String patientId) async {
     if (patientId.isEmpty) {
       emit(NotificationError('Invalid patient ID'));
@@ -42,16 +52,9 @@ class NotificationCubit extends Cubit<NotificationState> {
 
       if (response != null) {
         final List<dynamic> notificationsJson = response;
-        final notifications = notificationsJson.map((json) {
-          return NotificationEntity(
-            title: json['title'] ?? '',
-            content: json['content'] ?? '',
-            isSchedule: json['isSchedule'] ?? false,
-            timeStamp: DateTime.parse(
-                json['timeStamp'] ?? DateTime.now().toIso8601String()),
-            isRead: json['isRead'] ?? false,
-          );
-        }).toList();
+        final notifications = notificationsJson
+            .map((json) => NotificationEntity.fromJson(json))
+            .toList();
 
         emit(NotificationLoaded(notifications));
       } else {
@@ -63,19 +66,13 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  Future<void> markNotificationAsRead(String notificationId) async {
-    if (notificationId.isEmpty) {
-      emit(NotificationError('Invalid notification ID'));
-      return;
-    }
-
+  Future<void> markNotificationAsRead(int notificationId) async {
     try {
-      // Get token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(NotificationError('Authentication token not found'));
+        emit(const NotificationError('Authentication token not found'));
         return;
       }
 
@@ -83,9 +80,9 @@ class NotificationCubit extends Cubit<NotificationState> {
       if (currentState is NotificationLoaded) {
         final updatedNotifications =
             currentState.notifications.map((notification) {
-          // if (notification.id == notificationId) {
-          //   notification.markAsRead();
-          // }
+          if (notification.id == notificationId) {
+            notification.markAsRead();
+          }
           return notification;
         }).toList();
 
@@ -99,24 +96,38 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> markAllNotificationsAsRead() async {
     try {
-      // Get token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(NotificationError('Authentication token not found'));
+        emit(const NotificationError('Authentication token not found'));
         return;
       }
 
+      // Get current state
       final currentState = state;
       if (currentState is NotificationLoaded) {
-        final updatedNotifications =
-            currentState.notifications.map((notification) {
-          notification.markAsRead();
-          return notification;
-        }).toList();
+        // Make API call to mark all notifications as read
+        final response = await _apiClient.put(
+          PatientApiConstants.markAllNotificationsAsRead,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $authToken',
+          },
+        );
 
-        emit(NotificationLoaded(updatedNotifications));
+        if (response != null) {
+          // Update local state
+          final updatedNotifications =
+              currentState.notifications.map((notification) {
+            notification.markAsRead();
+            return notification;
+          }).toList();
+
+          emit(NotificationLoaded(updatedNotifications));
+        } else {
+          emit(const NotificationError('Failed to mark all notifications as read'));
+        }
       }
     } catch (e) {
       log('Error marking all notifications as read: $e');

@@ -25,6 +25,13 @@ class PatientApiConstants {
   //notifications
   static const String getNotifications =
       "Notification/patient"; //Notification/patient/{ID}
+
+  //add review
+  static const String addReview =
+      "Notification/patient"; //Notification/patient/{ID}
+
+  static const String markAllNotificationsAsRead =
+      '$baseUrl/notifications/mark-all-read';
 }
 
 //-----admin------//

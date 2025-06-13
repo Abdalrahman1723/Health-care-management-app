@@ -14,6 +14,8 @@ import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/header.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
 
 import '../../../../core/utils/doctor_specialties.dart';
 import '../cubit/patient_cubit.dart';
@@ -63,18 +65,26 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<void> _refreshData() async {
-    setState(() {
-      _loadImageFromPrefs();
-      _loadPatientId();
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _loadImageFromPrefs();
     _loadPatientId();
+    // Fetch notifications when the screen loads
+    if (patientID != null) {
+      context.read<NotificationCubit>().fetchNotifications(patientID!);
+    }
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _loadImageFromPrefs();
+      _loadPatientId();
+    });
+    // Refresh notifications when pulling to refresh
+    if (patientID != null) {
+      context.read<NotificationCubit>().fetchNotifications(patientID!);
+    }
   }
 
   @override
@@ -162,12 +172,64 @@ class _MainScreenState extends State<MainScreen> {
                         SizedBox(
                           width: 35,
                           height: 35,
-                          child: IconButton(
-                            icon: const Icon(Icons.notifications_none),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, Routes.notificationsScreen);
-                            },
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                icon: BlocBuilder<NotificationCubit,
+                                    NotificationState>(
+                                  builder: (context, state) {
+                                    final unreadCount = context
+                                        .read<NotificationCubit>()
+                                        .getUnreadCount();
+                                    return Icon(
+                                      unreadCount > 0
+                                          ? Icons.notifications_active
+                                          : Icons.notifications_none,
+                                      color:
+                                          unreadCount > 0 ? Colors.blue : null,
+                                    );
+                                  },
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.notificationsScreen);
+                                },
+                              ),
+                              BlocBuilder<NotificationCubit, NotificationState>(
+                                builder: (context, state) {
+                                  final unreadCount = context
+                                      .read<NotificationCubit>()
+                                      .getUnreadCount();
+                                  if (unreadCount > 0) {
+                                    return Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          unreadCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 3),
@@ -515,12 +577,64 @@ class _MainScreenState extends State<MainScreen> {
                         SizedBox(
                           width: 35,
                           height: 35,
-                          child: IconButton(
-                            icon: const Icon(Icons.notifications_none),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, Routes.notificationsScreen);
-                            },
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                icon: BlocBuilder<NotificationCubit,
+                                    NotificationState>(
+                                  builder: (context, state) {
+                                    final unreadCount = context
+                                        .read<NotificationCubit>()
+                                        .getUnreadCount();
+                                    return Icon(
+                                      unreadCount > 0
+                                          ? Icons.notifications_active
+                                          : Icons.notifications_none,
+                                      color:
+                                          unreadCount > 0 ? Colors.blue : null,
+                                    );
+                                  },
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.notificationsScreen);
+                                },
+                              ),
+                              BlocBuilder<NotificationCubit, NotificationState>(
+                                builder: (context, state) {
+                                  final unreadCount = context
+                                      .read<NotificationCubit>()
+                                      .getUnreadCount();
+                                  if (unreadCount > 0) {
+                                    return Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          unreadCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 3),
@@ -542,7 +656,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              // Handle search icon press
+                              Navigator.pushNamed(context, Routes.allDoctors);
                             },
                           ),
                         ),
