@@ -168,8 +168,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
                             const SizedBox(width: 16),
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: () => showCancelDialog(
-                                    context),
+                                onPressed: () => showCancelDialog(context),
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0BDCDC),
                                   shape: RoundedRectangleBorder(
@@ -230,7 +229,6 @@ class AppointmentDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
 
   void showCancelDialog(BuildContext context) {
     showDialog(

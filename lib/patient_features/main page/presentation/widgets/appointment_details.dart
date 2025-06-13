@@ -8,31 +8,37 @@ Widget appointmentDetails(
     required double startTimeInHours,
     required double endTimeInHours,
     required BuildContext context}) {
-  return Column(
-    children: [
-      Text(
-        getWeekdayName(selectedDate.weekday),
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  return Card(
+    color: Colors.cyan,
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text("from ${formatTimeInHour(startTimeInHours)}"),
-              Text("to ${formatTimeInHour(endTimeInHours)}"),
-            ],
-          ), //later we will change this to a dynamic value
           Text(
-            doctorName,
+            getWeekdayName(selectedDate.weekday),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("from ${formatTimeInHour(startTimeInHours)}"),
+                  Text("to ${formatTimeInHour(endTimeInHours)}"),
+                ],
+              ),
+              Text(
+                doctorName,
+              ),
+            ],
+          ),
+          Text(
+            DateFormat('dd/MMM/yyyy').format(selectedDate),
           ),
         ],
       ),
-      Text(
-        DateFormat('dd/MMM/yyyy').format(selectedDate),
-      ),
-    ],
+    ),
   );
 }
 

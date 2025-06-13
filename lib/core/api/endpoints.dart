@@ -32,6 +32,10 @@ class PatientApiConstants {
 
   static const String markAllNotificationsAsRead =
       '$baseUrl/notifications/mark-all-read';
+
+    //favorite doctors
+      static const String getFavoriteDoctors =
+      "favorites/"; //Notification/patient/{ID}
 }
 
 //-----admin------//
