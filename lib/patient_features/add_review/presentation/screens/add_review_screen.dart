@@ -1,129 +1,161 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/core/utils/app_bar.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
+import 'package:health_care_app/patient_features/add_review/presentation/cubit/add_review_cubit.dart';
+import 'package:health_care_app/patient_features/add_review/presentation/cubit/add_review_state.dart';
 
 class AddReviewScreen extends StatefulWidget {
-  const AddReviewScreen({super.key});
+  final int doctorId;
+  final String doctorName;
+  final int patientId;
+  final String patientName;
+
+  const AddReviewScreen({
+    super.key,
+    required this.doctorId,
+    required this.doctorName,
+    required this.patientId,
+    required this.patientName,
+  });
 
   @override
   State<AddReviewScreen> createState() => _AddReviewScreenState();
 }
 
 class _AddReviewScreenState extends State<AddReviewScreen> {
-  double _rating = 0; // Default rating
+  double _rating = 0;
   bool _isFavorite = false;
   final TextEditingController _reviewController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          iconButtonTheme: const IconButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-        ),
-      )),
-      child: Scaffold(
-        appBar: myAppBar(context: context, title: "Add Review"),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Review your doctor based on your experience",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage(
-                      'lib/core/assets/images/download.jpg',
-                    ),
-                    radius: 80,
-                  ),
-                  const SizedBox(height: 12),
-                  GradientBackground.gradientText("Dr. Sara Ahmed",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      )),
-                  const Text(
-                    "General doctor",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Star Rating Bar & Favorite Icon
-                  starReview(),
-                  const SizedBox(height: 16),
-
-                  // Review Text Field
-                  TextField(
-                    controller: _reviewController,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      labelText: "Write your review",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+    return BlocConsumer<AddReviewCubit, AddReviewState>(
+      listener: (context, state) {
+        if (state is AddReviewSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+          Navigator.pop(context);
+        } else if (state is AddReviewError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Theme(
+          data: ThemeData(
+              iconButtonTheme: const IconButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+            ),
+          )),
+          child: Scaffold(
+            appBar: myAppBar(context: context, title: "Add Review"),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Review your doctor based on your experience",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Add Review Button
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.containerBackground,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        // Handle review submission
-                        String reviewText = _reviewController.text;
-                        if (reviewText.isNotEmpty && _rating > 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Review added successfully")),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("Please add a rating and review")),
-                          );
-                        }
-                      },
-                      child: Text(
-                        "Add review",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontSize: 26, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 12),
+                      const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: AssetImage(
+                          'lib/core/assets/images/download.jpg',
+                        ),
+                        radius: 80,
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      GradientBackground.gradientText(widget.doctorName,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          )),
+                      const Text(
+                        "General doctor",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      starReview(),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _reviewController,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          labelText: "Write your review",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: AppColors.containerBackground,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            if (_reviewController.text.isNotEmpty &&
+                                _rating > 0) {
+                              context.read<AddReviewCubit>().addReview(
+                                    doctorId: widget.doctorId,
+                                    doctorName: widget.doctorName,
+                                    patientId: widget.patientId,
+                                    patientName: widget.patientName,
+                                    comment: _reviewController.text,
+                                    rating: _rating,
+                                  );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text("Please add a rating and review")),
+                              );
+                            }
+                          },
+                          child: state is AddReviewLoading
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  "Add review",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold),
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-//-----------------------star review
   Row starReview() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +171,6 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
           ),
           child: Row(
             children: [
-// Star Rating Bar with Gradient Background
               IconButton(
                 icon: GradientBackground.gradientIcon(
                   _rating >= 1 ? Icons.star : Icons.star_border,
@@ -173,9 +204,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             ],
           ),
         ),
-
         const SizedBox(width: 8),
-        // Favorite Icon
         IconButton(
           icon: GradientBackground.gradientIcon(
             _isFavorite ? Icons.favorite : Icons.favorite_border,
