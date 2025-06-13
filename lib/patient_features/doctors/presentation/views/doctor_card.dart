@@ -65,7 +65,7 @@ class _DoctorCardState extends State<DoctorCard> {
                         fontSize: 20),
                   ),
                   Text(
-                    widget.doctor.specialization,
+                    widget.doctor.specialization.toLowerCase(),
                     style: const TextStyle(color: Colors.grey, fontSize: 18),
                   ),
                   Row(

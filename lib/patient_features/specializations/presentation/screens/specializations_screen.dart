@@ -25,7 +25,6 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
     {'icon': AppIcons.dentistry, 'name': "Dentistry"},
     {'icon': AppIcons.oncology, 'name': "Oncology"},
     {'icon': AppIcons.orthopedics, 'name': "Orthopedics"},
-    {'icon': AppIcons.otolaryngology, 'name': "otolaryngology"},
     {'icon': AppIcons.ophtamology, 'name': "ophtamology"},
     {
       'icon': AppIcons.endocrinology,
@@ -142,6 +141,7 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                 mainAxisSpacing: 16,
                 children: _filteredSpecialties
                     .map((specialty) => specialty_widget.specialty(
+                          context,
                           specialty['icon'],
                           specialty['name'],
                         ))

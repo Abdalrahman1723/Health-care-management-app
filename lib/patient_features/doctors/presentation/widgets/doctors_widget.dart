@@ -6,7 +6,12 @@ import '../cubit/doctors_cubit.dart';
 import '../views/doctors_view.dart';
 
 class DoctorsWidget extends StatelessWidget {
-  const DoctorsWidget({Key? key}) : super(key: key);
+  final String? initialSpecialty;
+
+  const DoctorsWidget({
+    Key? key,
+    this.initialSpecialty,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,7 @@ class DoctorsWidget extends StatelessWidget {
       create: (context) => DoctorsCubit(
         RepoImpl(doctorsService: DoctorsService()),
       )..fetchDoctorsData(),
-      child: const DoctorsView(),
+      child: DoctorsView(initialSpecialty: initialSpecialty),
     );
   }
 }

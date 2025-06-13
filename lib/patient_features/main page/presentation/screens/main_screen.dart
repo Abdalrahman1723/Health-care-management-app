@@ -450,23 +450,26 @@ class _MainScreenState extends State<MainScreen> {
                         //specialties list
                         children: [
                           //specialty 1
-                          specialty(AppIcons.cardiology,
+                          specialty(context, AppIcons.cardiology,
                               DoctorSpecialtyName.cardiology.name),
                           //specialty 2
-                          specialty(AppIcons.dermatology,
+                          specialty(context, AppIcons.dermatology,
                               DoctorSpecialtyName.dermatology.name),
                           //specialty 3
                           specialty(
+                              context,
                               AppIcons.generalMedicine,
                               camelCaseToNormal(
                                   DoctorSpecialtyName.generalMedicine.name)),
                           //specialty 4
-                          specialty(AppIcons.gynecology, DoctorSpecialtyName.gynecology.name),
+                          specialty(context, AppIcons.gynecology,
+                              DoctorSpecialtyName.gynecology.name),
                           //specialty 5
-                          specialty(AppIcons.dentistry, DoctorSpecialtyName.dentistry.name),
+                          specialty(context, AppIcons.dentistry,
+                              DoctorSpecialtyName.dentistry.name),
                           //specialty 6
-                          specialty(AppIcons.oncology, DoctorSpecialtyName.oncology.name),
-
+                          specialty(context, AppIcons.oncology,
+                              DoctorSpecialtyName.oncology.name),
                         ],
                       ),
                     ],
