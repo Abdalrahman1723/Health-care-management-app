@@ -30,7 +30,37 @@ AppBar adminAppBar({required BuildContext context, required String title}) {
                 child: IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
-                    //todo logout for admin account
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Logout'),
+                          content: const Text(
+                            'Are you sure you want to logout?',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Clear any stored credentials/tokens here
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/LoginScreen', // Replace with your login route
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text('Logout'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               ),
