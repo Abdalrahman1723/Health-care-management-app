@@ -24,6 +24,11 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size
+    final size = MediaQuery.of(context).size;
+    final padding = MediaQuery.of(context).padding;
+    final screenHeight = size.height - padding.top - padding.bottom;
+
     return Theme(
       data: ThemeData(),
       child: BlocListener<LoginCubit, LoginState>(
@@ -89,57 +94,69 @@ class _LoginViewState extends State<LoginView> {
           body: SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.06, // 6% of screen width
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: screenHeight * 0.03), // 3% of screen height
 
                       // Welcome Text
-                      const Text(
+                      Text(
                         "Welcome",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: size.width * 0.065, // Responsive font size
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0BDCDC),
+                          color: const Color(0xFF0BDCDC),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
+                      SizedBox(height: screenHeight * 0.01),
+                      Text(
                         "Welcome! Please log in to continue. Enter your email or mobile number and password to access your account. If you don't have an account, sign up now!",
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: size.width * 0.035, // Responsive font size
+                          color: Colors.grey,
+                        ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: screenHeight * 0.03),
 
                       // Email Input
-                      const Text(
+                      Text(
                         "Email",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: size.width * 0.04,
+                        ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: screenHeight * 0.01),
                       CustomTextField(
                         controller: _emailController,
                         formKey: _formKey,
                         label: "Email",
                         isEmail: true,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
 
                       // Password Input
-                      const Text(
+                      Text(
                         "Password",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: size.width * 0.04,
+                        ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: screenHeight * 0.01),
                       CustomTextField(
                         controller: _passwordController,
                         formKey: _formKey,
                         label: "Password",
                         isPassword: true,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: screenHeight * 0.01),
 
                       // Forget Password
                       Align(
@@ -147,59 +164,80 @@ class _LoginViewState extends State<LoginView> {
                         child: TextButton(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ForgetPasswordScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgetPasswordScreen(),
+                              ),
+                            );
                           },
-                          child: const Text(
+                          child: Text(
                             "Forget Password",
-                            style: TextStyle(color: Color(0xFF0BDCDC)),
+                            style: TextStyle(
+                              color: const Color(0xFF0BDCDC),
+                              fontSize: size.width * 0.035,
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.03),
 
-                      // Log In Button - الكود الصحيح
+                      // Log In Button
                       Center(
                         child: SizedBox(
-                          width: 200,
-                          height: 50,
+                          width: size.width * 0.5, // 50% of screen width
+                          height: screenHeight * 0.06, // 6% of screen height
                           child: ElevatedButton(
                             onPressed: () {
-                              // التحقق من صحة النموذج
                               if (_formKey.currentState!.validate()) {
-                                // استدعاء login واحد بس - BlocListener هيتعامل مع الباقي
                                 context.read<LoginCubit>().login(
                                       email: _emailController.text.trim(),
                                       password: _passwordController.text.trim(),
                                     );
                               }
                             },
-                            child: const Text("Login"),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: size.width * 0.04,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.03),
 
                       // Sign Up
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Don't have an account?"),
+                          Text(
+                            "Don't have an account?",
+                            style: TextStyle(
+                              fontSize: size.width * 0.035,
+                            ),
+                          ),
                           TextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const SignUpScreen()),
+                                  builder: (context) => const SignUpScreen(),
+                                ),
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               "Sign Up",
                               style: TextStyle(
-                                  color: Color(0xFF0BDCDC),
-                                  fontWeight: FontWeight.bold),
+                                color: const Color(0xFF0BDCDC),
+                                fontWeight: FontWeight.bold,
+                                fontSize: size.width * 0.035,
+                              ),
                             ),
                           ),
                         ],
