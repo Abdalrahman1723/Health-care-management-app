@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
-import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_appointments_screen.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_stats_screen.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_doctors_screen.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/config/routes/routes.dart';
@@ -18,7 +18,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
 
   // List of pages corresponding to each tab
   static final List<Widget> _pages = <Widget>[
-    const AdminAppointmentsScreen(),
+    const AdminStatsScreen(),
     const AdminDoctorsScreen(),
   ];
 

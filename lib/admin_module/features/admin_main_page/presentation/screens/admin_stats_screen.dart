@@ -4,15 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 import '../cubit/admin_main_page_cubit.dart';
 
-class AdminAppointmentsScreen extends StatefulWidget {
-  const AdminAppointmentsScreen({super.key});
+class AdminStatsScreen extends StatefulWidget {
+  const AdminStatsScreen({super.key});
 
   @override
-  State<AdminAppointmentsScreen> createState() =>
-      _AdminAppointmentsScreenState();
+  State<AdminStatsScreen> createState() => _AdminStatsScreenState();
 }
 
-class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
+class _AdminStatsScreenState extends State<AdminStatsScreen> {
   @override
   void initState() {
     super.initState();
