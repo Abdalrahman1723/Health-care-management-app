@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
-import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart';
+import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart'
+    as specialty_widget;
 
 import '../../../../core/utils/doctor_specialties.dart';
 
@@ -13,6 +14,55 @@ class SpecializationsScreen extends StatefulWidget {
 }
 
 class _SpecializationsScreenState extends State<SpecializationsScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  final List<Map<String, dynamic>> _allSpecialties = [
+    {'icon': AppIcons.cardiology, 'name': "Cardiology"},
+    {'icon': AppIcons.dermatology, 'name': "Dermatology"},
+    {'icon': AppIcons.generalMedicine, 'name': "General Medicine"},
+    {'icon': AppIcons.gynecology, 'name': "Gynecology"},
+    {'icon': AppIcons.dentistry, 'name': "Dentistry"},
+    {'icon': AppIcons.oncology, 'name': "Oncology"},
+    {'icon': AppIcons.orthopedics, 'name': "Orthopedics"},
+    {'icon': AppIcons.otolaryngology, 'name': "otolaryngology"},
+    {'icon': AppIcons.ophtamology, 'name': "ophtamology"},
+    {
+      'icon': AppIcons.endocrinology,
+      'name': DoctorSpecialtyName.endocrinology.name
+    },
+    {
+      'icon': AppIcons.rheumatology,
+      'name': DoctorSpecialtyName.rheumatology.name
+    },
+    {'icon': AppIcons.urology, 'name': DoctorSpecialtyName.urology.name},
+    {
+      'icon': AppIcons.gastroenterology,
+      'name': DoctorSpecialtyName.gastroenterology.name
+    },
+    {
+      'icon': AppIcons.pulmonology,
+      'name': DoctorSpecialtyName.pulmonology.name
+    },
+  ];
+
+  List<Map<String, dynamic>> get _filteredSpecialties {
+    if (_searchQuery.isEmpty) {
+      return _allSpecialties;
+    }
+    return _allSpecialties
+        .where((specialty) => specialty['name']
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,12 +107,18 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextField(
+                      controller: _searchController,
                       style: Theme.of(context).textTheme.displayMedium,
                       decoration: InputDecoration(
                         hintText: 'Search...',
                         border: InputBorder.none,
                         icon: Icon(Icons.search, color: AppColors.primary),
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
                     ),
                   ),
                 ],
@@ -84,41 +140,12 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
                 shrinkWrap: true,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 16,
-                children: [
-                  //specialty 1
-                  specialty(AppIcons.cardiology, "Cardiology"),
-                  //specialty 2
-                  specialty(AppIcons.dermatology, "Dermatology"),
-                  //specialty 3
-                  specialty(AppIcons.generalMedicine, "General Medicine"),
-                  //specialty 4
-                  specialty(AppIcons.gynecology, "Gynecology"),
-                  //specialty 5
-                  specialty(AppIcons.dentistry, "Dentistry"),
-                  //specialty 6
-                  specialty(AppIcons.oncology, "Oncology"),
-                  //specialty 7
-                  specialty(AppIcons.orthopedics, "Orthopedics"),
-                  //specialty 8
-                  specialty(AppIcons.otolaryngology, "otolaryngology"),
-                  //specialty 9
-                  specialty(AppIcons.ophtamology, "ophtamology"),
-                  //------------new-----------//
-                  //specialty 10
-                  specialty(AppIcons.endocrinology,
-                      DoctorSpecialtyName.endocrinology.name),
-                  //specialty 11
-                  specialty(AppIcons.rheumatology,
-                      DoctorSpecialtyName.rheumatology.name),
-                  //specialty 12
-                  specialty(AppIcons.urology, DoctorSpecialtyName.urology.name),
-                  //specialty 13
-                  specialty(AppIcons.gastroenterology,
-                      DoctorSpecialtyName.gastroenterology.name),
-                  //specialty 14
-                  specialty(AppIcons.pulmonology,
-                      DoctorSpecialtyName.pulmonology.name),
-                ],
+                children: _filteredSpecialties
+                    .map((specialty) => specialty_widget.specialty(
+                          specialty['icon'],
+                          specialty['name'],
+                        ))
+                    .toList(),
               ),
               const SizedBox(
                 height: 10,
