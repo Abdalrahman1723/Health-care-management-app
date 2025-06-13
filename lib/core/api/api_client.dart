@@ -49,7 +49,7 @@ class ApiClient {
   Future<dynamic> post(String endpoint,
       {Map<String, String>? headers, dynamic body}) async {
     String myUri = '$baseUrl$endpoint';
-    if (endpoint.contains("")) {
+    if (endpoint.contains("predict")) {
       myUri = "https://web-production-d6781.up.railway.app/predict";
     }
     log("the client uri : $myUri");

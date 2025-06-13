@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../fav_doctors/presentation/views/fav_doctors_view.dart';
@@ -85,7 +86,7 @@ class _DoctorsViewState extends State<DoctorsView> {
                       .map((specialty) => DropdownMenuItem<String>(
                             value: specialty.name,
                             child: Text(
-                              specialty.name,
+                              camelCaseToNormal(specialty.name),
                               style: const TextStyle(
                                   color: Colors.black, fontSize: 18),
                             ),

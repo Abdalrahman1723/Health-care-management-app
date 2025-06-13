@@ -45,7 +45,7 @@ class PredictionCubit extends Cubit<PredictionState> {
       log("Sending symptoms: $formattedSymptoms");
 
       final response = await apiClient.post(
-        '',
+        'predict',
         headers: {
           'Content-Type': 'application/json',
         },

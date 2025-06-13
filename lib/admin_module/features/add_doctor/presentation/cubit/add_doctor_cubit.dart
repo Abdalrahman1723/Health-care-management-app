@@ -197,7 +197,7 @@ class AddDoctorCubit extends Cubit<AddDoctorState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(AddDoctorError('Authentication token not found'));
+        emit(const AddDoctorError('Authentication token not found'));
         return;
       }
 

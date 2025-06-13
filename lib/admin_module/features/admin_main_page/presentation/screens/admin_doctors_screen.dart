@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/update_doctor_screen.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/doctor_avatar.dart';
-import 'package:health_care_app/config/routes/routes.dart';
 import 'package:health_care_app/core/utils/assets_manager.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
+import 'package:health_care_app/patient_features/info/preentation/views/doctors_profile.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 
 class AdminDoctorsScreen extends StatefulWidget {
@@ -289,7 +289,14 @@ Widget doctorDetails({
           InkWell(
             onTap: () {
               log('Doctor selected: ${doctor.userName}', name: 'ADMIN_DOCTORS');
-              Navigator.pushNamed(context, Routes.doctorProfileScreen);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DoctorProfileScreen(
+                    doctorId: int.parse(doctor.id),
+                  ),
+                ),
+              );
             },
             child: doctorAvatar(
               imageUrl: doctor.imageUrl!.contains("http")

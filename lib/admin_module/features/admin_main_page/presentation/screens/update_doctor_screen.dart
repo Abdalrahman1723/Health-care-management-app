@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/cubit/admin_main_page_cubit.dart';
+import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import 'package:health_care_app/global/entities/doctor.dart';
 
@@ -211,7 +212,7 @@ class _AdminUpdateDoctorScreenState extends State<AdminUpdateDoctorScreen> {
                             items: DoctorSpecialty.values.map((specialty) {
                               return DropdownMenuItem<DoctorSpecialty>(
                                 value: specialty,
-                                child: Text(specialty.name),
+                                child: Text(camelCaseToNormal(specialty.name)),
                               );
                             }).toList(),
                             onChanged: (value) {

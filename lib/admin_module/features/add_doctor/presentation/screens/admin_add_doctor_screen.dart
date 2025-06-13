@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
+import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/doctor_specialties.dart';
 import '../cubit/add_doctor_cubit.dart';
 
@@ -181,7 +182,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
                             items: DoctorSpecialty.values.map((specialty) {
                               return DropdownMenuItem<DoctorSpecialty>(
                                 value: specialty,
-                                child: Text(specialty.name),
+                                child: Text(camelCaseToNormal(specialty.name)),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -200,7 +201,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Phone Number Field
                           TextFormField(
-                            maxLength: 15,
+                            maxLength: 11,
                             controller: _phoneController,
                             decoration: const InputDecoration(
                               labelText: 'Phone Number',
@@ -297,6 +298,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Bio Field
                           TextFormField(
+                            // expands: true,
                             maxLength: 250,
                             controller: _bioController,
                             decoration: const InputDecoration(
@@ -315,7 +317,8 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Focus Field
                           TextFormField(
-                            maxLength: 100,
+                            maxLength: 200,
+                            maxLines: 3,
                             controller: _focusController,
                             decoration: const InputDecoration(
                               labelText: 'Focus',
@@ -332,7 +335,8 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Career Path Field
                           TextFormField(
-                            maxLength: 100,
+                            maxLength: 200,
+                            maxLines: 4,
                             controller: _careerPathController,
                             decoration: const InputDecoration(
                               labelText: 'Career Path',
@@ -349,7 +353,8 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Highlights Field
                           TextFormField(
-                            maxLength: 100,
+                            maxLength: 200,
+                            maxLines: 3,
                             controller: _highlightsController,
                             decoration: const InputDecoration(
                               labelText: 'Highlights',

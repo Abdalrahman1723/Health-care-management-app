@@ -1,3 +1,4 @@
+import 'package:health_care_app/admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
 import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/screens/medical_history_screen.dart';
@@ -19,6 +20,8 @@ import '../../patient_features/personal profile/presentation/screens/user_profil
 import 'package:go_router/go_router.dart';
 
 class Routes {
+  //---------
+
   static const String welcome = "/"; //?initial route
   static const String mainScreen = '/MainScreen';
   static const String specializationsScreen = '/SpecializationsScreen';
@@ -60,6 +63,7 @@ final routes = {
   // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
   Routes.addReviewScreen: (context) => const AddReviewScreen(),
+  Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
   Routes.medicalHistoryScreen: (context) => const MedicalHistoryScreen(),
   Routes.predictionScreen: (context) => const PredictionScreen(),
   Routes.allAppointments: (context) => const CompleteAppointmentsScreen(),
