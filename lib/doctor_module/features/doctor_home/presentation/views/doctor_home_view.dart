@@ -7,7 +7,6 @@ import '../../../../../global/global_screens/login/presentation/widgets/login_wi
 import '../../../doctors_appointment/presentation/views/doctors_appointement_avaliablity_view.dart';
 import '../../../notifications/presentation/views/doctors_notification_screen.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
-import '../../../patient_profile/presentation/view/patient_profile.dart';
 
 class DoctorHomeView extends StatefulWidget {
   final String doctorId;
@@ -380,12 +379,6 @@ class DoctorHomeContent extends StatelessWidget {
                           final patientId = appointment['patientId'];
                           print('Patient ID: $patientId');
                           if (patientId != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PatientProfileView(patientId: patientId),
-                              ),
-                            );
                           }
                         },
                         child: Padding(

@@ -35,6 +35,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      style: const TextStyle(color: Colors.black),
       obscureText: widget.isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType,
       readOnly: widget.readOnly, // تم تمرير الخاصية هنا
@@ -63,7 +64,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter your ${widget.isEmail ? "email" : "password"}';
+          return 'This field is required';
         }
         if (widget.isEmail) {
           String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
