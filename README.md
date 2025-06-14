@@ -1,5 +1,3 @@
----
-
 ```markdown
 # 🏥 Healthcare Mobile App
 
