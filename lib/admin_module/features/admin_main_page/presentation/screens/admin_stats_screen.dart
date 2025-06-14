@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/reviews_widget.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 import '../cubit/admin_main_page_cubit.dart';
 
@@ -53,58 +56,76 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
-                builder: (context, state) {
-                  if (state is AdminStatsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    );
-                  }
+              child: Column(
+                children: [
+                  // Admin Stats Section
+                  BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
+                    buildWhen: (previous, current) =>
+                        current is AdminStatsLoading ||
+                        current is AdminStatsError ||
+                        current is AdminStatsLoaded,
+                    builder: (context, state) {
+                      if (state is AdminStatsLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        );
+                      }
 
-                  if (state is AdminStatsError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    );
-                  }
+                      if (state is AdminStatsError) {
+                        return Center(
+                          child: Text(
+                            state.message,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
 
-                  if (state is AdminStatsLoaded) {
-                    return Column(
-                      children: [
-                        Row(
+                      if (state is AdminStatsLoaded) {
+                        return Column(
                           children: [
-                            Expanded(
-                              child: _buildStatCard(
-                                title: 'Total Doctors',
-                                value: state.stats.totalDoctors.toString(),
-                                icon: Icons.medical_services_outlined,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildStatCard(
-                                title: 'Total Patients',
-                                value: state.stats.totalPatients.toString(),
-                                icon: Icons.people_outline,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSpecializationsCard(
-                            state.stats.mostRequestedSpecializations),
-                      ],
-                    );
-                  }
+                            //doctors and patients
+                            Row(
+                              children: [
+                                //-------total number of doctors---------//
+                                Expanded(
+                                  child: _buildStatCard(
+                                    title: 'Total Doctors',
+                                    value: state.stats.totalDoctors.toString(),
+                                    icon: Icons.medical_services_outlined,
+                                    color: Colors.blue,
+                                  ),
+                                ),
 
-                  return const SizedBox.shrink();
-                },
+                                const SizedBox(width: 16),
+
+                                //-------total number of patients---------//
+                                Expanded(
+                                  child: _buildStatCard(
+                                    title: 'Total Patients',
+                                    value: state.stats.totalPatients.toString(),
+                                    icon: Icons.people_outline,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            _buildSpecializationsCard(
+                                state.stats.mostRequestedSpecializations),
+                          ],
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(thickness: 2),
+                  // Reviews Section
+                  const ReviewsWidget(),
+                ],
               ),
             ),
             const SizedBox(height: 20),

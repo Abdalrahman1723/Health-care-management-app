@@ -57,4 +57,7 @@ class AdminApiConstants {
 
   //update doctor api
   static const String fetchAdminStats = "Admin/stats"; //Admin/stats
+
+  //get all feedbacks api
+  static const String getAllReviews = "Feedback"; //Admin/stats
 }

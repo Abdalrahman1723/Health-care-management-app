@@ -25,7 +25,7 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(DoctorsError('Authentication token not found'));
+        emit(const DoctorsError('Authentication token not found'));
         return;
       }
 
@@ -107,7 +107,7 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(DoctorsError('Authentication token not found'));
+        emit(const DoctorsError('Authentication token not found'));
         return;
       }
 
@@ -172,7 +172,7 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(AdminStatsError('Authentication token not found'));
+        emit(const AdminStatsError('Authentication token not found'));
         return;
       }
 
@@ -193,6 +193,82 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
     } catch (e) {
       log('Error fetching admin stats: $e', name: "ADMIN");
       emit(AdminStatsError('Failed to fetch admin stats: ${e.toString()}'));
+    }
+  }
+
+  //---------------------fetch all feedback
+  Future<void> fetchAllFeedback() async {
+    try {
+      emit(FeedbackLoading());
+      // Get token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      authToken = prefs.getString('token');
+
+      if (authToken == null) {
+        log(
+          'Authentication token not found when fetching feedback',
+          name: 'FEEDBACK_ERROR',
+          error: 'Token is null',
+          stackTrace: StackTrace.current,
+        );
+        emit(const FeedbackError('Authentication token not found'));
+        return;
+      }
+
+      log(
+        'Fetching feedback from API',
+        name: 'FEEDBACK_REQUEST',
+        time: DateTime.now(),
+      );
+
+      final response = await apiClient.get(
+        AdminApiConstants.getAllReviews,
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response == null) {
+        log(
+          'Null response received from feedback API',
+          name: 'FEEDBACK_ERROR',
+          error: 'Response is null',
+          stackTrace: StackTrace.current,
+        );
+        emit(const FeedbackError('Failed to fetch feedback'));
+        return;
+      }
+
+      if (response is! List) {
+        log(
+          'Invalid response format from feedback API',
+          name: 'FEEDBACK_ERROR',
+          error: 'Expected List but got ${response.runtimeType}',
+          stackTrace: StackTrace.current,
+        );
+        emit(const FeedbackError('Invalid response format'));
+        return;
+      }
+
+      log(
+        'Successfully fetched feedback',
+        name: 'FEEDBACK_SUCCESS',
+        time: DateTime.now(),
+      );
+
+      final List<Map<String, dynamic>> feedbackList =
+          response.map((item) => item as Map<String, dynamic>).toList();
+      emit(FeedbackLoaded(feedbackList));
+    } catch (e, stackTrace) {
+      log(
+        'Error occurred while fetching feedback',
+        name: 'FEEDBACK_ERROR',
+        error: e,
+        stackTrace: stackTrace,
+        time: DateTime.now(),
+      );
+      emit(FeedbackError('Failed to fetch feedback: ${e.toString()}'));
     }
   }
 }
