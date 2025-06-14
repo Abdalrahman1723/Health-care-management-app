@@ -183,6 +183,7 @@ class _LoginViewState extends State<LoginView> {
                       SizedBox(height: screenHeight * 0.03),
 
                       // Log In Button
+
                       Center(
                         child: SizedBox(
                           width: size.width * 0.5, // 50% of screen width
