@@ -27,14 +27,13 @@ class PatientApiConstants {
       "Notification/patient"; //Notification/patient/{ID}
 
   //add review
-  static const String addReview =
-      "Notification/patient"; //Notification/patient/{ID}
+  static const String addReview = "Feedback";
 
   static const String markAllNotificationsAsRead =
-      '$baseUrl/notifications/mark-all-read';
+      'notifications/mark-all-read';
 
-    //favorite doctors
-      static const String getFavoriteDoctors =
+  //favorite doctors
+  static const String getFavoriteDoctors =
       "favorites"; //Notification/patient/{ID}
 }
 

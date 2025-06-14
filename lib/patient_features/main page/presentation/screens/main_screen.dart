@@ -8,6 +8,7 @@ import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
+import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/appointment_details.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
@@ -419,6 +420,22 @@ class _MainScreenState extends State<MainScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddReviewScreen(
+                                                        doctorId: 2,
+                                                        doctorName: "mohamed",
+                                                        patientId: int.parse(
+                                                            state.patient.id),
+                                                        patientName:
+                                                            state.patient.name),
+                                              ),
+                                            );
+                                          },
+                                          child: const Icon(Icons.abc)),
                                       //---see all appointments button
                                       ElevatedButton(
                                         onPressed: () {
@@ -550,6 +567,7 @@ class _MainScreenState extends State<MainScreen> {
           );
           //=====================no appointments=====================//
         } else if (state is PatientLoadedWithNoAppointments) {
+          log("==============no appointments state");
           return Scaffold(
             appBar: AppBar(
                 title: Column(
@@ -730,8 +748,12 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
+                                      ElevatedButton(
+                                          onPressed: () {},
+                                          child: const Icon(Icons.abc)),
                                       IconButton(
                                         onPressed: () {
                                           context

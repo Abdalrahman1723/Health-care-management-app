@@ -86,9 +86,9 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           )),
-                          //should be doctor specialty 
+                      //should be doctor specialty
                       const Text(
-                        "General doctor", //! should be fetched 
+                        "General doctor", //! should be fetched
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
