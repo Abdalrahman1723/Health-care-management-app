@@ -19,6 +19,7 @@ import 'package:health_care_app/patient_features/notifications/presentation/cubi
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
 
 import '../../../../core/utils/doctor_specialties.dart';
+import '../../../info/preentation/views/doctors_profile.dart';
 import '../cubit/patient_cubit.dart';
 
 class MainScreen extends StatefulWidget {
@@ -77,6 +78,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  //refresh screen
   Future<void> _refreshData() async {
     setState(() {
       _loadImageFromPrefs();
@@ -458,6 +460,18 @@ class _MainScreenState extends State<MainScreen> {
                                   //---------------appointment information---------------//
                                   if (state.appointment.isNotEmpty)
                                     ...state.appointment
+                                        .where((appointment) =>
+                                            appointment?.appointmentDateTime !=
+                                                null &&
+                                            appointment!
+                                                    .appointmentDateTime.year ==
+                                                _selectedDate.year &&
+                                            appointment.appointmentDateTime
+                                                    .month ==
+                                                _selectedDate.month &&
+                                            appointment
+                                                    .appointmentDateTime.day ==
+                                                _selectedDate.day)
                                         .map((appointment) => Column(
                                               children: [
                                                 const Divider(
@@ -468,10 +482,14 @@ class _MainScreenState extends State<MainScreen> {
                                                 ),
                                                 InkWell(
                                                   onTap: () {
-                                                    Navigator.pushNamed(
-                                                        context,
-                                                        Routes
-                                                            .appointmentDetailsScreen);
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DoctorProfileScreen(
+                                                        doctorId: appointment
+                                                            .doctorId,
+                                                      ),
+                                                    ));
                                                   },
                                                   child: appointmentDetails(
                                                       doctorName:
@@ -489,13 +507,24 @@ class _MainScreenState extends State<MainScreen> {
                                                 ),
                                               ],
                                             )),
-                                  if ((state.appointment.isEmpty ||
+                                  if (state.appointment.isEmpty ||
                                       state.appointment
-                                          .every((a) => a == null)))
+                                          .every((a) => a == null) ||
+                                      !state.appointment.any((appointment) =>
+                                          appointment?.appointmentDateTime !=
+                                              null &&
+                                          appointment!
+                                                  .appointmentDateTime.year ==
+                                              _selectedDate.year &&
+                                          appointment
+                                                  .appointmentDateTime.month ==
+                                              _selectedDate.month &&
+                                          appointment.appointmentDateTime.day ==
+                                              _selectedDate.day))
                                     const Padding(
                                       padding: EdgeInsets.all(16.0),
                                       child: Text(
-                                        "No appointments found",
+                                        "No appointments found for selected date",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16,
@@ -567,7 +596,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
           );
           //=====================no appointments=====================//
-        } else if (state is PatientLoadedWithNoAppointments) {
+        } // -------------no appointment state -------------------//
+        else if (state is PatientLoadedWithNoAppointments) {
           log("==============no appointments state");
           return Scaffold(
             appBar: AppBar(
