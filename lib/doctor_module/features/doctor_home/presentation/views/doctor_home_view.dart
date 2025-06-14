@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../../global/global_screens/login/presentation/widgets/login_widget.dart';
 import '../../../doctors_appointment/presentation/views/doctors_appointement_avaliablity_view.dart';
 import '../../../notifications/presentation/views/doctors_notification_screen.dart';
-import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
 import '../../../patient_profile/presentation/view/patient_profile.dart';
 

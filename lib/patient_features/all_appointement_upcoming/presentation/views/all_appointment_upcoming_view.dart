@@ -111,10 +111,10 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _appointments.isEmpty
-            ? Center(
+            ? const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Icon(Icons.event_busy, color: Colors.grey, size: 64),
               SizedBox(height: 16),
               Text('No upcoming appointments', style: TextStyle(fontSize: 20, color: Colors.grey)),

@@ -100,7 +100,7 @@ class _DoctorCardState extends State<DoctorCard> {
                     ],
                   ),
 
-                  SizedBox(height: 15,),
+                  const SizedBox(height: 15,),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(

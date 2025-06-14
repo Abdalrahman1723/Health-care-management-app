@@ -89,7 +89,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0BDCDC),
+        backgroundColor: const Color(0xFF0BDCDC),
         elevation: 0,
         centerTitle: true,
         title: Text(

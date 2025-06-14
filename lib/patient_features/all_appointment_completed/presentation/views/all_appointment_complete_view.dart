@@ -59,9 +59,9 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
             Expanded(
               child: IndexedStack(
                 index: _selectedIndex,
-                children: [
-                  const UpcomingAppointmentsScreen(),
-                  const CancelledAppointmentsScreen(),
+                children: const [
+                  UpcomingAppointmentsScreen(),
+                  CancelledAppointmentsScreen(),
                 ],
               ),
             ),

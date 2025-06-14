@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
 import '../../../../../patient_features/main page/presentation/screens/main_screen.dart';
-import '../../../login/presentation/views/login_view.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
 
@@ -46,10 +44,10 @@ class _SignupViewState extends State<SignupView> {
       child: BlocListener<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterLoading) {
-            showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
+            showDialog(context: context, builder: (_) => const Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تم التسجيل بنجاح')));
             print('REGISTERED EMAIL: ${_emailController.text}');
             print('REGISTERED PASSWORD: ${_passwordController.text}');
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
@@ -317,7 +315,7 @@ class _SignupViewState extends State<SignupView> {
                                 );
                               }
                             },
-                            child: Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
+                            child: const Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
                           ),
                         ),
                       ),

@@ -26,7 +26,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> fetchNotifications(String patientId) async {
     if (patientId.isEmpty) {
-      emit(NotificationError('Invalid patient ID'));
+      emit(const NotificationError('Invalid patient ID'));
       return;
     }
 
@@ -38,7 +38,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(NotificationError('Authentication token not found'));
+        emit(const NotificationError('Authentication token not found'));
         return;
       }
 

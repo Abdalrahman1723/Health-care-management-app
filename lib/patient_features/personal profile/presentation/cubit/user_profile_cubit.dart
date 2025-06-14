@@ -50,7 +50,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(ProfileError('Authentication token not found'));
+        emit(const ProfileError('Authentication token not found'));
         return;
       }
 

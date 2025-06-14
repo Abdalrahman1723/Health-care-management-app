@@ -12,6 +12,7 @@ analyzer:
     use_super_parameters: ignore
     use_build_context_synchronously: ignore
     avoid_print: ignore
+    prefer_const_declarations: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
