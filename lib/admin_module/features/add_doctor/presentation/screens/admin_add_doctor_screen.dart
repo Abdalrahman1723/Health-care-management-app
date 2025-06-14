@@ -264,7 +264,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Working Hours Field
                           TextFormField(
-                            maxLength: 100,
+                            maxLength: 2,
                             controller: _workingHoursController,
                             decoration: const InputDecoration(
                               labelText: 'Working Hours',
@@ -281,7 +281,7 @@ class _AdminAddDoctorScreenState extends State<AdminAddDoctorScreen> {
 
                           // Clinic Name Field
                           TextFormField(
-                            maxLength: 50,
+                            maxLength: 150,
                             controller: _clinicNameController,
                             decoration: const InputDecoration(
                               labelText: 'Clinic Name',

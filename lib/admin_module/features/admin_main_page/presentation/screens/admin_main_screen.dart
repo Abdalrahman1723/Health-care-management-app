@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:health_care_app/admin_module/core/utils/admin_app_bar.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_stats_screen.dart';
 import 'package:health_care_app/admin_module/features/admin_main_page/presentation/screens/admin_doctors_screen.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/config/routes/routes.dart';
+
+import '../cubit/admin_main_page_cubit.dart';
 
 class AdminMainScreen extends StatefulWidget {
   const AdminMainScreen({super.key});
@@ -29,16 +32,24 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
     });
   }
 
+  Future<void> _onRefresh() async {
+    // Trigger a rebuild of the current page
+    context.read<AdminMainPageCubit>().fetchAllFeedback();
+    context.read<AdminMainPageCubit>().fetchDoctors();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: adminAppBar(context: context, title: "Admin Dashboard"),
-      //---------
-      body: _pages[_selectedIndex],
-
+      body: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: _pages[_selectedIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Callback when tab is tapped
+        onTap: _onItemTapped,
         items: <BottomNavigationBarItem>[
           //----------appointments tab
           const BottomNavigationBarItem(
@@ -50,7 +61,6 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             icon: SvgPicture.asset(
               color: Colors.black87,
               AppIcons.generalMedicine,
-              // color: Colors.black,
               height: 40,
               width: 40,
             ),

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/admin_main_page_cubit.dart';
@@ -13,7 +14,13 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
   @override
   void initState() {
     super.initState();
-    context.read<AdminMainPageCubit>().fetchAllFeedback();
+    log('ReviewsWidget: Initializing and fetching feedback', name: 'REVIEWS');
+    // Add a small delay to ensure the widget is properly mounted
+    Future.microtask(() {
+      if (mounted) {
+        context.read<AdminMainPageCubit>().fetchAllFeedback();
+      }
+    });
   }
 
   @override
@@ -47,7 +54,14 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
             ),
             const SizedBox(height: 8),
             BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
+              buildWhen: (previous, current) =>
+                  current is FeedbackLoading ||
+                  current is FeedbackError ||
+                  current is FeedbackLoaded,
               builder: (context, state) {
+                log('ReviewsWidget: Current state is ${state.runtimeType}',
+                    name: 'REVIEWS');
+
                 if (state is FeedbackLoading) {
                   return const Center(
                     child: CircularProgressIndicator(
@@ -57,15 +71,35 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                 }
 
                 if (state is FeedbackError) {
+                  log('ReviewsWidget: Error state - ${state.message}',
+                      name: 'REVIEWS');
                   return Center(
-                    child: Text(
-                      state.message,
-                      style: const TextStyle(color: Colors.red),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          state.message,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            log('ReviewsWidget: Retrying feedback fetch',
+                                name: 'REVIEWS');
+                            context
+                                .read<AdminMainPageCubit>()
+                                .fetchAllFeedback();
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
                   );
                 }
 
                 if (state is FeedbackLoaded) {
+                  log('ReviewsWidget: Loaded ${state.feedbackList.length} feedback items',
+                      name: 'REVIEWS');
                   if (state.feedbackList.isEmpty) {
                     return const Center(
                       child: Text(
