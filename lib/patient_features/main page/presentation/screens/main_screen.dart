@@ -256,7 +256,8 @@ class _MainScreenState extends State<MainScreen> {
                           child: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              // Handle search icon press
+                              Navigator.pushNamed(
+                                  context, Routes.specializationsScreen);
                             },
                           ),
                         ),
@@ -705,7 +706,8 @@ class _MainScreenState extends State<MainScreen> {
                           child: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              Navigator.pushNamed(context, Routes.allDoctors);
+                              Navigator.pushNamed(
+                                  context, Routes.specializationsScreen);
                             },
                           ),
                         ),

@@ -18,31 +18,41 @@ class _SpecializationsScreenState extends State<SpecializationsScreen> {
   String _searchQuery = '';
 
   final List<Map<String, dynamic>> _allSpecialties = [
-    {'icon': AppIcons.cardiology, 'name': "Cardiology"},
-    {'icon': AppIcons.dermatology, 'name': "Dermatology"},
-    {'icon': AppIcons.generalMedicine, 'name': "General Medicine"},
-    {'icon': AppIcons.gynecology, 'name': "Gynecology"},
-    {'icon': AppIcons.dentistry, 'name': "Dentistry"},
-    {'icon': AppIcons.oncology, 'name': "Oncology"},
-    {'icon': AppIcons.orthopedics, 'name': "Orthopedics"},
-    {'icon': AppIcons.ophtamology, 'name': "ophtamology"},
+    {'icon': AppIcons.cardiology, 'name': "Cardiology"}, //
+    {'icon': AppIcons.dermatology, 'name': "Dermatology"}, //
+    {'icon': AppIcons.generalMedicine, 'name': "General Medicine"}, //
+    {'icon': AppIcons.gynecology, 'name': "Gynecology"}, //
+    {'icon': AppIcons.dentistry, 'name': "Dentistry"}, //
+    {'icon': AppIcons.oncology, 'name': "Oncology"}, //
+    {'icon': AppIcons.orthopedics, 'name': "Orthopedics"}, //
+    {'icon': AppIcons.ophtamology, 'name': "ophthalmology"}, //
     {
       'icon': AppIcons.endocrinology,
       'name': DoctorSpecialtyName.endocrinology.name
-    },
+    }, //
     {
       'icon': AppIcons.rheumatology,
       'name': DoctorSpecialtyName.rheumatology.name
-    },
-    {'icon': AppIcons.urology, 'name': DoctorSpecialtyName.urology.name},
+    }, //
+    {'icon': AppIcons.urology, 'name': DoctorSpecialtyName.urology.name}, //
     {
       'icon': AppIcons.gastroenterology,
       'name': DoctorSpecialtyName.gastroenterology.name
-    },
+    }, //
     {
       'icon': AppIcons.pulmonology,
       'name': DoctorSpecialtyName.pulmonology.name
-    },
+    }, //
+    {'icon': AppIcons.neurology, 'name': DoctorSpecialtyName.neurology.name}, //
+    {
+      'icon': AppIcons.pediatrician,
+      'name': DoctorSpecialtyName.pediatrics.name
+    }, //
+    {
+      'icon': AppIcons.psychiatrist,
+      'name': DoctorSpecialtyName.psychiatry.name
+    }, //
+    //psychiatrist
   ];
 
   List<Map<String, dynamic>> get _filteredSpecialties {
