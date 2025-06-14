@@ -100,23 +100,23 @@ class _DoctorsViewState extends State<DoctorsView> {
               ),
             ),
             const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _searchController,
-                style: const TextStyle(
-                    color: Colors.black), // 👈 ده السطر اللي يغير لون النص
-                decoration: InputDecoration(
-                  hintText: 'Search...',
-                  prefixIcon:
-                      const Icon(Icons.search, color: Color(0xFF0BDCDC)),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: TextField(
+            //     controller: _searchController,
+            //     style: const TextStyle(
+            //         color: Colors.black), // 👈 ده السطر اللي يغير لون النص
+            //     decoration: InputDecoration(
+            //       hintText: 'Search...',
+            //       prefixIcon:
+            //           const Icon(Icons.search, color: Color(0xFF0BDCDC)),
+            //       border: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(20.0)),
+            //       filled: true,
+            //       fillColor: Colors.white,
+            //     ),
+            //   ),
+            // ),
             Expanded(
               child: BlocBuilder<DoctorsCubit, DoctorsState>(
                 builder: (context, state) {

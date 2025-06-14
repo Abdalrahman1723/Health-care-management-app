@@ -39,10 +39,13 @@ class PatientEntity {
       email: json['email'],
       imageUrl: json['profilePicture'],
       dateOfBirth: DateTime.parse(json['dateOfBirth'].toString().split('T')[0]),
-      gender: json['gender'],
+      gender: json['gender'].toString().toLowerCase(),
       nationalID: json['nationalID'],
       phoneNumber: json['phone'],
-      bloodType: json['bloodType'],
+      bloodType: json['bloodType']?.toString().contains('+') == true ||
+              json['bloodType']?.toString().contains('-') == true
+          ? json['bloodType']
+          : 'A+',
       insuranceProvider: json['insuranceProvider'],
       chronicDiseases: json['chronicDiseases'],
       allergies: json['allergies'],

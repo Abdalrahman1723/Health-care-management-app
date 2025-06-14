@@ -1,9 +1,6 @@
-import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/utils/app_bar.dart';
 
 class DoctorsAppointment extends StatefulWidget {
   final String doctorName;
@@ -24,10 +21,8 @@ class DoctorsAppointment extends StatefulWidget {
 }
 
 class _DoctorsAppointmentState extends State<DoctorsAppointment> {
-  int _selectedDayIndex = 2; // Default to Wednesday
   String? _selectedTimeSlot;
   String _selectedGender = 'Male';
-  DateTime _selectedDate = DateTime.now();
 
   static List<String> bookedTimeSlots = [];
 
@@ -36,15 +31,19 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   final TextEditingController _problemController = TextEditingController();
 
   List<Map<String, dynamic>> _availableSlots = [];
-  List<String> _availableTimeSlots = [];
   int? _selectedAvailabilityId;
   bool _isLoading = true;
+
+  // Feedback variables
+  List<Map<String, dynamic>> _feedbackList = [];
+  bool _isFeedbackLoading = false;
 
   @override
   void initState() {
     super.initState();
     loadBookedSlots();
     fetchDoctorAppointments();
+    fetchDoctorFeedback();
   }
 
   Future<void> loadBookedSlots() async {
@@ -66,13 +65,12 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       );
       final List<dynamic> data = response.data;
       final List<Map<String, dynamic>> slots = data
-          .where((item) =>
-              item['status'] != null &&
-              item['status'].toString().toLowerCase() == 'available')
+          .where((item) => item['status'] != null && item['status'].toString().toLowerCase() == 'available')
           .map<Map<String, dynamic>>((item) {
         double start = (item['startTimeInHours'] ?? 0).toDouble();
         double end = (item['endTimeInHours'] ?? 0).toDouble();
         String day = item['day'] ?? '';
+        String availableDate = item['availableDate']?.toString() ?? '';
         String formatTime(double hour) {
           int h = hour.floor();
           int m = ((hour - h) * 60).round();
@@ -80,25 +78,51 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           int displayHour = h > 12 ? h - 12 : (h == 0 ? 12 : h);
           return '${displayHour.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')} $period';
         }
-
         String slotText = '$day: ${formatTime(start)} - ${formatTime(end)}';
         return {
           'id': item['id'] ?? item['availabilityId'],
-          'text': slotText,
+          'availableDate': availableDate,
+          'slotText': slotText,
           'raw': item,
         };
       }).toList();
       setState(() {
         _availableSlots = slots;
-        _availableTimeSlots = slots.map((e) => e['text'] as String).toList();
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _availableSlots = [];
-        _availableTimeSlots = [];
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> fetchDoctorFeedback() async {
+    setState(() {
+      _isFeedbackLoading = true;
+    });
+    try {
+      final response = await Dio().get(
+        'https://healthcaresystem.runasp.net/api/Feedback/doctor/${widget.doctorId}',
+      );
+      if (response.statusCode == 200 && response.data is List) {
+        setState(() {
+          _feedbackList = List<Map<String, dynamic>>.from(response.data);
+          _isFeedbackLoading = false;
+        });
+      } else {
+        setState(() {
+          _feedbackList = [];
+          _isFeedbackLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _feedbackList = [];
+        _isFeedbackLoading = false;
+      });
+      print('Error fetching feedback: $e');
     }
   }
 
@@ -135,7 +159,6 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context: context, title: "Book Your Appointment"),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -153,67 +176,48 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   ),
                   const SizedBox(width: 8),
                   CircleAvatar(
-                    radius: 35,
+                    radius: 40,
                     backgroundImage: NetworkImage(widget.doctorImage),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.doctorName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.doctorName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.specialty,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.specialty,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.star, color: Colors.white, size: 16),
-                              SizedBox(width: 4),
-                              Text('5', style: TextStyle(color: Colors.white)),
-                            ],
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
-                    ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.white, size: 16),
+                            SizedBox(width: 4),
+                            Text('5', style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ),
-
-            // Calendar Section
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: CalendarDaySlotNavigator(
-                isGoogleFont: false,
-                slotLength: 6,
-                dayBoxHeightAspectRatio: 4,
-                dayDisplayMode: DayDisplayMode.outsideDateBox,
-                headerText: "Select Date",
-                onDateSelect: (selectedDate) {
-                  _updateDate(selectedDate);
-                },
               ),
             ),
 
@@ -224,14 +228,15 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('Profile',
-                        color: const Color(0xFF0BDCDC)),
+                    _buildSectionTitle('Profile', color: const Color(0xFF0BDCDC)),
                     const SizedBox(height: 8),
                     _buildProfileCard(),
+
                     const SizedBox(height: 24),
                     _buildSectionTitle('Available Time'),
                     const SizedBox(height: 16),
                     _buildTimeSlotGrid(),
+
                     const SizedBox(height: 24),
                     _buildSectionTitle('Patient Details'),
                     const SizedBox(height: 16),
@@ -243,10 +248,10 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                     const SizedBox(height: 16),
                     _buildInputLabel('Gender'),
                     _buildGenderSelector(),
-                    const SizedBox(height: 16),
-                    _buildInputLabel('Describe your problem'),
-                    _buildInputField(_problemController, maxLines: 4),
                     const SizedBox(height: 24),
+                    _buildSectionTitle('Patient Feedback'),
+                    const SizedBox(height: 16),
+                    _buildFeedbackList(),
                   ],
                 ),
               ),
@@ -270,10 +275,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   onPressed: () async {
                     if (_selectedAvailabilityId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content:
-                                Text('Please select an available time slot'),
-                            backgroundColor: Colors.red),
+                        const SnackBar(content: Text('Please select an available time slot'), backgroundColor: Colors.red),
                       );
                       return;
                     }
@@ -281,10 +283,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Confirm Appointment'),
-                        content: const Text(
-                          'Do you want to confirm this appointment?',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        content: const Text('Do you want to confirm this appointment?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -303,18 +302,12 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
                   child: const Text(
                     "Save Appointment",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -366,7 +359,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            profile.isNotEmpty
+            (profile ?? '').isNotEmpty
                 ? profile
                 : 'A dedicated healthcare professional committed to providing exceptional medical care. With extensive experience in their field, they focus on delivering personalized treatment plans and maintaining the highest standards of patient care.',
             style: const TextStyle(color: Colors.grey, height: 1.5),
@@ -380,62 +373,83 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_availableTimeSlots.isEmpty) {
+    if (_availableSlots.isEmpty) {
       return const Center(
         child: Text(
           'No Available Appointments',
-          style: TextStyle(
-              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
         ),
       );
     }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _availableTimeSlots.length,
+      itemCount: _availableSlots.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 2.5,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: 1,
+        childAspectRatio: 4.5,
+        mainAxisSpacing: 16,
       ),
       itemBuilder: (context, index) {
         final slot = _availableSlots[index];
         final isSelected = slot['id'] == _selectedAvailabilityId;
-        final isBooked = bookedTimeSlots.contains(slot['text']);
+        final isBooked = bookedTimeSlots.contains(slot['slotText']);
+        final availableDate = slot['availableDate'];
 
         return GestureDetector(
           onTap: () {
             if (!isBooked) {
               setState(() {
-                _selectedTimeSlot = slot['text'];
+                _selectedTimeSlot = slot['slotText'];
                 _selectedAvailabilityId = slot['id'];
               });
             }
           },
           child: Container(
             alignment: Alignment.center,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            height: 70,
             decoration: BoxDecoration(
               color: isBooked
                   ? Colors.red.withOpacity(0.7)
                   : isSelected
-                      ? const Color(0xFF0BDCDC)
-                      : Colors.transparent,
-              border: Border.all(color: const Color(0xFF0BDCDC)),
+                  ? const Color(0xFF0BDCDC)
+                  : Colors.white,
+              border: Border.all(color: const Color(0xFF0BDCDC), width: 1.5),
               borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                if (isSelected)
+                  BoxShadow(
+                    color: Colors.cyan.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                slot['text'],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: isBooked || isSelected
-                      ? Colors.white
-                      : const Color(0xFF0BDCDC),
-                  fontWeight: FontWeight.w500,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if ((availableDate ?? '').isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(
+                      availableDate,
+                      style: TextStyle(
+                        color: isBooked || isSelected ? Colors.white : const Color(0xFF0BDCDC),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                Text(
+                  slot['slotText'],
+                  style: TextStyle(
+                    color: isBooked || isSelected ? Colors.white : const Color(0xFF0BDCDC),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         );
@@ -454,23 +468,18 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     );
   }
 
-  Widget _buildInputField(TextEditingController controller,
-      {int maxLines = 1, bool isNumber = false}) {
+  Widget _buildInputField(TextEditingController controller, {int maxLines = 1, bool isNumber = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.blue.shade50.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
       ),
       child: TextField(
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         maxLines: maxLines,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.zero,
-        ),
+        decoration: const InputDecoration(border: InputBorder.none),
         style: const TextStyle(fontSize: 16, color: Colors.black87),
       ),
     );
@@ -486,18 +495,14 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: _selectedGender == gender
-                    ? const Color(0xFF0BDCDC)
-                    : Colors.transparent,
+                color: _selectedGender == gender ? const Color(0xFF0BDCDC) : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: const Color(0xFF0BDCDC)),
               ),
               child: Text(
                 gender,
                 style: TextStyle(
-                  color: _selectedGender == gender
-                      ? Colors.white
-                      : const Color(0xFF0BDCDC),
+                  color: _selectedGender == gender ? Colors.white : const Color(0xFF0BDCDC),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -505,6 +510,58 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildFeedbackList() {
+    if (_isFeedbackLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_feedbackList.isEmpty) {
+      return const Text(
+        'No feedback yet.',
+        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+      );
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _feedbackList.length,
+      separatorBuilder: (_, __) => const Divider(height: 16),
+      itemBuilder: (context, index) {
+        final feedback = _feedbackList[index];
+        return Card(
+          color: Colors.blue.shade50,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  feedback['patientName'] ?? 'Anonymous',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0BDCDC),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  feedback['comment'] ?? '',
+                  style: const TextStyle(color: Colors.black87),
+                ),
+                if (feedback['rating'] != null)
+                  Row(
+                    children: List.generate(
+                      feedback['rating'] ?? 0,
+                          (i) => const Icon(Icons.star, color: Colors.amber, size: 18),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -527,7 +584,6 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       );
 
       if (bookResponse.statusCode == 200 || bookResponse.statusCode == 201) {
-        // ✅ Store the booked time slot locally
         final bookedSlot = _selectedTimeSlot;
         if (bookedSlot != null) {
           List<String> booked = prefs.getStringList('booked_slots') ?? [];
@@ -541,28 +597,15 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Successfully Booked'),
-              backgroundColor: Colors.green),
+          const SnackBar(content: Text('Successfully Booked'), backgroundColor: Colors.green),
         );
       } else {
         throw Exception('Booking failed: ${bookResponse.statusCode}');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Booking error: $e'), backgroundColor: Colors.red),
+        SnackBar(content: Text('Booking error: $e'), backgroundColor: Colors.red),
       );
     }
-  }
-
-  void _updateDate(DateTime date) {
-    setState(() {
-      _selectedDate = date;
-      _selectedTimeSlot = null;
-      _selectedAvailabilityId = null;
-    });
-    // Refresh appointments for the selected date
-    fetchDoctorAppointments();
   }
 }

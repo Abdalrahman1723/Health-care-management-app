@@ -113,14 +113,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.arrow_back,
-                                            color: Colors.white),
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
-                                      const Spacer(),
-                                    ],
-                                  ),
+                                  //     IconButton(
+                                  //       icon: const Icon(Icons.arrow_back,
+                                  //           color: Colors.white),
+                                  //       onPressed: () => Navigator.pop(context),
+                                  //     ),
+                                  //     const Spacer(),
+                                     ],
+                                   ),
                                   CircleAvatar(
                                     radius: 45,
                                     backgroundImage: NetworkImage(
