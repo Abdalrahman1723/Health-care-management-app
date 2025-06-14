@@ -314,7 +314,7 @@ class _AdminUpdateDoctorScreenState extends State<AdminUpdateDoctorScreen> {
                             maxLength: 50,
                             controller: _clinicNameController,
                             decoration: const InputDecoration(
-                              labelText: 'Clinic Name',
+                              labelText: 'Clinic Name and Address',
                               border: OutlineInputBorder(),
                             ),
                             validator: (value) {
