@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../views/forget_password_view.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
@@ -15,7 +14,7 @@ class ForgetPasswordScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+           color: Colors.white,
           ),
         ),
         iconTheme: const IconThemeData(

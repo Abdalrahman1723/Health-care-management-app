@@ -52,6 +52,7 @@ class _SignupViewState extends State<SignupView> {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
             print('REGISTERED EMAIL: ${_emailController.text}');
             print('REGISTERED PASSWORD: ${_passwordController.text}');
+            print('ACTOR ID: ${state.registerEntity.actorId}');
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
           } else if (state is RegisterFailure) {
             Navigator.pop(context);
@@ -317,7 +318,7 @@ class _SignupViewState extends State<SignupView> {
                                 );
                               }
                             },
-                            child: Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
+                            child: Text("Register", style: TextStyle(color: Colors.white, fontSize: 25)),
                           ),
                         ),
                       ),

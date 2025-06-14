@@ -108,31 +108,34 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _appointments.isEmpty
-            ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.event_busy, color: Colors.grey, size: 64),
-              SizedBox(height: 16),
-              Text('No upcoming appointments', style: TextStyle(fontSize: 20, color: Colors.grey)),
-            ],
-          ),
-        )
-            : ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: _appointments.length,
-          itemBuilder: (context, index) {
-            final appt = _appointments[index];
-            return Column(
-              children: [
-                _buildAppointmentCard(appt),
-                const SizedBox(height: 16),
+        child: RefreshIndicator(
+          onRefresh: fetchUpcomingAppointments,
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _appointments.isEmpty
+              ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.event_busy, color: Colors.grey, size: 64),
+                SizedBox(height: 16),
+                Text('No upcoming appointments', style: TextStyle(fontSize: 20, color: Colors.grey)),
               ],
-            );
-          },
+            ),
+          )
+              : ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: _appointments.length,
+            itemBuilder: (context, index) {
+              final appt = _appointments[index];
+              return Column(
+                children: [
+                  _buildAppointmentCard(appt),
+                  const SizedBox(height: 16),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -318,4 +321,5 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
         ),
       ],
     );
-  }}
+  }
+}
