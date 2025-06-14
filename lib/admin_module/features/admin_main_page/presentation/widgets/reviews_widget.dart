@@ -101,9 +101,9 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                                     Text(
                                       "Dr. ${feedback['doctorName'] ?? 'Anonymous'}",
                                       style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
                                     ),
                                   ],
                                 ),
