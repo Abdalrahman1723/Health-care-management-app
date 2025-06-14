@@ -10,7 +10,7 @@ class CompleteAppointmentsScreen extends StatefulWidget {
 }
 
 class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen> {
-  int _selectedIndex = 0; // 0: Complete, 1: Upcoming, 2: Cancelled
+  int _selectedIndex = 0; // 0: Upcoming, 1: Cancelled
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,9 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                //  _buildFilterButton("Complete", 0),
+                  _buildFilterButton("Upcoming", 0),
                   const SizedBox(width: 8),
-                  _buildFilterButton("Upcoming", 1),
-                  const SizedBox(width: 8),
-                  _buildFilterButton("Cancelled", 2),
+                  _buildFilterButton("Cancelled", 1),
                 ],
               ),
             ),
@@ -60,7 +58,6 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
               child: IndexedStack(
                 index: _selectedIndex,
                 children: [
-                  _buildCompletedAppointments(),
                   const UpcomingAppointmentsScreen(),
                   const CancelledAppointmentsScreen(),
                 ],
@@ -99,28 +96,4 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
       ),
     );
   }
-
-  Widget _buildCompletedAppointments() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.event_busy,
-            color: Colors.grey,
-            size: 60,
-          ),
-          SizedBox(height: 10),
-          Text(
-                "No Completed Appointments",
-                style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
 }

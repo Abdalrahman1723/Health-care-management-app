@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../../global/global_screens/login/presentation/widgets/login_widget.dart';
+import '../../../doctors_appointment/presentation/views/doctors_appointement_avaliablity_view.dart';
 import '../../../notifications/presentation/views/doctors_notification_screen.dart';
+import '../../../patient_details_in_doctor/presentation/widgets/patient_details_in_doctor_widget.dart';
 import '../../../doctors_date/presentation/widget/doctors_date_widget.dart';
+import '../../../patient_profile/presentation/view/patient_profile.dart';
 
 class DoctorHomeView extends StatefulWidget {
   final String doctorId;
@@ -154,6 +158,7 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
       onAccept: _acceptAppointment,
     ),
     const DoctorDatesWidget(),
+    const DoctorsAppointmentAvaliable(),
   ];
 
   void onTabTapped(int index) {
@@ -175,7 +180,7 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: onTabTapped,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: const Color(0xFF0BDCDC),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
@@ -184,8 +189,12 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined, size: 30),
-            label: 'Availability',
+            icon: Icon(Icons.calendar_today_outlined, size: 30),
+            label: 'Set Time',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_available_outlined, size: 30),
+            label: 'Available',
           ),
         ],
       ),
@@ -331,99 +340,113 @@ class DoctorHomeContent extends StatelessWidget {
                       final appointmentId = appointment['appointmentId'] as int;
                       final isRejected = rejectedAppointments.contains(appointmentId);
                       final isAccepted = acceptedAppointments.contains(appointmentId);
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                        child: Card(
-                          elevation: 2,
-                          color: isRejected
-                              ? Colors.red[100]
-                              : isAccepted
-                              ? Colors.green[100]
-                              : Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  radius: 28,
-                                  backgroundImage: NetworkImage(appointment['patientImage'] ?? ''),
-                                ),
-                                const SizedBox(width: 14),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        appointment['patientFullName'] ?? '',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          const Icon(Icons.access_time, size: 18, color: Colors.grey),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            _formatAppointmentTime(appointment),
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: (isRejected || isAccepted)
-                                                ? null
-                                                : () {
-                                              onAccept(appointmentId);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                              minimumSize: const Size(80, 34),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: const Text('Accept'),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          ElevatedButton(
-                                            onPressed: (isRejected || isAccepted)
-                                                ? null
-                                                : () {
-                                              onReject(appointmentId);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                              minimumSize: const Size(80, 34),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: const Text('Reject'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                      return GestureDetector(
+                        onTap: () {
+                          final patientId = appointment['patientId'];
+                          print('Patient ID: $patientId');
+                          if (patientId != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PatientProfileView(patientId: patientId),
+                              ),
+                            );
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                          child: Card(
+                            elevation: 2,
+                            color: isRejected
+                                ? Colors.red[100]
+                                : isAccepted
+                                ? Colors.green[100]
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28,
+                                    backgroundImage: NetworkImage(appointment['patientImage'] ?? ''),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          appointment['patientFullName'] ?? '',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              _formatAppointmentTime(appointment),
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: (isRejected || isAccepted)
+                                                  ? null
+                                                  : () {
+                                                onAccept(appointmentId);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                                minimumSize: const Size(80, 34),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              child: const Text('Accept'),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            ElevatedButton(
+                                              onPressed: (isRejected || isAccepted)
+                                                  ? null
+                                                  : () {
+                                                onReject(appointmentId);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                                minimumSize: const Size(80, 34),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              child: const Text('Reject'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

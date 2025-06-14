@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
+import '../../../../../patient_features/main page/presentation/screens/main_screen.dart';
+import '../../../login/presentation/views/login_view.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
 
@@ -42,11 +46,13 @@ class _SignupViewState extends State<SignupView> {
       child: BlocListener<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterLoading) {
-            showDialog(context: context, builder: (_) => const Center(child: CircularProgressIndicator()));
+            showDialog(context: context, builder: (_) => Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تم التسجيل بنجاح')));
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
+            print('REGISTERED EMAIL: ${_emailController.text}');
+            print('REGISTERED PASSWORD: ${_passwordController.text}');
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
           } else if (state is RegisterFailure) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
@@ -135,6 +141,7 @@ class _SignupViewState extends State<SignupView> {
                         controller: _dateOfBirthController,
                         formKey: _formKey,
                         label: "Date of Birth (YYYY-MM-DD)",
+                        readOnly: true,
                         onTap: () async {
                           final DateTime? picked = await showDatePicker(
                             context: context,
@@ -159,6 +166,7 @@ class _SignupViewState extends State<SignupView> {
                         formKey: _formKey,
                         label: "Age",
                         keyboardType: TextInputType.number,
+                        readOnly: false,
                       ),
 
                       const SizedBox(height: 16),
@@ -302,17 +310,14 @@ class _SignupViewState extends State<SignupView> {
                                   age: int.parse(_ageController.text),
                                   nationalID: _nationalIDController.text,
                                   bloodType: _selectedBloodType,
-                                  chronicDiseases: _chronicDiseasesController
-                                      .text,
+                                  chronicDiseases: _chronicDiseasesController.text,
                                   allergies: _allergiesController.text,
-                                  currentMedications: _currentMedicationsController
-                                      .text,
-                                  insuranceProvider: _insuranceProviderController
-                                      .text,
+                                  currentMedications: _currentMedicationsController.text,
+                                  insuranceProvider: _insuranceProviderController.text,
                                 );
                               }
                             },
-                            child: const Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
+                            child: Text("تسجيل", style: TextStyle(color: Colors.white, fontSize: 25)),
                           ),
                         ),
                       ),

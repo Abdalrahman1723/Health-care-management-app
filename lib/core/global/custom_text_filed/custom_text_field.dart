@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final TextInputType? keyboardType;
   final VoidCallback? onTap;
+  final bool readOnly; // تم إضافة هذا الباراميتر
 
   const CustomTextField({
     Key? key,
@@ -18,7 +19,9 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
     this.isEmail = false,
     this.isPassword = false,
-    this.keyboardType, this.onTap,
+    this.keyboardType,
+    this.onTap,
+    this.readOnly = false, // افتراضي false
   }) : super(key: key);
 
   @override
@@ -33,18 +36,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return TextFormField(
       controller: widget.controller,
       obscureText: widget.isPassword ? _obscureText : false,
+      keyboardType: widget.keyboardType,
+      readOnly: widget.readOnly, // تم تمرير الخاصية هنا
+      onTap: widget.onTap,
       decoration: InputDecoration(
         suffixIcon: widget.isPassword
-            ? IconButton(icon: Icon(
+            ? IconButton(
+          icon: Icon(
             _obscureText ? Icons.remove_red_eye_outlined : Icons.visibility_off,
-          color: const Color(0xFF0BDCDC),
-        ),
+            color: const Color(0xFF0BDCDC),
+          ),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
             });
           },
-        ) : widget.suffixIcon,
+        )
+            : widget.suffixIcon,
         fillColor: Colors.white,
         filled: true,
         hintText: widget.label,
@@ -58,8 +66,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           return 'Please enter your ${widget.isEmail ? "email" : "password"}';
         }
         if (widget.isEmail) {
-          String pattern =
-              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+          String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
           RegExp regExp = RegExp(pattern);
           if (!regExp.hasMatch(value)) {
             return 'Please enter a valid email';

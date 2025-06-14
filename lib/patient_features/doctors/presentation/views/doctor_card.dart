@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../../../appointment/presentation/views/doctors_appointment_view.dart';
@@ -35,7 +36,7 @@ class _DoctorCardState extends State<DoctorCard> {
   void didUpdateWidget(covariant DoctorCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isFavorite != widget.isFavorite) {
-      _isFavorite = widget.isFavorite; // مزامنة الحالة مع القيمة الجديدة
+      _isFavorite = widget.isFavorite;  // مزامنة الحالة مع القيمة الجديدة
     }
   }
 
@@ -44,8 +45,7 @@ class _DoctorCardState extends State<DoctorCard> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, top: 16.0, bottom: 50.0, right: 30.0),
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 50.0, right: 30.0),
         child: Row(
           children: [
             CircleAvatar(
@@ -65,8 +65,8 @@ class _DoctorCardState extends State<DoctorCard> {
                         fontSize: 20),
                   ),
                   Text(
-                    widget.doctor.specialization.toLowerCase(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 18),
+                    widget.doctor.specialization,
+                    style: const TextStyle(color: Colors.grey,fontSize: 18),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -82,13 +82,12 @@ class _DoctorCardState extends State<DoctorCard> {
                           ),
                         ),
                       ),
-                      if (!widget.hideFavoriteIcon) // لو مش مخفي، اعرض الايقونة
+
+                      if (!widget.hideFavoriteIcon)  // لو مش مخفي، اعرض الايقونة
                         IconButton(
                           icon: Icon(
                             size: 25,
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                            _isFavorite ? Icons.favorite : Icons.favorite_border,
                             color: _isFavorite ? Colors.red : Colors.grey,
                           ),
                           onPressed: () {
@@ -100,9 +99,8 @@ class _DoctorCardState extends State<DoctorCard> {
                         ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+
+                  SizedBox(height: 15,),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -111,14 +109,15 @@ class _DoctorCardState extends State<DoctorCard> {
                           builder: (context) => DoctorsAppointment(
                             doctorName: widget.doctor.fullName,
                             specialty: widget.doctor.specialization,
-                            doctorImage: widget.doctor.photoUrl,
-                            doctorId: widget.doctor.id,
+                            doctorImage: widget.doctor.photoUrl, doctorId: widget.doctor.id,
                           ),
                         ),
                       );
+
                     },
                     child: const Text(
                       'Make Appointment',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF0BDCDC),
                         fontSize: 20,
@@ -126,6 +125,7 @@ class _DoctorCardState extends State<DoctorCard> {
                       ),
                     ),
                   ),
+
                 ],
               ),
             ),
