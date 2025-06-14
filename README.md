@@ -145,7 +145,8 @@ flutter build apk --release
 ## 🙋‍♂️ Contributors
 
 * **Abdalrahman Alaa Eldin** – Flutter Developer
-* **Your Backend Teammate** – .NET Developer
+* **Helana Emad** – Flutter Developer
+* **Backend Teamm** – .NET Developer
 
 ---
 
