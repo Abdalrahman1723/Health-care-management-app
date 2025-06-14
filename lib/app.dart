@@ -1,5 +1,4 @@
 //the root of the app
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/admin_module/features/add_doctor/presentation/cubit/add_doctor_cubit.dart';
@@ -9,8 +8,11 @@ import 'package:health_care_app/config/theme/app_theme.dart';
 import 'package:health_care_app/core/api/api_client.dart';
 import 'package:health_care_app/core/utils/app_strings.dart';
 import 'package:health_care_app/patient_features/ML_predection/presentation/cubit/prediction_cubit.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/cubit/user_profile_cubit.dart';
 import 'package:health_care_app/patient_features/main page/presentation/cubit/patient_cubit.dart';
+
+import 'patient_features/add_review/presentation/cubit/add_review_cubit.dart';
 
 class MyApp extends StatelessWidget {
   final ApiClient apiClient;
@@ -33,12 +35,25 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AdminMainPageCubit(apiClient: apiClient),
         ),
+        //add doctor provider
         BlocProvider(
           create: (context) => AddDoctorCubit(apiClient: apiClient),
         ),
         //predict provider
         BlocProvider(
           create: (context) => PredictionCubit(apiClient: apiClient),
+        ),
+        //notification provider
+        BlocProvider(
+          create: (context) => NotificationCubit(apiClient: apiClient),
+        ),
+        //notification provider
+        BlocProvider(
+          create: (context) => NotificationCubit(apiClient: apiClient),
+        ),
+        //add review provider
+        BlocProvider(
+          create: (context) => AddReviewCubit(apiClient: apiClient),
         ),
       ],
       child: MaterialApp(

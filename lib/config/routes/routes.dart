@@ -1,12 +1,10 @@
 import 'package:health_care_app/admin_module/features/add_doctor/presentation/screens/admin_add_doctor_screen.dart';
-import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:health_care_app/patient_features/personal%20profile/presentation/screens/medical_history_screen.dart';
 import '../../patient_features/ML_predection/presentation/screens/prediction_screen.dart';
 import '../../patient_features/all_appointment_completed/presentation/views/all_appointment_complete_view.dart';
 import '../../patient_features/app settings/presentation/screens/notification_settings_screen.dart';
 import 'package:health_care_app/patient_features/app%20settings/presentation/screens/settings_screen.dart';
-import 'package:health_care_app/patient_features/doctors/presentation/widgets/doctors_widget.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:health_care_app/global/global_screens/login_and_signup/presentation/views/login_and_signup_view.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/screens/main_screen.dart';
@@ -16,6 +14,7 @@ import 'package:health_care_app/patient_features/specializations/presentation/sc
 import 'package:health_care_app/global/global_screens/welcome/welcome.dart';
 import '../../patient_features/app settings/presentation/screens/password_manager_view.dart';
 import '../../patient_features/appointment_details/presentation/views/all_appointment_details_view.dart';
+import '../../patient_features/doctors/presentation/widgets/doctors_widget.dart';
 import '../../patient_features/personal profile/presentation/screens/user_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,7 +33,7 @@ class Routes {
   static const String loginAndSignup = "/LoginAndSignupScreen";
   static const String signup = "/SignUpScreen";
   static const String passwordManager = "/PasswordManagerScreen";
-  static const String allDoctors = "/DoctorsScreen";
+  static const String allDoctors = "/DoctorsWidget";
   static const String favDoctors = "/FavDoctors";
   static const String notificationsScreen = "/NotificationsScreen";
   static const String addReviewScreen = "/AddReviewScreen";
@@ -62,7 +61,7 @@ final routes = {
   Routes.allDoctors: (context) => const DoctorsWidget(),
   // Routes.favDoctors: (context) => const FavDoctors(), //handel favorite doctors
   Routes.notificationsScreen: (context) => const NotificationsScreen(),
-  Routes.addReviewScreen: (context) => const AddReviewScreen(),
+  // Routes.addReviewScreen: (context) => const AddReviewScreen(), //!
   Routes.adminAddDoctorScreen: (context) => const AdminAddDoctorScreen(),
   Routes.medicalHistoryScreen: (context) => const MedicalHistoryScreen(),
   Routes.predictionScreen: (context) => const PredictionScreen(),

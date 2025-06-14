@@ -83,6 +83,7 @@ class ApiClient {
   Future<dynamic> delete(String endpoint,
       {Map<String, String>? headers}) async {
     try {
+      log("delete uri : $baseUrl$endpoint");
       final response = await client.delete(
         Uri.parse('$baseUrl$endpoint'),
         headers: headers,

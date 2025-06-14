@@ -71,3 +71,24 @@ class AdminStatsError extends AdminMainPageState {
   @override
   List<Object?> get props => [message];
 }
+
+//-----------------the feedback states-------------------//
+class FeedbackLoading extends AdminMainPageState {}
+
+class FeedbackLoaded extends AdminMainPageState {
+  final List<Map<String, dynamic>> feedbackList;
+
+  const FeedbackLoaded(this.feedbackList);
+
+  @override
+  List<Object?> get props => [feedbackList];
+}
+
+class FeedbackError extends AdminMainPageState {
+  final String message;
+
+  const FeedbackError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -25,6 +25,16 @@ class PatientApiConstants {
   //notifications
   static const String getNotifications =
       "Notification/patient"; //Notification/patient/{ID}
+
+  //add review
+  static const String addReview = "Feedback";
+
+  static const String markAllNotificationsAsRead =
+      'notifications/mark-all-read';
+
+  //favorite doctors
+  static const String getFavoriteDoctors =
+      "favorites"; //Notification/patient/{ID}
 }
 
 //-----admin------//
@@ -47,4 +57,7 @@ class AdminApiConstants {
 
   //update doctor api
   static const String fetchAdminStats = "Admin/stats"; //Admin/stats
+
+  //get all feedbacks api
+  static const String getAllReviews = "Feedback"; //Admin/stats
 }

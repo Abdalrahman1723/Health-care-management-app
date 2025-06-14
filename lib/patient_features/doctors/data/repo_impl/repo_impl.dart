@@ -15,12 +15,14 @@ class RepoImpl extends Repo {
     try {
       final data = await doctorsService.fetchAllDoctors();
       final doctors = data.map((json) => DoctorModel.fromJson(json)).toList();
-      final entities = doctors.map((model) => DoctorEntity(
-        id: model.doctorId,
-        fullName: model.fullName,
-        specialization: model.specialization,
-        photoUrl: model.photo,
-      )).toList();
+      final entities = doctors
+          .map((model) => DoctorEntity(
+                id: model.doctorId,
+                fullName: model.fullName,
+                specialization: model.specialization,
+                photoUrl: model.photo,
+              ))
+          .toList();
       return Right(entities);
     } catch (e) {
       return Left(ServerFailure(errMessage: e.toString()));

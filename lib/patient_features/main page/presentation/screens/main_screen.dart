@@ -8,12 +8,15 @@ import 'package:health_care_app/core/utils/app_colors.dart';
 import 'package:health_care_app/core/utils/app_icons.dart';
 import 'package:health_care_app/core/utils/camelcase_to_normal.dart';
 import 'package:health_care_app/core/utils/gradient_text.dart';
+import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/appointment_details.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/avatar.dart';
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/header.dart';
 import 'package:health_care_app/patient_features/main%20page/presentation/widgets/specialty.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
+import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
 
 import '../../../../core/utils/doctor_specialties.dart';
 import '../cubit/patient_cubit.dart';
@@ -63,18 +66,26 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<void> _refreshData() async {
-    setState(() {
-      _loadImageFromPrefs();
-      _loadPatientId();
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _loadImageFromPrefs();
     _loadPatientId();
+    // Fetch notifications when the screen loads
+    if (patientID != null) {
+      context.read<NotificationCubit>().fetchNotifications(patientID!);
+    }
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _loadImageFromPrefs();
+      _loadPatientId();
+    });
+    // Refresh notifications when pulling to refresh
+    if (patientID != null) {
+      context.read<NotificationCubit>().fetchNotifications(patientID!);
+    }
   }
 
   @override
@@ -162,12 +173,64 @@ class _MainScreenState extends State<MainScreen> {
                         SizedBox(
                           width: 35,
                           height: 35,
-                          child: IconButton(
-                            icon: const Icon(Icons.notifications_none),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, Routes.notificationsScreen);
-                            },
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                icon: BlocBuilder<NotificationCubit,
+                                    NotificationState>(
+                                  builder: (context, state) {
+                                    final unreadCount = context
+                                        .read<NotificationCubit>()
+                                        .getUnreadCount();
+                                    return Icon(
+                                      unreadCount > 0
+                                          ? Icons.notifications_active
+                                          : Icons.notifications_none,
+                                      color:
+                                          unreadCount > 0 ? Colors.blue : null,
+                                    );
+                                  },
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.notificationsScreen);
+                                },
+                              ),
+                              BlocBuilder<NotificationCubit, NotificationState>(
+                                builder: (context, state) {
+                                  final unreadCount = context
+                                      .read<NotificationCubit>()
+                                      .getUnreadCount();
+                                  if (unreadCount > 0) {
+                                    return Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          unreadCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 3),
@@ -339,7 +402,7 @@ class _MainScreenState extends State<MainScreen> {
                               height: 15,
                             ),
                             Container(
-                              width: 300,
+                              width: 350,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 12),
                               decoration: BoxDecoration(
@@ -357,6 +420,23 @@ class _MainScreenState extends State<MainScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      //add review button //!temp
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddReviewScreen(
+                                                        doctorId: 2,
+                                                        doctorName: "mohamed",
+                                                        patientId: int.parse(
+                                                            state.patient.id),
+                                                        patientName:
+                                                            state.patient.name),
+                                              ),
+                                            );
+                                          },
+                                          child: const Icon(Icons.abc)),
                                       //---see all appointments button
                                       ElevatedButton(
                                         onPressed: () {
@@ -488,6 +568,7 @@ class _MainScreenState extends State<MainScreen> {
           );
           //=====================no appointments=====================//
         } else if (state is PatientLoadedWithNoAppointments) {
+          log("==============no appointments state");
           return Scaffold(
             appBar: AppBar(
                 title: Column(
@@ -515,12 +596,64 @@ class _MainScreenState extends State<MainScreen> {
                         SizedBox(
                           width: 35,
                           height: 35,
-                          child: IconButton(
-                            icon: const Icon(Icons.notifications_none),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, Routes.notificationsScreen);
-                            },
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                icon: BlocBuilder<NotificationCubit,
+                                    NotificationState>(
+                                  builder: (context, state) {
+                                    final unreadCount = context
+                                        .read<NotificationCubit>()
+                                        .getUnreadCount();
+                                    return Icon(
+                                      unreadCount > 0
+                                          ? Icons.notifications_active
+                                          : Icons.notifications_none,
+                                      color:
+                                          unreadCount > 0 ? Colors.blue : null,
+                                    );
+                                  },
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.notificationsScreen);
+                                },
+                              ),
+                              BlocBuilder<NotificationCubit, NotificationState>(
+                                builder: (context, state) {
+                                  final unreadCount = context
+                                      .read<NotificationCubit>()
+                                      .getUnreadCount();
+                                  if (unreadCount > 0) {
+                                    return Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          unreadCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 3),
@@ -542,7 +675,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              // Handle search icon press
+                              Navigator.pushNamed(context, Routes.allDoctors);
                             },
                           ),
                         ),
@@ -616,8 +749,12 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
+                                      ElevatedButton(
+                                          onPressed: () {},
+                                          child: const Icon(Icons.abc)),
                                       IconButton(
                                         onPressed: () {
                                           context

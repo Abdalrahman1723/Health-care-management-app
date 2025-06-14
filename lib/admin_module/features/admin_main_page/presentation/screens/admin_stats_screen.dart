@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_care_app/admin_module/features/admin_main_page/presentation/widgets/reviews_widget.dart';
 import '../../../../core/utils/admin_app_colors.dart';
 import '../cubit/admin_main_page_cubit.dart';
 
@@ -19,96 +20,117 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: AdminAppColors.containerBackground,
-      ),
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Admin Stats",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(
-              color: Colors.white,
-              thickness: 2,
-              indent: 15,
-              endIndent: 15,
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
-                builder: (context, state) {
-                  if (state is AdminStatsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: AdminAppColors.containerBackground,
+        ),
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Admin Stats",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                    );
-                  }
-
-                  if (state is AdminStatsError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    );
-                  }
-
-                  if (state is AdminStatsLoaded) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildStatCard(
-                                title: 'Total Doctors',
-                                value: state.stats.totalDoctors.toString(),
-                                icon: Icons.medical_services_outlined,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildStatCard(
-                                title: 'Total Patients',
-                                value: state.stats.totalPatients.toString(),
-                                icon: Icons.people_outline,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSpecializationsCard(
-                            state.stats.mostRequestedSpecializations),
-                      ],
-                    );
-                  }
-
-                  return const SizedBox.shrink();
-                },
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-          ],
+              const Divider(
+                color: Colors.white,
+                thickness: 2,
+                indent: 15,
+                endIndent: 15,
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    // Admin Stats Section
+                    BlocBuilder<AdminMainPageCubit, AdminMainPageState>(
+                      buildWhen: (previous, current) =>
+                          current is AdminStatsLoading ||
+                          current is AdminStatsError ||
+                          current is AdminStatsLoaded,
+                      builder: (context, state) {
+                        if (state is AdminStatsLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          );
+                        }
+
+                        if (state is AdminStatsError) {
+                          return Center(
+                            child: Text(
+                              state.message,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        }
+
+                        if (state is AdminStatsLoaded) {
+                          return Column(
+                            children: [
+                              //doctors and patients
+                              Row(
+                                children: [
+                                  //-------total number of doctors---------//
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Total Doctors',
+                                      value:
+                                          state.stats.totalDoctors.toString(),
+                                      icon: Icons.medical_services_outlined,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 16),
+
+                                  //-------total number of patients---------//
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Total Patients',
+                                      value:
+                                          state.stats.totalPatients.toString(),
+                                      icon: Icons.people_outline,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              _buildSpecializationsCard(
+                                  state.stats.mostRequestedSpecializations),
+                            ],
+                          );
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(thickness: 2),
+                    // Reviews Section
+                    const ReviewsWidget(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -188,16 +210,16 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
+          const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.medical_information_outlined,
                   color: Colors.orange, size: 20),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Flexible(
                 child: Text(
                   'Most Requested Specializations',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

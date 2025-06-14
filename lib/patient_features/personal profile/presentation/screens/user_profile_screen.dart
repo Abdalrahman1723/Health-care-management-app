@@ -25,11 +25,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   //logout function
   void _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    if (context.mounted) {
-      // ✅ Check if the widget is still in the tree
-      Navigator.pushNamed(context, Routes.loginAndSignup);
-    }
+    Navigator.pushReplacementNamed(context, Routes.login);
   }
 
   Future<void> _loadImageFromPrefs() async {
