@@ -1,3 +1,5 @@
+
+---
 ```markdown
 # 🏥 Healthcare Mobile App
 
@@ -143,14 +145,13 @@ flutter build apk --release
 ## 🙋‍♂️ Contributors
 
 * **Abdalrahman Alaa Eldin** – Flutter Developer
-* **Helana Emad** – Flutter Developer
-* **the Backend Team** – .NET Developer
+* **Your Backend Teammate** – .NET Developer
 
 ---
 
 ## 📄 License
 
-This project is licensed under the HU License.
+This project is licensed under the MIT License.
 
 ```
 
