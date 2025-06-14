@@ -32,6 +32,7 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
   bool isAppointmentsLoading = true;
   Set<int> rejectedAppointments = {};
   Set<int> acceptedAppointments = {};
+  Set<int> completedAppointments = {};
 
   @override
   void initState() {
@@ -45,9 +46,11 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
     final prefs = await SharedPreferences.getInstance();
     final rejected = prefs.getStringList('rejectedAppointments') ?? [];
     final accepted = prefs.getStringList('acceptedAppointments') ?? [];
+    final completed = prefs.getStringList('completedAppointments') ?? [];
     setState(() {
       rejectedAppointments = rejected.map((e) => int.tryParse(e) ?? -1).where((e) => e != -1).toSet();
       acceptedAppointments = accepted.map((e) => int.tryParse(e) ?? -1).where((e) => e != -1).toSet();
+      completedAppointments = completed.map((e) => int.tryParse(e) ?? -1).where((e) => e != -1).toSet();
     });
   }
 
@@ -55,6 +58,7 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('rejectedAppointments', rejectedAppointments.map((e) => e.toString()).toList());
     await prefs.setStringList('acceptedAppointments', acceptedAppointments.map((e) => e.toString()).toList());
+    await prefs.setStringList('completedAppointments', completedAppointments.map((e) => e.toString()).toList());
   }
 
   Future<void> _fetchNotifications() async {
@@ -147,6 +151,32 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
     }
   }
 
+  Future<void> _completeAppointment(int appointmentId) async {
+    try {
+      final response = await Dio().put(
+        'https://healthcaresystem.runasp.net/api/Doctor/Completed/$appointmentId',
+        options: Options(headers: {'Authorization': 'Bearer ${widget.token}'}),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          completedAppointments.add(appointmentId);
+        });
+        await _persistStates();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Appointment marked as completed'), backgroundColor: Colors.green),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to complete appointment'), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   List<Widget> get _pages => [
     DoctorHomeContent(
       notificationCount: _notificationCount,
@@ -154,8 +184,10 @@ class _DoctorHomeViewState extends State<DoctorHomeView> {
       isAppointmentsLoading: isAppointmentsLoading,
       rejectedAppointments: rejectedAppointments,
       acceptedAppointments: acceptedAppointments,
+      completedAppointments: completedAppointments,
       onReject: _rejectAppointment,
       onAccept: _acceptAppointment,
+      onComplete: _completeAppointment,
     ),
     const DoctorDatesWidget(),
     const DoctorsAppointmentAvaliable(),
@@ -208,8 +240,10 @@ class DoctorHomeContent extends StatelessWidget {
   final bool isAppointmentsLoading;
   final Set<int> rejectedAppointments;
   final Set<int> acceptedAppointments;
+  final Set<int> completedAppointments;
   final Function(int) onReject;
   final Function(int) onAccept;
+  final Function(int) onComplete;
 
   const DoctorHomeContent({
     Key? key,
@@ -218,8 +252,10 @@ class DoctorHomeContent extends StatelessWidget {
     required this.isAppointmentsLoading,
     required this.rejectedAppointments,
     required this.acceptedAppointments,
+    required this.completedAppointments,
     required this.onReject,
     required this.onAccept,
+    required this.onComplete,
   }) : super(key: key);
 
   @override
@@ -340,6 +376,7 @@ class DoctorHomeContent extends StatelessWidget {
                       final appointmentId = appointment['appointmentId'] as int;
                       final isRejected = rejectedAppointments.contains(appointmentId);
                       final isAccepted = acceptedAppointments.contains(appointmentId);
+                      final isCompleted = completedAppointments.contains(appointmentId);
                       return GestureDetector(
                         onTap: () {
                           final patientId = appointment['patientId'];
@@ -361,89 +398,127 @@ class DoctorHomeContent extends StatelessWidget {
                                 ? Colors.red[100]
                                 : isAccepted
                                 ? Colors.green[100]
+                                : isCompleted
+                                ? Colors.blue[100]
                                 : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                              child: Column(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 28,
-                                    backgroundImage: NetworkImage(appointment['patientImage'] ?? ''),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          appointment['patientFullName'] ?? '',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                            color: Colors.black,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      // CircleAvatar(
+                                      //   radius: 28,
+                                      //   backgroundImage: NetworkImage(appointment['patientImage'] ?? ''),
+                                      // ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            const Icon(Icons.access_time, size: 18, color: Colors.grey),
-                                            const SizedBox(width: 4),
                                             Text(
-                                              _formatAppointmentTime(appointment),
+                                              appointment['patientFullName'] ?? '',
                                               style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 17,
                                                 color: Colors.black,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500,
                                               ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    _formatAppointmentTime(appointment),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 13,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // Buttons in a flexible layout
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      // Check if screen is too narrow for 3 buttons in a row
+                                      if (constraints.maxWidth < 300) {
+                                        return Column(
                                           children: [
-                                            ElevatedButton(
-                                              onPressed: (isRejected || isAccepted)
-                                                  ? null
-                                                  : () {
-                                                onAccept(appointmentId);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                minimumSize: const Size(80, 34),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: _buildButton(
+                                                    'Accept',
+                                                    Colors.green,
+                                                    (isRejected || isAccepted || isCompleted) ? null : () => onAccept(appointmentId),
+                                                  ),
                                                 ),
-                                              ),
-                                              child: const Text('Accept'),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: _buildButton(
+                                                    'Reject',
+                                                    Colors.red,
+                                                    (isRejected || isAccepted || isCompleted) ? null : () => onReject(appointmentId),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            const SizedBox(width: 12),
-                                            ElevatedButton(
-                                              onPressed: (isRejected || isAccepted)
-                                                  ? null
-                                                  : () {
-                                                onReject(appointmentId);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
-                                                minimumSize: const Size(80, 34),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                ),
+                                            const SizedBox(height: 8),
+                                            SizedBox(
+                                              width: double.infinity,
+                                              child: _buildButton(
+                                                'Complete',
+                                                Colors.blue,
+                                                (isRejected || isAccepted || isCompleted) ? null : () => onComplete(appointmentId),
                                               ),
-                                              child: const Text('Reject'),
                                             ),
                                           ],
-                                        ),
-                                      ],
-                                    ),
+                                        );
+                                      } else {
+                                        return Row(
+                                          children: [
+                                            Expanded(
+                                              child: _buildButton(
+                                                'Accept',
+                                                Colors.green,
+                                                (isRejected || isAccepted || isCompleted) ? null : () => onAccept(appointmentId),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: _buildButton(
+                                                'Reject',
+                                                Colors.red,
+                                                (isRejected || isAccepted || isCompleted) ? null : () => onReject(appointmentId),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: _buildButton(
+                                                'Complete',
+                                                Colors.blue,
+                                                (isRejected || isAccepted || isCompleted) ? null : () => onComplete(appointmentId),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
@@ -458,6 +533,31 @@ class DoctorHomeContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildButton(String text, Color color, VoidCallback? onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        minimumSize: const Size(0, 32),
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 

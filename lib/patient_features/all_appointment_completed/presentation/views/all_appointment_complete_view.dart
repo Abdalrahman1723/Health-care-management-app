@@ -49,6 +49,8 @@ class _CompleteAppointmentsScreenState extends State<CompleteAppointmentsScreen>
                   _buildFilterButton("Upcoming", 0),
                   const SizedBox(width: 8),
                   _buildFilterButton("Cancelled", 1),
+                 // const SizedBox(width: 8),
+                //  _buildFilterButton("Completed", 2),
                 ],
               ),
             ),
