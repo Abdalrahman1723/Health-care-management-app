@@ -3,6 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../../update_appointement/presentation/update_appointement.dart';
+
+
 class DoctorsAppointmentAvaliable extends StatefulWidget {
   const DoctorsAppointmentAvaliable({Key? key}) : super(key: key);
 
@@ -32,7 +35,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
       final doctorId = prefs.getString('actorId') ?? prefs.getString('doctorId');
 
       if (token == null || doctorId == null) {
-        throw Exception('Doctor information not found');
+        throw Exception('معلومات الطبيب غير موجودة');
       }
 
       final dio = Dio();
@@ -55,7 +58,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
           errorMessage = null;
         });
       } else {
-        throw Exception('Failed to load availabilities');
+        throw Exception('فشل تحميل المواعيد');
       }
     } catch (e) {
       setState(() {
@@ -89,19 +92,19 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0BDCDC),
+        backgroundColor: const Color(0xFF0BDCDC),
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Available Appointments',
+        title: const Text(
+          'Availability Appointments',
           style: TextStyle(
-            color: theme.colorScheme.onPrimary,
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -112,7 +115,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
           : errorMessage != null
           ? Center(
         child: Text(
-          'Error: $errorMessage',
+          'خطأ: $errorMessage',
           style: const TextStyle(color: Colors.red),
         ),
       )
@@ -128,7 +131,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
             ),
             const SizedBox(height: 16),
             Text(
-              'No Available Appointments',
+              'لا توجد مواعيد متاحة',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[600],
@@ -137,7 +140,7 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
             ),
             const SizedBox(height: 8),
             Text(
-              'Add new appointments to see them here',
+              'أضف مواعيد جديدة لرؤيتها هنا',
               style: TextStyle(
                 color: Colors.grey[500],
               ),
@@ -166,11 +169,14 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.calendar_today, color: theme.primaryColor, size: 22),
+                        Icon(Icons.calendar_today,
+                            color: theme.primaryColor, size: 25),
                         const SizedBox(width: 8),
                         Text(
                           avail['day'] != null
-                              ? toBeginningOfSentenceCase(avail['day']) ?? ''
+                              ? toBeginningOfSentenceCase(
+                              avail['day']) ??
+                              ''
                               : '',
                           style: TextStyle(
                             color: theme.primaryColor,
@@ -178,17 +184,38 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
                             fontSize: 18,
                           ),
                         ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.edit,
+                              color: Color(0xFF0BDCDC)),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    UpdateAppointment(
+                                      appointment: avail,
+                                    ),
+                              ),
+                            );
+                            if (result == true) {
+                              _loadAvailabilities();
+                            }
+                          },
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Start Time',
+                              'start Time',
                               style: TextStyle(
                                 color: theme.hintColor,
                                 fontSize: 14,
@@ -205,10 +232,11 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
                           ],
                         ),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'End Time',
+                              'end Time',
                               style: TextStyle(
                                 color: theme.hintColor,
                                 fontSize: 14,
@@ -229,10 +257,11 @@ class _DoctorsAppointmentAvaliableState extends State<DoctorsAppointmentAvaliabl
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        const Icon(Icons.date_range, color: Colors.blue, size: 20),
+                        const Icon(Icons.date_range,
+                            color: Colors.blue, size: 20),
                         const SizedBox(width: 6),
                         Text(
-                          _formatDate(avail['availableDate']),
+                         _formatDate(avail['availableDate']),
                           style: const TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
