@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/config/routes/routes.dart';
@@ -216,19 +215,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    //-----------------the user favorite doctors-----------------//
-                    ListTile(
-                      leading: iconContainer(Icons.favorite_outline),
-                      trailing: GradientBackground.gradientIcon(
-                          Icons.arrow_forward_ios),
-                      title: const Text("Favorite"),
-                      subtitle: const Text("your favorite doctors"),
-                      onTap: () {
-                        Navigator.pushNamed(context, Routes.favDoctors);
-                        // !Handle favorite icon press later with database values
-                      },
-                    ),
-                    const SizedBox(height: 10),
+                    // //-----------------the user favorite doctors-----------------//
+                    // ListTile(
+                    //   leading: iconContainer(Icons.favorite_outline),
+                    //   trailing: GradientBackground.gradientIcon(
+                    //       Icons.arrow_forward_ios),
+                    //   title: const Text("Favorite"),
+                    //   subtitle: const Text("your favorite doctors"),
+                    //   onTap: () {
+                    //     Navigator.pushNamed(context, Routes.favDoctors);
+                    //     // !Handle favorite icon press later with database values
+                    //   },
+                    // ),
+                    // const SizedBox(height: 10),
                     //---------------the user medical history------------------//
                     ListTile(
                       leading: iconContainer(Icons.medical_information),
