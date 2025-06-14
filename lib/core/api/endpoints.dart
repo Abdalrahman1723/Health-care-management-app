@@ -35,7 +35,7 @@ class PatientApiConstants {
 
     //favorite doctors
       static const String getFavoriteDoctors =
-      "favorites/"; //Notification/patient/{ID}
+      "favorites"; //Notification/patient/{ID}
 }
 
 //-----admin------//

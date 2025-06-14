@@ -140,12 +140,12 @@ class AdminMainPageCubit extends Cubit<AdminMainPageState> {
       authToken = prefs.getString('token');
 
       if (authToken == null) {
-        emit(DoctorsError('Authentication token not found'));
+        emit(const DoctorsError('Authentication token not found'));
         return;
       }
 
       final response = await apiClient.delete(
-        "Admin/doctors/$doctorId",
+        "${AdminApiConstants.deleteDoctor}/$doctorId",
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',

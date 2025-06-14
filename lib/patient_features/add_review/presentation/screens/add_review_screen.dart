@@ -71,10 +71,11 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                         ),
                       ),
                       const SizedBox(height: 12),
+                      //---------doctor picture
                       const CircleAvatar(
                         backgroundColor: Colors.white,
                         backgroundImage: AssetImage(
-                          'lib/core/assets/images/download.jpg',
+                          'lib/core/assets/images/download.jpg', //!should be doctors picture
                         ),
                         radius: 80,
                       ),
@@ -85,8 +86,9 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           )),
+                          //should be doctor specialty 
                       const Text(
-                        "General doctor",
+                        "General doctor", //! should be fetched 
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
