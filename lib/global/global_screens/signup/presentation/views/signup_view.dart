@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/global/global_screens/login/presentation/widgets/login_widget.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../core/global/custom_text_filed/custom_text_field.dart';
 import '../../../../../patient_features/main page/presentation/screens/main_screen.dart';
+import '../../../login/presentation/views/login_view.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
 
@@ -25,10 +27,13 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _nationalIDController = TextEditingController();
-  final TextEditingController _chronicDiseasesController = TextEditingController();
+  final TextEditingController _chronicDiseasesController =
+      TextEditingController();
   final TextEditingController _allergiesController = TextEditingController();
-  final TextEditingController _currentMedicationsController = TextEditingController();
-  final TextEditingController _insuranceProviderController = TextEditingController();
+  final TextEditingController _currentMedicationsController =
+      TextEditingController();
+  final TextEditingController _insuranceProviderController =
+      TextEditingController();
 
   String _selectedGender = 'Male';
   String _selectedBloodType = 'O';
@@ -44,17 +49,22 @@ class _SignupViewState extends State<SignupView> {
       child: BlocListener<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterLoading) {
-            showDialog(context: context, builder: (_) => const Center(child: CircularProgressIndicator()));
+            showDialog(
+                context: context,
+                builder: (_) => Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تم التسجيل بنجاح')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
             print('REGISTERED EMAIL: ${_emailController.text}');
             print('REGISTERED PASSWORD: ${_passwordController.text}');
             print('ACTOR ID: ${state.registerEntity.actorId}');
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const MainScreen()));
           } else if (state is RegisterFailure) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('خطأ: ${state.error}')));
           }
         },
         child: Scaffold(
@@ -149,7 +159,8 @@ class _SignupViewState extends State<SignupView> {
                             lastDate: DateTime.now(),
                           );
                           if (picked != null) {
-                            _dateOfBirthController.text = DateFormat('yyyy-MM-dd').format(picked);
+                            _dateOfBirthController.text =
+                                DateFormat('yyyy-MM-dd').format(picked);
                           }
                         },
                       ),
@@ -309,14 +320,19 @@ class _SignupViewState extends State<SignupView> {
                                   age: int.parse(_ageController.text),
                                   nationalID: _nationalIDController.text,
                                   bloodType: _selectedBloodType,
-                                  chronicDiseases: _chronicDiseasesController.text,
+                                  chronicDiseases:
+                                      _chronicDiseasesController.text,
                                   allergies: _allergiesController.text,
-                                  currentMedications: _currentMedicationsController.text,
-                                  insuranceProvider: _insuranceProviderController.text,
+                                  currentMedications:
+                                      _currentMedicationsController.text,
+                                  insuranceProvider:
+                                      _insuranceProviderController.text,
                                 );
                               }
                             },
-                            child: const Text("Register", style: TextStyle(color: Colors.white, fontSize: 25)),
+                            child: Text("Register",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 25)),
                           ),
                         ),
                       ),
@@ -359,19 +375,21 @@ class _SignupViewState extends State<SignupView> {
 void showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(
-          title: const Text('Error'),
-          content: Text(message, style: const TextStyle(color: Colors.black),
-            textAlign: TextAlign.center,),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // إغلاق الـ Dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الـ Dialog
+          },
+          child: const Text('OK'),
         ),
+      ],
+    ),
   );
 }
