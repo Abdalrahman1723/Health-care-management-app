@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_care_app/core/utils/app_bar.dart';
+import 'package:health_care_app/patient_features/add_review/presentation/screens/add_review_screen.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/widgets/notification_date.dart';
@@ -87,9 +88,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               context
                                   .read<NotificationCubit>()
                                   .markNotificationAsRead(notification.id);
-                              if (notification.doctorId != null) {
-                                Navigator.pushNamed(
-                                    context, Routes.addReviewScreen);
+                              if (notification.doctorId == null) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const AddReviewScreen(
+                                      doctorId: 2,
+                                      doctorName: "Abdalrahman Alaa",
+                                      patientId: 2,
+                                      patientName: "ALi"),
+                                ));
                               }
                             },
                             child: notificationItem(

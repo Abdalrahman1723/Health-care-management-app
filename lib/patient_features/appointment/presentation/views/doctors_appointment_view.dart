@@ -59,8 +59,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       );
       final List<dynamic> data = response.data;
       _availableSlots = data
-          .where((item) =>
-      item['status']?.toString().toLowerCase() == 'available')
+          .where(
+              (item) => item['status']?.toString().toLowerCase() == 'available')
           .map((item) {
         double start = (item['startTimeInHours'] ?? 0).toDouble();
         double end = (item['endTimeInHours'] ?? 0).toDouble();
@@ -71,14 +71,14 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           int minute = ((h - hour) * 60).round();
           String period = hour >= 12 ? 'PM' : 'AM';
           int dispHour = hour % 12 == 0 ? 12 : hour % 12;
-          return '${dispHour.toString().padLeft(2,'0')}:'
-              '${minute.toString().padLeft(2,'0')} $period';
+          return '${dispHour.toString().padLeft(2, '0')}:'
+              '${minute.toString().padLeft(2, '0')} $period';
         }
+
         return {
           'id': item['id'] ?? item['availabilityId'],
           'availableDate': availableDate,
-          'slotText':
-          '$day: ${formatTime(start)} - ${formatTime(end)}',
+          'slotText': '$day: ${formatTime(start)} - ${formatTime(end)}',
         };
       }).toList();
     } catch (e) {
@@ -134,8 +134,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       );
       if (resp.statusCode == 200 || resp.statusCode == 201) {
         final booked = prefs.getStringList('booked_slots') ?? [];
-        if (_selectedTimeSlot != null &&
-            !booked.contains(_selectedTimeSlot!)) {
+        if (_selectedTimeSlot != null && !booked.contains(_selectedTimeSlot!)) {
           booked.add(_selectedTimeSlot!);
           await prefs.setStringList('booked_slots', booked);
         }
@@ -150,7 +149,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Booking error: $e'), backgroundColor: Colors.red),
+        SnackBar(
+            content: Text('Booking error: $e'), backgroundColor: Colors.red),
       );
     }
   }
@@ -165,7 +165,10 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02,
+                horizontal: MediaQuery.of(context).size.width * 0.02,
+              ),
               color: const Color(0xFF0BDCDC),
               child: Row(
                 children: [
@@ -174,47 +177,58 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   CircleAvatar(
-                    radius: 40,
+                    radius: MediaQuery.of(context).size.width * 0.08,
                     backgroundImage: NetworkImage(widget.doctorImage),
                   ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.doctorName,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20)),
-                      const SizedBox(height: 4),
-                      Text(widget.specialty,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16)),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.white, size: 16),
-                          const SizedBox(width: 4),
-                          FutureBuilder<Map<String, dynamic>>(
-                            future: _fetchDoctorProfile(),
-                            builder: (c, snap) {
-                              if (snap.connectionState == ConnectionState.waiting) {
-                                return const SizedBox(
-                                    width: 16, height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white));
-                              }
-                              final rating = (snap.data?['rating'] is num)
-                                  ? (snap.data!['rating'].toString())
-                                  : '0';
-                              return Text(rating,
-                                  style: const TextStyle(color: Colors.white));
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.doctorName,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05)),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.005),
+                        Text(widget.specialty,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04)),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.005),
+                        Row(
+                          children: [
+                            const Icon(Icons.star,
+                                color: Colors.white, size: 16),
+                            const SizedBox(width: 4),
+                            FutureBuilder<Map<String, dynamic>>(
+                              future: _fetchDoctorProfile(),
+                              builder: (c, snap) {
+                                if (snap.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.white));
+                                }
+                                final rating = (snap.data?['rating'] is num)
+                                    ? (snap.data!['rating'].toString())
+                                    : '0';
+                                return Text(rating,
+                                    style:
+                                        const TextStyle(color: Colors.white));
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -266,7 +280,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content:
-                            Text('Please select an available time slot'),
+                                Text('Please select an available time slot'),
                             backgroundColor: Colors.red),
                       );
                       return;
@@ -275,8 +289,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       context: context,
                       builder: (c) => AlertDialog(
                         title: const Text('Confirm Appointment'),
-                        content:
-                        const Text('Do you want to confirm this appointment?'),
+                        content: const Text(
+                            'Do you want to confirm this appointment?'),
                         actions: [
                           TextButton(
                               onPressed: () => Navigator.pop(c),
@@ -299,8 +313,10 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                         borderRadius: BorderRadius.circular(20)),
                   ),
                   child: const Text('Save Appointment',
-                      style:
-                      TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -310,8 +326,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     );
   }
 
-  Widget _sectionTitle(String t, {Color color = Colors.black87}) =>
-      Text(t, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color));
+  Widget _sectionTitle(String t, {Color color = Colors.black87}) => Text(t,
+      style:
+          TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color));
 
   Widget _buildProfileCard() {
     return FutureBuilder<Map<String, dynamic>>(
@@ -343,14 +360,20 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     if (_availableSlots.isEmpty) {
       return const Center(
           child: Text('No Available Appointments',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18)));
+              style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)));
     }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _availableSlots.length,
-      gridDelegate:
-      const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1, childAspectRatio: 4.5, mainAxisSpacing: 16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+          childAspectRatio: 4.5,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16),
       itemBuilder: (ctx, i) {
         final slot = _availableSlots[i];
         final isSel = slot['id'] == _selectedAvailabilityId;
@@ -358,9 +381,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
         return GestureDetector(
           onTap: !isBooked
               ? () => setState(() {
-            _selectedAvailabilityId = slot['id'];
-            _selectedTimeSlot = slot['slotText'];
-          })
+                    _selectedAvailabilityId = slot['id'];
+                    _selectedTimeSlot = slot['slotText'];
+                  })
               : null,
           child: Container(
             alignment: Alignment.center,
@@ -369,12 +392,16 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               color: isBooked
                   ? Colors.red.withOpacity(0.7)
                   : isSel
-                  ? const Color(0xFF0BDCDC)
-                  : Colors.white,
+                      ? const Color(0xFF0BDCDC)
+                      : Colors.white,
               border: Border.all(color: const Color(0xFF0BDCDC), width: 1.5),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
-                if (isSel) BoxShadow(color: Colors.cyan.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 2))
+                if (isSel)
+                  BoxShadow(
+                      color: Colors.cyan.withOpacity(0.15),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2))
               ],
             ),
             child: Column(
@@ -383,12 +410,16 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                 if ((slot['availableDate'] ?? '').isNotEmpty)
                   Text(slot['availableDate'],
                       style: TextStyle(
-                          color: isBooked || isSel ? Colors.white : const Color(0xFF0BDCDC),
+                          color: isBooked || isSel
+                              ? Colors.white
+                              : const Color(0xFF0BDCDC),
                           fontWeight: FontWeight.bold,
                           fontSize: 18)),
                 Text(slot['slotText'],
                     style: TextStyle(
-                        color: isBooked || isSel ? Colors.white : const Color(0xFF0BDCDC),
+                        color: isBooked || isSel
+                            ? Colors.white
+                            : const Color(0xFF0BDCDC),
                         fontWeight: FontWeight.bold,
                         fontSize: 16)),
               ],
@@ -406,7 +437,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       children: [
         Text(label,
             style: const TextStyle(
-                fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold)),
+                fontSize: 16,
+                color: Colors.black54,
+                fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -426,34 +459,46 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
   }
 
   Widget _buildFeedbackSection() {
-    if (_isFeedbackLoading) return const Center(child: CircularProgressIndicator());
+    if (_isFeedbackLoading)
+      return const Center(child: CircularProgressIndicator());
     if (_feedbackList.isEmpty) {
-      return const Text('No feedback yet.', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold));
+      return const Text('No feedback yet.',
+          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold));
     }
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _feedbackList.length,
-      separatorBuilder: (_, __) => const Divider(height: 16),
+      separatorBuilder: (_, __) =>
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
       itemBuilder: (_, idx) {
         final fb = _feedbackList[idx];
         return Card(
           color: Colors.blue.shade50,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(fb['patientName'] ?? 'Anonymous',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0BDCDC))),
-                const SizedBox(height: 4),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF0BDCDC),
+                        fontSize: MediaQuery.of(context).size.width * 0.04)),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                 Text(fb['comment'] ?? '',
-                    style: const TextStyle(color: Colors.black87)),
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: MediaQuery.of(context).size.width * 0.035)),
                 if (fb['rating'] != null)
                   Row(
                     children: List.generate(
-                        fb['rating'], (_) => const Icon(Icons.star, color: Colors.amber, size: 18)),
+                        fb['rating'],
+                        (_) => Icon(Icons.star,
+                            color: Colors.amber,
+                            size: MediaQuery.of(context).size.width * 0.04)),
                   ),
               ],
             ),
