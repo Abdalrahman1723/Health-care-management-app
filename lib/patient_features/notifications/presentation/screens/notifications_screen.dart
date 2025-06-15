@@ -5,6 +5,7 @@ import 'package:health_care_app/patient_features/add_review/presentation/screens
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_cubit.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/cubit/notification_state.dart';
 import 'package:health_care_app/patient_features/notifications/presentation/widgets/notification_date.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../config/routes/routes.dart';
 import '../widgets/notification_item.dart';
@@ -20,8 +21,26 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   void initState() {
     super.initState();
-    // TODO: Replace with actual patient ID
-    context.read<NotificationCubit>().fetchNotifications('3');
+    _loadPatientId();
+  }
+
+  Future<void> _loadPatientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('actorId');
+    if (id != null && id.isNotEmpty) {
+      if (mounted) {
+        context.read<NotificationCubit>().fetchNotifications(id);
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to load notifications: Patient ID not found'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
