@@ -157,6 +157,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final padding = MediaQuery.of(context).padding;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -166,8 +169,8 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             // Header
             Container(
               padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * 0.02,
-                horizontal: MediaQuery.of(context).size.width * 0.02,
+                vertical: size.height * 0.02,
+                horizontal: size.width * 0.02,
               ),
               color: const Color(0xFF0BDCDC),
               child: Row(
@@ -177,30 +180,34 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.08,
+                    radius: size.width * 0.08,
                     backgroundImage: NetworkImage(widget.doctorImage),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  SizedBox(width: size.width * 0.03),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.doctorName,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05)),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.005),
-                        Text(widget.specialty,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04)),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.005),
+                        Text(
+                          widget.doctorName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: size.height * 0.005),
+                        Text(
+                          widget.specialty,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: size.height * 0.005),
                         Row(
                           children: [
                             const Icon(Icons.star,
@@ -212,17 +219,21 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                                 if (snap.connectionState ==
                                     ConnectionState.waiting) {
                                   return const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2, color: Colors.white));
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  );
                                 }
                                 final rating = (snap.data?['rating'] is num)
                                     ? (snap.data!['rating'].toString())
                                     : '0';
-                                return Text(rating,
-                                    style:
-                                        const TextStyle(color: Colors.white));
+                                return Text(
+                                  rating,
+                                  style: const TextStyle(color: Colors.white),
+                                );
                               },
                             ),
                           ],
@@ -237,25 +248,25 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             // Body
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(size.width * 0.04),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _sectionTitle('Profile', color: const Color(0xFF0BDCDC)),
-                    const SizedBox(height: 8),
+                    SizedBox(height: size.height * 0.01),
                     _buildProfileCard(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: size.height * 0.03),
                     _sectionTitle('Available Time'),
-                    const SizedBox(height: 16),
+                    SizedBox(height: size.height * 0.02),
                     _buildTimeSlots(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: size.height * 0.03),
                     _sectionTitle('Patient Details'),
                     _buildInput('Full Name', controller: _nameController),
                     _buildInput('Age',
                         controller: _ageController, isNumber: true),
-                    const SizedBox(height: 16),
+                    SizedBox(height: size.height * 0.02),
                     _sectionTitle('Patient Feedback'),
-                    const SizedBox(height: 16),
+                    SizedBox(height: size.height * 0.02),
                     _buildFeedbackSection(),
                   ],
                 ),
@@ -263,14 +274,15 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
             ),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(size.width * 0.04),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.grey.shade200,
-                      blurRadius: 10,
-                      offset: const Offset(0, -5)),
+                    color: Colors.grey.shade200,
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
                 ],
               ),
               child: Center(
@@ -279,9 +291,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                     if (_selectedAvailabilityId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content:
-                                Text('Please select an available time slot'),
-                            backgroundColor: Colors.red),
+                          content: Text('Please select an available time slot'),
+                          backgroundColor: Colors.red,
+                        ),
                       );
                       return;
                     }
@@ -290,35 +302,41 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       builder: (c) => AlertDialog(
                         title: const Text('Confirm Appointment'),
                         content: const Text(
-                          'Do you want to confirm this appointment?',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                            'Do you want to confirm this appointment?'),
                         actions: [
                           TextButton(
-                              onPressed: () => Navigator.pop(c),
-                              child: const Text('Cancel')),
+                            onPressed: () => Navigator.pop(c),
+                            child: const Text('Cancel'),
+                          ),
                           TextButton(
-                              onPressed: () async {
-                                Navigator.pop(c);
-                                await bookAppointment();
-                              },
-                              child: const Text('Confirm')),
+                            onPressed: () async {
+                              Navigator.pop(c);
+                              await bookAppointment();
+                            },
+                            child: const Text('Confirm'),
+                          ),
                         ],
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0BDCDC),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.06,
+                      vertical: size.height * 0.015,
+                    ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  child: const Text('Save Appointment',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'Save Appointment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -361,21 +379,25 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
     if (_availableSlots.isEmpty) {
       return const Center(
-          child: Text('No Available Appointments',
-              style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18)));
+        child: Text(
+          'No Available Appointments',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      );
     }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _availableSlots.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
-          childAspectRatio: 4.5,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16),
+        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+        childAspectRatio: 4.5,
+        mainAxisSpacing: 16,
+      ),
       itemBuilder: (ctx, i) {
         final slot = _availableSlots[i];
         final isSel = slot['id'] == _selectedAvailabilityId;
@@ -389,7 +411,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               : null,
           child: Container(
             alignment: Alignment.center,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+            margin: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.02,
+            ),
             decoration: BoxDecoration(
               color: isBooked
                   ? Colors.red.withOpacity(0.7)
@@ -401,29 +425,39 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
               boxShadow: [
                 if (isSel)
                   BoxShadow(
-                      color: Colors.cyan.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2))
+                    color: Colors.cyan.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  )
               ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if ((slot['availableDate'] ?? '').isNotEmpty)
-                  Text(slot['availableDate'],
-                      style: TextStyle(
-                          color: isBooked || isSel
-                              ? Colors.white
-                              : const Color(0xFF0BDCDC),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
-                Text(slot['slotText'],
+                  Text(
+                    slot['availableDate'],
                     style: TextStyle(
-                        color: isBooked || isSel
-                            ? Colors.white
-                            : const Color(0xFF0BDCDC),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16)),
+                      color: isBooked || isSel
+                          ? Colors.white
+                          : const Color(0xFF0BDCDC),
+                      fontWeight: FontWeight.bold,
+                      fontSize:
+                          MediaQuery.of(context).size.width > 600 ? 20 : 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                Text(
+                  slot['slotText'],
+                  style: TextStyle(
+                    color: isBooked || isSel
+                        ? Colors.white
+                        : const Color(0xFF0BDCDC),
+                    fontWeight: FontWeight.bold,
+                    fontSize: MediaQuery.of(context).size.width > 600 ? 18 : 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
@@ -471,8 +505,7 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _feedbackList.length,
-      separatorBuilder: (_, __) =>
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+      separatorBuilder: (_, __) => const Divider(height: 16),
       itemBuilder: (_, idx) {
         final fb = _feedbackList[idx];
         return Card(
@@ -480,27 +513,22 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(fb['patientName'] ?? 'Anonymous',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF0BDCDC),
-                        fontSize: MediaQuery.of(context).size.width * 0.04)),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Color(0xFF0BDCDC))),
+                const SizedBox(height: 4),
                 Text(fb['comment'] ?? '',
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: MediaQuery.of(context).size.width * 0.035)),
+                    style: const TextStyle(color: Colors.black87)),
                 if (fb['rating'] != null)
                   Row(
                     children: List.generate(
                         fb['rating'],
-                        (_) => Icon(Icons.star,
-                            color: Colors.amber,
-                            size: MediaQuery.of(context).size.width * 0.04)),
+                        (_) => const Icon(Icons.star,
+                            color: Colors.amber, size: 18)),
                   ),
               ],
             ),
