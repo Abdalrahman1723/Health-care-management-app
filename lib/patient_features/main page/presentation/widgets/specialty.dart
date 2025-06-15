@@ -35,6 +35,12 @@ Widget specialty(BuildContext context, String icon, String title) {
         return DoctorSpecialty.gastroenterologist.name;
       case 'pulmonology':
         return DoctorSpecialty.pulmonologist.name;
+      case 'neurology':
+        return DoctorSpecialty.neurologist.name;
+      case 'pediatrics':
+        return DoctorSpecialty.pediatrician.name;
+      case 'psychiatry':
+        return DoctorSpecialty.psychiatrist.name;
       default:
         return DoctorSpecialty.generalPractitioner.name;
     }
