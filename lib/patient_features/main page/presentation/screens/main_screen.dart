@@ -431,7 +431,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 builder: (context) =>
                                                     AddReviewScreen(
                                                         doctorId: 2,
-                                                        doctorName: "mohamed",
+                                                        doctorName: "temp",
                                                         patientId: int.parse(
                                                             state.patient.id),
                                                         patientName:

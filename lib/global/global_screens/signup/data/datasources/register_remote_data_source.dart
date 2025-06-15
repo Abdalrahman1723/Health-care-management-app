@@ -23,7 +23,7 @@ class RegisterRemoteDataSource {
     required String insuranceProvider,
   }) async {
     final response = await dio.post(
-      'https://healthcaresystem.runasp.net/api/auth/register',
+      'https://healthcaresystem.runasp.net/api/Auth/register',
       data: {
         "username": username,
         "personName": personName,
