@@ -290,7 +290,9 @@ class _DoctorsAppointmentState extends State<DoctorsAppointment> {
                       builder: (c) => AlertDialog(
                         title: const Text('Confirm Appointment'),
                         content: const Text(
-                            'Do you want to confirm this appointment?'),
+                          'Do you want to confirm this appointment?',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         actions: [
                           TextButton(
                               onPressed: () => Navigator.pop(c),

@@ -304,8 +304,7 @@ class _MainScreenState extends State<MainScreen> {
                           // favorite icon
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, Routes.favDoctors);
-                              // !Handle favorite icon press later with database values
+                              Navigator.pushNamed(context, Routes.allDoctors);
                             },
                             child: Column(
                               children: [

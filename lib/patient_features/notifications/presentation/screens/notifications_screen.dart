@@ -91,8 +91,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               if (notification.doctorId == null) {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => const AddReviewScreen(
-                                      doctorId: 2,
-                                      doctorName: "Abdalrahman Alaa",
+                                      doctorId: 4,
+                                      doctorName: "Mohamed Khaled",
                                       patientId: 2,
                                       patientName: "ALi"),
                                 ));

@@ -6,10 +6,12 @@ class UpcomingAppointmentsScreen extends StatefulWidget {
   const UpcomingAppointmentsScreen({Key? key}) : super(key: key);
 
   @override
-  State<UpcomingAppointmentsScreen> createState() => _UpcomingAppointmentsScreenState();
+  State<UpcomingAppointmentsScreen> createState() =>
+      _UpcomingAppointmentsScreenState();
 }
 
-class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen> {
+class _UpcomingAppointmentsScreenState
+    extends State<UpcomingAppointmentsScreen> {
   List<dynamic> _appointments = [];
   bool _isLoading = true;
 
@@ -26,7 +28,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
       final token = prefs.getString('token');
       if (token == null) throw Exception('Missing token');
 
-      final url = 'https://healthcaresystem.runasp.net/api/Patient/appointments?status=Upcoming';
+      final url =
+          'https://healthcaresystem.runasp.net/api/Patient/appointments?status=Upcoming';
       final response = await Dio().get(
         url,
         options: Options(headers: {'Authorization': 'Bearer $token'}),
@@ -50,7 +53,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
     if (token == null) return;
 
     try {
-      final url = 'https://healthcaresystem.runasp.net/api/Patient/cancel/$appointmentId';
+      final url =
+          'https://healthcaresystem.runasp.net/api/Patient/cancel/$appointmentId';
       await Dio().put(
         url,
         options: Options(headers: {'Authorization': 'Bearer $token'}),
@@ -84,7 +88,10 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Cancel Confirmation'),
-          content: const Text('Are you sure you want to cancel this appointment?'),
+          content: const Text(
+            'Are you sure you want to cancel this appointment?',
+            style: TextStyle(color: Colors.black),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -113,45 +120,59 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _appointments.isEmpty
-              ? const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.event_busy, color: Colors.grey, size: 64),
-                SizedBox(height: 16),
-                Text('No upcoming appointments', style: TextStyle(fontSize: 20, color: Colors.grey)),
-              ],
-            ),
-          )
-              : ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: _appointments.length,
-            itemBuilder: (context, index) {
-              final appt = _appointments[index];
-              return Column(
-                children: [
-                  _buildAppointmentCard(appt),
-                  const SizedBox(height: 16),
-                ],
-              );
-            },
-          ),
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.event_busy, color: Colors.grey, size: 64),
+                          SizedBox(height: 16),
+                          Text('No upcoming appointments',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.grey)),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _appointments.length,
+                      itemBuilder: (context, index) {
+                        final appt = _appointments[index];
+                        return Column(
+                          children: [
+                            _buildAppointmentCard(appt),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
+                    ),
         ),
       ),
     );
   }
 
   Widget _buildAppointmentCard(dynamic appt) {
-    final doctorName = (appt['doctor']?.toString().isNotEmpty ?? false) ? appt['doctor'].toString() : 'Unknown Doctor';
-    final appointmentDate = (appt['appointmentDate']?.toString().isNotEmpty ?? false) ? appt['appointmentDate'].toString() : '';
-    final availableDate = (appt['availableDate']?.toString().isNotEmpty ?? false) ? appt['availableDate'].toString() : '';
-    final startTime = (appt['startTimeInHours'] != null && appt['startTimeInHours'].toString().isNotEmpty)
+    final doctorName = (appt['doctor']?.toString().isNotEmpty ?? false)
+        ? appt['doctor'].toString()
+        : 'Unknown Doctor';
+    final appointmentDate =
+        (appt['appointmentDate']?.toString().isNotEmpty ?? false)
+            ? appt['appointmentDate'].toString()
+            : '';
+    final availableDate =
+        (appt['availableDate']?.toString().isNotEmpty ?? false)
+            ? appt['availableDate'].toString()
+            : '';
+    final startTime = (appt['startTimeInHours'] != null &&
+            appt['startTimeInHours'].toString().isNotEmpty)
         ? double.tryParse(appt['startTimeInHours'].toString()) ?? 0.0
         : 0.0;
-    final endTime = (appt['endTimeInHours'] != null && appt['endTimeInHours'].toString().isNotEmpty)
+    final endTime = (appt['endTimeInHours'] != null &&
+            appt['endTimeInHours'].toString().isNotEmpty)
         ? double.tryParse(appt['endTimeInHours'].toString()) ?? 0.0
         : 0.0;
-    final status = (appt['status']?.toString().isNotEmpty ?? false) ? appt['status'].toString() : '--';
+    final status = (appt['status']?.toString().isNotEmpty ?? false)
+        ? appt['status'].toString()
+        : '--';
 
     String formatTime(double hour) {
       int h = hour.floor();
@@ -169,10 +190,17 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
     if (appointmentDate.isNotEmpty) {
       final dt = DateTime.tryParse(appointmentDate);
       if (dt != null) {
-        date = '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+        date =
+            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
         if (day.isEmpty) {
           day = [
-            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
           ][dt.weekday % 7];
         }
       }
@@ -237,7 +265,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
                 children: [
                   // صندوق التاريخ
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color(0xFF0BDCDC)),
                       borderRadius: BorderRadius.circular(25),
@@ -245,10 +274,13 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.calendar_today, size: 16, color: Color(0xFF0BDCDC)),
+                        const Icon(Icons.calendar_today,
+                            size: 16, color: Color(0xFF0BDCDC)),
                         const SizedBox(width: 4),
                         Text(
-                          day.isNotEmpty && date.isNotEmpty ? '$day, $date' : date,
+                          day.isNotEmpty && date.isNotEmpty
+                              ? '$day, $date'
+                              : date,
                           style: const TextStyle(
                             color: Color(0xFF0BDCDC),
                             fontSize: 14,
@@ -277,7 +309,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
                   const SizedBox(width: 10),
                   // صندوق الوقت
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color(0xFF0BDCDC)),
                       borderRadius: BorderRadius.circular(25),
@@ -285,7 +318,8 @@ class _UpcomingAppointmentsScreenState extends State<UpcomingAppointmentsScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.access_time, size: 16, color: Color(0xFF0BDCDC)),
+                        const Icon(Icons.access_time,
+                            size: 16, color: Color(0xFF0BDCDC)),
                         const SizedBox(width: 4),
                         Text(
                           '${formatTime(startTime)} - ${formatTime(endTime)}',

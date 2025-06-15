@@ -51,11 +51,11 @@ class _SignupViewState extends State<SignupView> {
           if (state is RegisterLoading) {
             showDialog(
                 context: context,
-                builder: (_) => Center(child: CircularProgressIndicator()));
+                builder: (_) => const Center(child: CircularProgressIndicator()));
           } else if (state is RegisterSuccess) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
+                .showSnackBar(const SnackBar(content: Text('تم التسجيل بنجاح')));
             print('REGISTERED EMAIL: ${_emailController.text}');
             print('REGISTERED PASSWORD: ${_passwordController.text}');
             print('ACTOR ID: ${state.registerEntity.actorId}');
