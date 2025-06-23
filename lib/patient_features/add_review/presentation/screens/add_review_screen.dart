@@ -74,9 +74,8 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                       //---------doctor picture
                       const CircleAvatar(
                         backgroundColor: Colors.white,
-                        backgroundImage: AssetImage(
-                          'lib/core/assets/images/download.jpg', //!should be doctors picture
-                        ),
+                        backgroundImage:
+                            NetworkImage("https://shorturl.at/BtN8N"),
                         radius: 80,
                       ),
                       const SizedBox(height: 12),

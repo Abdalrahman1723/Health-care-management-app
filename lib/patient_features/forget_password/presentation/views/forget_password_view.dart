@@ -10,7 +10,6 @@ class SetPasswordScreen extends StatefulWidget {
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -52,7 +51,6 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               children: [
                 const SizedBox(height: 16),
 
-                // New Password Field
                 const Text(
                   'New Password',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
@@ -61,13 +59,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 CustomTextField(
                   controller: _newPasswordController,
                   label: 'Enter new password',
-                  isPassword: true,
-                  formKey: _formKey, // ✅ إضافة formKey
+                  isPassword: true, formKey: _formKey,
                 ),
 
                 const SizedBox(height: 24),
 
-                // Confirm New Password Field
                 const Text(
                   'Confirm New Password',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
@@ -76,13 +72,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 CustomTextField(
                   controller: _confirmPasswordController,
                   label: 'Confirm new password',
-                  isPassword: true,
-                  formKey: _formKey,
+                  isPassword: true, formKey: _formKey,
                 ),
 
                 const SizedBox(height: 48),
 
-                // Change Password Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,

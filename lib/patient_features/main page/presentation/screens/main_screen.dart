@@ -304,8 +304,7 @@ class _MainScreenState extends State<MainScreen> {
                           // favorite icon
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, Routes.favDoctors);
-                              // !Handle favorite icon press later with database values
+                              Navigator.pushNamed(context, Routes.allDoctors);
                             },
                             child: Column(
                               children: [
@@ -423,23 +422,6 @@ class _MainScreenState extends State<MainScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      //add review button //!temp
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddReviewScreen(
-                                                        doctorId: 2,
-                                                        doctorName: "mohamed",
-                                                        patientId: int.parse(
-                                                            state.patient.id),
-                                                        patientName:
-                                                            state.patient.name),
-                                              ),
-                                            );
-                                          },
-                                          child: const Icon(Icons.abc)),
                                       //---see all appointments button
                                       ElevatedButton(
                                         onPressed: () {
