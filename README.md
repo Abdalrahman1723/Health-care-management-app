@@ -1,9 +1,6 @@
-
----
-```markdown
 # 🏥 Healthcare Mobile App
 
-A modular Flutter mobile application for a healthcare system, built with Clean Architecture. It supports multiple user roles (Patient, Doctor, Admin), integrates with Firebase for authentication, and communicates with a .NET backend API for business logic and data operations.
+A modular Flutter mobile application for a healthcare system, built with Clean Architecture. It supports multiple user roles (Patient, Doctor, Admin) and communicates with a .NET backend API for business logic and data operations.
 
 ---
 
@@ -43,15 +40,13 @@ A modular Flutter mobile application for a healthcare system, built with Clean A
 - **State Management:** Bloc / Cubit
 - **Local Storage:** Shared Preferences
 - **Network:** Dio with Interceptors
-- **Authentication:** Firebase Auth
 - **Backend:** .NET Core API
-- **Notifications:** Firebase Cloud Messaging (or custom)
 
 ---
 
-## 📁 Project Structure (Clean Architecture + Features)
+## 📁 Project Structure (Clean Architecture + Feature-Based)
 
-```
+<pre>
 
 lib/
 ├── core/                 # App-wide constants, services, utils
@@ -70,7 +65,7 @@ lib/
 │   ├── presentation/
 ├── main.dart
 
-````
+</pre>
 
 ---
 
@@ -79,17 +74,16 @@ lib/
 ### 🔨 Prerequisites
 
 - Flutter SDK
-- Firebase Project (Web + Android configured)
 - .NET API hosted and accessible
 - Android Studio or VS Code
 
 ### ⚙️ Setup
 
 1. **Clone the repo**
+
    ```bash
-   git clone https://github.com/YourUsername/healthcare_app.git
-   cd healthcare_app
-````
+   git clone https://github.com/Abdalrahman1723/Health-care-management-app.git
+   cd Health-care-management-app
 
 2. **Install dependencies**
 
@@ -97,18 +91,9 @@ lib/
    flutter pub get
    ```
 
-3. **Configure Firebase**
+3. **Set up `.env` or config file for base API URL and tokens if needed.**
 
-   * Replace `firebase_options.dart` with your own.
-   * Run:
-
-     ```bash
-     flutterfire configure
-     ```
-
-4. **Set up `.env` or config file for base API URL and tokens if needed.**
-
-5. **Run the app**
+4. **Run the app**
 
    ```bash
    flutter run
@@ -121,12 +106,12 @@ lib/
 To test API features with Dio directly in the UI (temporarily):
 
 ```dart
-final response = await Dio().get('https://your-api.com/patient/1');
+final response = await Dio().get('https://healthcaresystem.runasp.net/api/PatientProfile');
 ```
 
 ---
 
-## 🧠 Machine Learning Integration
+## 🤖 Machine Learning Integration
 
 * Hosted Python ML model predicts required doctor specialty based on symptoms.
 * Flutter sends symptoms via API to the Python backend.
@@ -146,17 +131,10 @@ flutter build apk --release
 
 * **Abdalrahman Alaa Eldin** – Flutter Developer
 * **Helana Emad** – Flutter Developer
-* **Backend Teamm** – .NET Developer
+* **Backend Team** – .NET Developer
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License.
-
-```
-
----
-
-Would you like me to add badges (build, version, etc.), a GitHub actions workflow, or auto-deploy setup?
-```
